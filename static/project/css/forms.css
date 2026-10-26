@@ -1,0 +1,67 @@
+/* ── Titulos de fieldset ────────────────── */
+
+.form-section {
+    margin-bottom: 2rem;
+    border: 0;
+    padding: 0;
+}
+
+.form-section legend {
+    width: 100%;
+
+    margin-bottom: 1rem;
+    padding-bottom: .1rem;
+
+    border-bottom: 1px solid var(--tblr-border-color);
+
+    font-size: .775rem;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: .05em;
+
+    color: var(--tblr-secondary);
+}    
+
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ── Quita el check y X de los controles */
+/* -------------------------------------------------- */
+/* Validación de formularios                          */
+/* -------------------------------------------------- */
+
+/* Sin check/X */
+.form-control.is-valid,
+.form-control.is-invalid {
+    background-image: none !important;
+}
+
+/* Input + botón del ojo */
+.input-group > .form-control.is-invalid,
+.input-group > .form-control.is-invalid + .input-group-text {
+    border-color: var(--tblr-danger);
+}
+
+.input-group > .form-control.is-valid,
+.input-group > .form-control.is-valid + .input-group-text {
+    border-color: var(--tblr-success);
+}
+
+/* Evita división visual fuerte entre input y botón */
+.input-group > .form-control.is-invalid + .input-group-text,
+.input-group > .form-control.is-valid + .input-group-text {
+    border-left-color: transparent;
+}
+
+/* Campos en mayúsculas y minísculas */
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-lowercase {
+    text-transform: lowercase;
+}

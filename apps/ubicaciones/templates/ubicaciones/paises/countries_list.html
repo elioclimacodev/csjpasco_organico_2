@@ -1,0 +1,53 @@
+{% extends 'layouts/base_list.html' %}
+
+
+{% block page_header_actions %}
+    <!-- Botón Nuevo país -->
+    <button
+        hx-get="{% url 'ubicaciones:country_create' %}"
+        hx-target="#modal_content"
+        hx-trigger="click"
+        hx-swap="innerHTML"
+        data-bs-toggle="modal"
+        data-bs-target="#modal_htmx"
+        class="btn btn-primary d-none d-sm-inline-block">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-world-map">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M20 8h-2a2 2 0 0 0 -2 2a2 2 0 1 1 -4 0v-1a2 2 0 0 0 -2 -2h-1a2 2 0 0 1 -2 -2v-.5" />
+            <path d="M3 12h3a2 2 0 0 1 2 2v.5a1.5 1.5 0 0 0 1.5 1.5a1.5 1.5 0 0 1 1.5 1.5v3.25" />
+            <path d="M15 20.5v-3.5a2 2 0 0 1 2 -2h3.5" />
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+        </svg>
+        Nuevo país
+    </button>
+{% endblock page_header_actions %}
+    
+ 
+{% block datatable %}
+    {% include 'ubicaciones/paises/partials/_datatable.html' %}
+{% endblock datatable %}
+    
+
+<!-- TODO: INDICADOR DE CARGA -->
+<!-- TODO: Cuando se modifica un registro que está en una página x, retorna a la página 1, pero debería permanecer en la página x -->
+<!-- TODO: BOTONES DE FORMULARIO MODAL CON LAS MISMAS DIMENSIONES QUE CONFIRM MODAL -->
+<!-- TODO: CORREGIR LOS PÁDING DEL MODALFORM -->
+<!-- TODO: ADPATAR EXPORTAR A LOS FILTROS Y ORDENAMIENTO -->
+<!-- TODO: Limpiar filtros en modal -->
+<!-- TODO: No está exportando correctamente -->
+<!-- TODO: Revisar con esto https://chatgpt.com/g/g-p-69ca9e5b1ff48191b16286b0aa3356a1-erp/c/6a023fa8-4c70-8330-8f4c-a91917f76f8a -->
+<!-- TODO: Cambiar #table-container por #table_container, _countries_table.html -->
+<!-- Completado -->
+<!-- TODO: ARREGLAR BOTONES DE FILTRO -->
+<!-- TODO: VERSIÓN MÓVIL - OFFCANVAS PARA LOS FILTROS -->
+<!-- TODO: Pasar los estilos de _countries_cards a un archivo CSS. -->
+<!-- TODO: EL ÚLTIMO REGISTRO MUESTRA UN PÁDING AL FINAL DEL CARD -->
+<!-- TODO: td-truncate -->
+<!-- TODO: DATOS DE LA CELDA DEMASIADO LARGOS -->
+<!-- TODO: AMPLIAR LA ZONA TOUCH DE LOS CARDS DE LOS DATOS -->
+<!-- TODO: ARREGLAR BOTONES DE AGREGAR disco+ disco-->
+<!-- TODO: AÑADIR BOTÓN DE AGREGAR -->
+<!-- TODO: EN MOVIL SOLO 5 REGISTROS -->
+<!-- TODO: CUANDO UNA CELDA TIENE UN TEXTO DEMASIADO LARGO, LAS DEMÁS CELDAS DEBEN PERMANECER ENCIMA Y EL TEXTO EXTENSO DEBE RECORTARSE U OCULTARSE -->

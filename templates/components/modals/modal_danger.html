@@ -1,0 +1,50 @@
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal-status bg-danger"></div>
+<form action="">
+    <div class="modal-body text-center py-4">
+
+        <!-- Download SVG icon from http://tabler.io/icons/icon/alert-triangle -->
+        {% block modal_icon %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-alert-circle mb-2 text-danger icon-lg">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+            <path d="M12 8v4" />
+            <path d="M12 16h.01" />
+        </svg>
+        {% endblock modal_icon %}
+
+        <h3>
+            {% block modal_title %}
+                ¿Está seguro que desea eliminar?
+            {% endblock modal_title %}
+        </h3>
+        <div class="text-secondary">
+            {% block modal_content %}
+                Se van a eliminar 84 archivos, esta acción no se puede revertir.
+            {% endblock modal_content %}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="w-100">
+            <div class="row">
+                {% block modal_buttons %}
+                    <div class="col">
+                        <a href="#" class="btn btn-3 w-100" data-bs-dismiss="modal"> Cerrar </a>
+                    </div>
+                    <div class="col">
+                        <button 
+                            type="submit" 
+                            class="btn btn-danger btn-4 w-100"
+                            data-bs-dismiss="modal">
+                            {% block modal_default_button %}
+                                Eliminar 84 items
+                            {% endblock modal_default_button %}
+                        </button>
+                    </div>                    
+                {% endblock modal_buttons %}
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,248 @@
+/**
+ * TEMA INSTITUCIONAL CSJ PASCO - PODER JUDICIAL DEL PERÚ
+ * Basado en Tabler.io / Bootstrap 5
+ * Paleta: 
+ *   - Primario (Vino/Grana Judicial): #A42612
+ *   - Claro Institucional (Arena/Pergamino): #EAE4D2
+ *   - Neutro Institucional (Gris Cálido): #7A7562
+ *   - Superficie (Fondo): #F3F3F3
+ *   - Oscuro (Pizarra Profundo): #3B4151
+ */
+
+:root {
+  /* --- SOBREESCRITURA DE VARIABLES TABLER / BOOTSTRAP --- */
+  --tblr-primary: #A42612;
+  --tblr-primary-rgb: 164, 38, 18;
+  --tblr-primary-fg: #ffffff;
+  
+  --tblr-secondary: #7A7562;
+  --tblr-secondary-rgb: 122, 117, 98;
+  
+  --tblr-dark: #3B4151;
+  --tblr-dark-rgb: 59, 65, 81;
+  
+  --tblr-light: #EAE4D2;
+  --tblr-light-rgb: 234, 228, 210;
+
+  /* Colores de Superficie y Fondo */
+  --tblr-body-bg: #F3F3F3;
+  --tblr-body-color: #3B4151;
+  --tblr-card-bg: #FFFFFF;
+  --tblr-card-border-color: rgba(122, 117, 98, 0.12);
+  --tblr-border-color: rgba(122, 117, 98, 0.18);
+  
+  /* Textos atenuados */
+  --tblr-muted: #7A7562;
+  
+  /* Tipografía y radios */
+  --tblr-font-sans-serif: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --tblr-border-radius: 12px;
+  --tblr-border-radius-lg: 16px;
+  --tblr-border-radius-sm: 8px;
+}
+
+/* ==========================================================================
+   1. ESTILO GENERAL DEL CUERPO
+   ========================================================================== */
+body {
+  background-color: var(--tblr-body-bg) !important;
+  color: var(--tblr-body-color);
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #3B4151;
+  font-weight: 700;
+}
+
+.text-muted {
+  color: #7A7562 !important;
+}
+
+/* ==========================================================================
+   2. BARRA LATERAL (SIDEBAR) - Estilo SaaS Moderno
+   ========================================================================== */
+.navbar-vertical.navbar-expand-lg {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid rgba(122, 117, 98, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+/* Logo institucional en Sidebar */
+.navbar-brand {
+  color: #A42612 !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Enlaces del Menú Lateral */
+.navbar-vertical .navbar-nav .nav-link {
+  color: #7A7562;
+  font-weight: 500;
+  border-radius: 12px;
+  margin: 2px 10px;
+  padding: 0.65rem 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.navbar-vertical .navbar-nav .nav-link .nav-link-icon {
+  color: #7A7562;
+  transition: color 0.2s ease;
+}
+
+.navbar-vertical .navbar-nav .nav-link:hover {
+  background-color: rgba(234, 228, 210, 0.4);
+  color: #3B4151;
+}
+
+.navbar-vertical .navbar-nav .nav-link:hover .nav-link-icon {
+  color: #A42612;
+}
+
+/* Ítem Activo (Estilo Píldora Iluminada de la Referencia) */
+.navbar-vertical .navbar-nav .nav-item.active .nav-link,
+.navbar-vertical .navbar-nav .nav-link.active {
+  background: linear-gradient(135deg, #A42612 0%, #BD321B 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(164, 38, 18, 0.28);
+}
+
+.navbar-vertical .navbar-nav .nav-link.active .nav-link-icon {
+  color: #FFFFFF !important;
+}
+
+/* Usuario en la parte inferior del Sidebar */
+.navbar-vertical .nav-item.dropdown.mt-auto {
+  margin: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  background-color: #F8F7F4;
+  border: 1px solid rgba(122, 117, 98, 0.15);
+}
+
+/* ==========================================================================
+   3. TARJETAS (CARDS)
+   ========================================================================== */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(122, 117, 98, 0.12);
+  border-radius: var(--tblr-border-radius-lg);
+  box-shadow: 0 1px 3px rgba(59, 65, 81, 0.03), 0 6px 16px rgba(59, 65, 81, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 14px rgba(59, 65, 81, 0.05);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(122, 117, 98, 0.08);
+  font-weight: 600;
+  color: #3B4151;
+  padding: 1.25rem 1.5rem;
+}
+
+.card-title {
+  color: #3B4151;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   4. BOTONES (BUTTONS)
+   ========================================================================== */
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #A42612 0%, #911F0D 100%);
+  border-color: #831C0C;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(164, 38, 18, 0.2);
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+  background: #881D0C !important;
+  border-color: #72180A !important;
+  box-shadow: 0 4px 10px rgba(164, 38, 18, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Botón secundario institucional */
+.btn-outline-secondary {
+  border-color: rgba(122, 117, 98, 0.3);
+  color: #3B4151;
+  background-color: #FFFFFF;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #EAE4D2;
+  border-color: #7A7562;
+  color: #3B4151;
+}
+
+/* ==========================================================================
+   5. BADGES, CHIPS Y METRICAS
+   ========================================================================== */
+.badge {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+}
+
+.badge.bg-primary-lt {
+  background-color: rgba(164, 38, 18, 0.1) !important;
+  color: #A42612 !important;
+}
+
+.badge.bg-secondary-lt {
+  background-color: #EAE4D2 !important;
+  color: #7A7562 !important;
+}
+
+/* ==========================================================================
+   6. FORMULARIOS Y ENTRADAS (INPUTS)
+   ========================================================================== */
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1px solid rgba(122, 117, 98, 0.25);
+  color: #3B4151;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #A42612;
+  box-shadow: 0 0 0 0.25rem rgba(164, 38, 18, 0.15);
+}
+
+/* ==========================================================================
+   7. DETALLES DE TABLAS Y ESTADÍSTICAS
+   ========================================================================== */
+.table thead th {
+  background-color: #F8F7F4;
+  color: #7A7562;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(122, 117, 98, 0.15);
+}
+
+.table tbody tr:hover {
+  background-color: rgba(234, 228, 210, 0.25);
+}
+
+/* Indicadores de gráfico / Gráficos de ApexCharts */
+.chart-primary {
+  color: #A42612;
+}
+.chart-secondary {
+  color: #EAE4D2;
+}
+.chart-neutral {
+  color: #7A7562;
+}

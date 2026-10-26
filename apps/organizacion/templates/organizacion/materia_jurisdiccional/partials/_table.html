@@ -1,0 +1,43 @@
+{% extends 'components/datatable/displays/table.html' %}
+{% load datatable_tags %}
+
+
+{% block table_columns %}
+    {% sortable_header 'name' 'Materia' %}
+    {% sortable_header 'siglas' 'Siglas' %}
+    {% sortable_header 'activo' 'Estado' %}
+    <th class="w-1">
+        <div class="d-flex justify-content-center align-items-center">
+            Acciones
+        </div>
+    </th>    
+{% endblock table_columns %}
+
+
+{% block table_rows %}
+    <tr>
+        <td>
+            {{ o.nombre|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.siglas|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.activo|status_badge }}
+        </td>        
+        <td>
+            <div class="btn-actions gap-1 d-flex justify-content-center">
+                {% url 'organization:materia_jurisdiccional_details' o.pk as url %}
+                {% include 'components/datatable/buttons/details_icon_button.html' with url=url %}
+
+                {% url 'organization:materia_jurisdiccional_update' o.pk as url %}
+                {% include 'components/datatable/buttons/edit_icon_button.html' with url=url %}
+
+                {% url 'organization:materia_jurisdiccional_toggle' o.pk as url %}
+                {% include 'components/datatable/buttons/toggle_icon_button.html' with url=url %}   
+            </div>
+        </td>
+    </tr>
+{% endblock table_rows %}
+    
+    

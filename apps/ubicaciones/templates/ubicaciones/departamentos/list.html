@@ -1,0 +1,23 @@
+{% extends 'layouts/base_list.html' %}
+
+
+{% block page_header_actions %}
+    {% url 'ubicaciones:departamento_create' pais.id as url %}
+    {% include 'components/datatable/buttons/create_object.html' with url=url %}
+{% endblock page_header_actions %}
+
+
+{% block datatable %}
+    {% include 'ubicaciones/departamentos/partials/_datatable.html' %}
+{% endblock datatable %}
+    
+<!-- Tareas. -->
+<!-- TODO: El país en el placeholder input de búsqueda -->
+<!-- TODO: El botón X debe limpiar y volver a cargar los registros por defecto -->
+<!-- TODO: En caso no exista registros en la tabla mostrar el mensaje que no hay datos -->
+<!-- TODO: Al momento de actualizar o toggle un registro que está en una página este debe permanecer ahí -->
+
+<!-- En proceso -->
+
+
+<!-- Completadas -->

@@ -1,0 +1,32 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block content %}
+<div class="text-center mb-3">
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" height="24" viewBox="0 0 24 24" fill="none" 
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+        stroke-linejoin="round" 
+        class="icon icon-tabler icons-tabler-outline icon-tabler-alert-circle text-danger"
+        style="width: 48px; height: 48px;"><path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 8v4" /><path d="M12 16h.01" />
+    </svg>
+</div>
+
+<p>
+    El enlace de activación no es válido o ha expirado.
+    Puede solicitar un nuevo enlace para activar su cuenta.
+</p>
+         
+<!-- TODO: COMPLETAR EL ENLACE -->
+<a 
+    href=""
+    class="btn btn-primary w-100">
+    Solicitar nuevo enlace
+</a>            
+{% endblock content %}
+    
+{% block content_footer %}
+    {% include 'components/auth/footer_login.html' %}
+{% endblock content_footer %}

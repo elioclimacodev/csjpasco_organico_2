@@ -1,0 +1,56 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block form_fields %}
+    <div class="text-center mb-3">
+        <!-- https://tabler.io/icons?icon=mail-forward -->
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round" 
+            class="icon icon-tabler icons-tabler-outline icon-tabler-mail-forward text-success"
+            style="width: 48px; height: 48px;">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" />
+            <path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" />
+        </svg>        
+    </div>
+
+    <h3 class="h3 mb-3 text-center">
+        Revise su correo electrónico
+    </h3>
+
+    <p class="text-secondary mb-3">
+        Si existe una cuenta asociada al correo electrónico proporcionado, recibirá un mensaje con las instrucciones
+        para restablecer su contraseña.
+    </p>
+
+    <div class="alert alert-info" role="alert">
+        <div class="alert-icon">
+            <!-- Download SVG icon from http://tabler.io/icons/icon/info-circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon alert-icon icon-2">
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+            </svg>
+        </div>
+        <div>
+            Si no encuentra el mensaje, revise también la carpeta de
+            correo no deseado o spam.
+        </div>
+    </div>
+{% endblock form_fields %}
+
+
+{% block form_buttons %}
+    <a href="{% url 'usuarios:iniciar_sesion' %}" class="btn btn-ghost-primary w-100">
+        Ir a Iniciar sesión
+    </a>
+{% endblock form_buttons %}
+
+    
+{% block content_footer %}
+    {% include 'components/auth/footer_register.html' %}          
+{% endblock content_footer %}
+

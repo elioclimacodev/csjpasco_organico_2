@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Crear cuenta{% endblock %}
+{% block page %}
+<div class="tarjeta">
+    <h1>Crear cuenta de usuario</h1>
+    <p>Tu nombre de usuario será el <strong>número de documento</strong> que ingreses.</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="ayuda">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endif %}
+        <button type="submit">Crear cuenta</button>
+    </form>
+    <p class="ayuda">¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}">Inicia sesión</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+/* Estilo para los íconos del ordenamiento de la columna */
+
+.sort-icon {
+    font-size: 0.7em;
+    opacity: 0.5;
+}
+
+
+/*  
+    ===============================================
+                    PAGINACIÓN
+    ===============================================
+    
+    Muestra la barra de paginaición según el tamaño de la pantalla.
+    Desktop: debajo de la tabla.
+    Móvil: fijado (stick) a la parte inferior de la pantalla.
+*/
+   
+/* --- ESTILOS PARA MÓVIL (Base) --- */
+.mobile-sticky-pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    padding: 0.75rem;
+    /* background: white;  */
+    /* border-top: 1px solid #e6e7e9; */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+/* Ajuste al contenedor padre solo en móvil para que el último registro se vea completo */
+#table-container {
+    padding-bottom: 52px !important; 
+}
+
+/* --- ESTILOS PARA DESKTOP (A partir de 768px) --- */
+@media (min-width: 768px) {
+    .mobile-sticky-pagination {
+        position: static; /* Vuelve al flujo normal del documento */
+        width: auto;
+        /* border-top: 1px solid #e6e7e9; Mantiene el borde superior del card-footer */
+        box-shadow: none;
+        padding: 1rem;
+    }
+
+    #table-container {
+        padding-bottom: 0 !important; /* Quitamos el espacio extra en desktop */
+    }
+}

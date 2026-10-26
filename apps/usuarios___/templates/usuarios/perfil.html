@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Mi perfil{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>Mi perfil</h1>
+    <dl>
+        <dt>Tipo de documento</dt>
+        <dd>{{ tipo_documento }}</dd>
+        <dt>Número de documento (nombre de usuario)</dt>
+        <dd>{{ numero_documento }}</dd>
+        <dt>Correo electrónico</dt>
+        <dd>{{ usuario.email }}</dd>
+        <dt>Grupos</dt>
+        <dd>
+            {% for grupo in usuario.groups.all %}{{ grupo.name }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}
+        </dd>
+    </dl>
+    <hr>
+    <h2>Actualizar mis datos</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            {{ field }}
+            {% for error in field.errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endif %}
+        <button type="submit">Guardar cambios</button>
+    </form>
+</div>
+{% endblock %}

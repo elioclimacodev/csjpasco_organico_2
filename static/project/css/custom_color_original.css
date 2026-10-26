@@ -1,0 +1,158 @@
+
+
+:root {
+    /* Color primario */
+    --tblr-primary: #a00000;
+    --tblr-primary-rgb: 160, 0, 0;
+
+    /* Botones primarios */
+    --tblr-btn-bg: var(--tblr-primary);
+    --tblr-btn-border-color: var(--tblr-primary);
+    --tblr-btn-color: #fff;
+
+    /* Hover */
+    --tblr-btn-hover-bg: #870000;
+    --tblr-btn-hover-border-color: #870000;
+
+    /* Active */
+    --tblr-btn-active-bg: #6d0000;
+    --tblr-btn-active-border-color: #6d0000;
+
+    /* Focus (sombra de accesibilidad) */
+    --tblr-btn-focus-shadow-rgb: 160, 0, 0;
+}
+
+[data-bs-theme="dark"] {
+    --tblr-primary: #a00000;
+    --tblr-primary-rgb: 160, 0, 0;
+}
+
+
+/* Aside */
+/* --- Estilos para el Sidebar (Aside) --- */
+.sidebar-custom {
+    /* Forzar el color de fondo gris claro */
+    background-color: #f9fafb !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.05); /* Borde sutil opcional */
+}
+
+/* Color base para Texto e Íconos (Gris medio #848484) */
+.sidebar-custom .nav-link,
+.sidebar-custom .nav-link .nav-link-icon,
+.sidebar-custom .navbar-brand {
+    color: #848484;
+    transition: color 0.2s ease; /* Suavizar cambio de color */
+}
+
+/* --- Estados Interactivos (UX) --- */
+
+/* Hover: Cuando pasas el mouse, oscurecemos un poco el gris o usamos tu rojo */
+.sidebar-custom .nav-link:hover {
+    color: #5a5a5a; /* Un gris más oscuro para lectura */
+    background-color: rgba(0, 0, 0, 0.03); /* Fondo muy sutil */
+}
+.sidebar-custom .nav-link:hover .nav-link-icon {
+    color: #5a5a5a;
+}
+
+/* Active: El ítem seleccionado se pinta de tu ROJO PRIMARIO (#a00000) */
+/* Esto es vital para que el usuario sepa dónde está parado */
+.sidebar-custom .nav-item.active .nav-link,
+.sidebar-custom .nav-link.active {
+    background-color: #ffffff; /* Fondo blanco para resaltar del gris #E2E3E4 */
+    color: var(--tblr-primary) !important; /* Tu rojo #a00000 */
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Pequeña sombra estética */
+}
+
+.sidebar-custom .nav-item.active .nav-link .nav-link-icon,
+.sidebar-custom .nav-link.active .nav-link-icon {
+    color: var(--tblr-primary) !important; /* Ícono rojo también */
+}
+
+
+/* -------------------------------------------------------- */
+/*               BOTONES DE ACCIÓN (ÍCONO)                  */
+/*    Color fijo del ícono y fondo claro del mismo color.   */
+/* -------------------------------------------------------- */
+/* Botón base: transparente e icono gris */
+/* --- Lógica de Base y Colores --- */
+.btn-action-ghost {
+    --btn-size: 32px; /* Tamaño por defecto */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--btn-size);
+    height: var(--btn-size);
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #616876;
+    transition: all 0.1s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0;
+}
+
+.btn-action-ghost svg {
+    /* El icono escalará proporcionalmente al botón */
+    width: calc(var(--btn-size) * 0.6);
+    height: calc(var(--btn-size) * 0.6);
+}
+
+.btn-action-ghost:hover {
+    background-color: rgba(var(--hover-rgb), 0.15) !important;
+    color: rgb(var(--hover-rgb)) !important;
+}
+
+/* --- Clases de Tamaño --- */
+.btn-size-24 { --btn-size: 24px; border-radius: 4px; }
+.btn-size-32 { --btn-size: 32px; border-radius: 6px; }
+.btn-size-40 { --btn-size: 40px; border-radius: 8px; }
+
+/* --- Variantes de Color (RGB para transparencia) --- */
+.btn-ghost-danger    { --hover-rgb: 214, 57, 57; }
+.btn-ghost-success   { --hover-rgb: 47, 179, 68; }
+.btn-ghost-warning   { --hover-rgb: 247, 176, 43; }
+.btn-ghost-info      { --hover-rgb: 66, 153, 225; }
+.btn-ghost-primary   { --hover-rgb: 32, 107, 196; }
+.btn-ghost-secondary { --hover-rgb: 101, 109, 119; }
+
+
+
+/* ---------------------------------------------------- */
+/*              COLOR DE ENCABEZADO DE LA TABLA         */
+/*   Establece el color granate al encabezado de las    */
+/*   tablas; no obstante, anula cualquier estilo de     */
+/*   color del encabezado del framework.                */
+/* ---------------------------------------------------- */
+
+/* Apunta directamente a las celdas de encabezado (th) dentro de la clase de la tabla. */
+/* Esto tiene la máxima prioridad para el fondo y el texto. */
+.table-header-primary th {
+    background-color: var(--tblr-primary) !important;
+    color: var(--tblr-white) !important;
+    /* Esto es importante si la tabla tiene bordes o padding heredados: */
+    border-color: var(--tblr-primary) !important; 
+}
+
+
+
+/* Escala de grises */
+.bg-gray-custom-5  { background-color: #fcfcfd !important; }
+.bg-gray-custom-10 { background-color: #fafbfc !important; }
+.bg-gray-custom-20 { background-color: #f7f8fa !important; }
+.bg-gray-custom-30 { background-color: #f4f6f8 !important; }
+.bg-gray-custom-40 { background-color: #f1f3f5 !important; }
+
+/* Escala base tipo Tailwind */
+.bg-gray-custom-50  { background-color: #f9fafb !important; }
+.bg-gray-custom-100 { background-color: #f3f4f6 !important; }
+.bg-gray-custom-200 { background-color: #e5e7eb !important; }
+.bg-gray-custom-300 { background-color: #d1d5db !important; }
+.bg-gray-custom-400 { background-color: #9ca3af !important; }
+.bg-gray-custom-500 { background-color: #6b7280 !important; }
+.bg-gray-custom-600 { background-color: #4b5563 !important; }
+.bg-gray-custom-700 { background-color: #374151 !important; }
+.bg-gray-custom-800 { background-color: #1f2937 !important; }
+.bg-gray-custom-900 { background-color: #111827 !important; }

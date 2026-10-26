@@ -1,0 +1,20 @@
+<p class="empty-subtitle text-muted">
+    El sistema no registra información en esta sección. Puede iniciar el registro completando el formulario correspondiente.
+</p>
+
+{% if create_url %}
+    <div class="empty-action">
+        <button class="btn btn-primary"
+                hx-get="{{ create_url }}"
+                hx-target="#main-modal-content"
+                hx-toggle="modal"
+                hx-target-error="#alerts-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 5l0 14" />
+                <path d="M5 12l14 0" />
+            </svg>
+            Registrar {{ model_name|default:'Nuevo' }}
+        </button>
+    </div>
+{% endif %}

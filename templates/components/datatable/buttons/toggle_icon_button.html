@@ -1,0 +1,46 @@
+<a
+    class="btn-action-ghost btn-size-32 {% if o.activo or o.is_active %}btn-ghost-danger text-danger{% else %}btn-ghost-success text-success{% endif %} d-none d-md-inline-flex"
+    title="{% if o.activo or o.is_active %}Desactivar{% else %}Activar{% endif %}"
+    hx-get="{{ url }}"
+    hx-target="#modal_content"
+    hx-trigger="click"
+    hx-swap="innerHTML"
+    data-bs-toggle="modal" 
+    data-bs-target="#modal_htmx"
+    hx-on::after-request="setModalSize(event)">
+    {% if o.activo or o.is_active %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6.707 5.293l5.293 5.292l5.293 -5.292a1 1 0 0 1 1.414 1.414l-5.292 5.293l5.292 5.293a1 1 0 0 1 -1.414 1.414l-5.293 -5.292l-5.293 5.292a1 1 0 1 1 -1.414 -1.414l5.292 -5.293l-5.292 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
+        <span class="visually-hidden">
+            Desactivar
+        </span>
+    {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M20.707 6.293a1 1 0 0 1 0 1.414l-10 10a1 1 0 0 1 -1.414 0l-5 -5a1 1 0 0 1 1.414 -1.414l4.293 4.293l9.293 -9.293a1 1 0 0 1 1.414 0" /></svg>
+        <span class="visually-hidden">
+            Activar
+        </span>
+    {% endif %}
+</a>
+
+<!-- Versión para pantallas chicas con texto -->
+<a
+    class="btn btn-action btn-light d-md-none d-md-inline-flex {% if o.activo or o.is_active %}text-danger{% else %}text-success{% endif %}"
+    title="{% if o.activo or o.is_active %}Desactivar{% else %}Activar{% endif %}"
+    hx-get="{{ url }}"
+    hx-target="#modal_content"
+    hx-trigger="click"
+    hx-swap="innerHTML"
+    data-bs-toggle="modal" 
+    data-bs-target="#modal_htmx"
+    hx-on::after-request="setModalSize(event)">
+    {% if o.activo or o.is_active %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6.707 5.293l5.293 5.292l5.293 -5.292a1 1 0 0 1 1.414 1.414l-5.292 5.293l5.292 5.293a1 1 0 0 1 -1.414 1.414l-5.293 -5.292l-5.293 5.292a1 1 0 1 1 -1.414 -1.414l5.292 -5.293l-5.292 -5.293a1 1 0 0 1 1.414 -1.414" /></svg>
+        <span class="visually-hidden">
+            Desactivar
+        </span>
+    {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M20.707 6.293a1 1 0 0 1 0 1.414l-10 10a1 1 0 0 1 -1.414 0l-5 -5a1 1 0 0 1 1.414 -1.414l4.293 4.293l9.293 -9.293a1 1 0 0 1 1.414 0" /></svg>
+        <span class="visually-hidden">
+            Activar
+        </span>
+    {% endif %}
+</a>

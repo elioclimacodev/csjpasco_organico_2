@@ -1,0 +1,282 @@
+/**
+ * TEMA INSTITUCIONAL CSJ PASCO - PODER JUDICIAL DEL PERÚ
+ * Basado en Tabler.io / Bootstrap 5
+ * Paleta:
+ * - Primario: #A42612 (Rojo Institucional / Autoridad)
+ * - Oscuro / Texto: #3B4151 (Pizarra Oscuro / Legibilidad)
+ * - Neutro: #7A7562 (Gris Cálido Institucional)
+ * - Claro: #EAE4D2 (Pergamino / Acento Suave)
+ * - Fondo: #F3F3F3 / #F8F9FA
+ */
+
+:root {
+  /* --- PALETA INSTITUCIONAL (CSS TOKENS) --- */
+  --csj-primary: #A42612;
+  --csj-primary-hover: #861f0e;
+  --csj-primary-rgb: 164, 38, 18;
+  --csj-primary-subtle: rgba(164, 38, 18, 0.08);
+
+  --csj-dark: #3B4151;
+  --csj-dark-rgb: 59, 65, 81;
+
+  --csj-neutral: #7A7562;
+  --csj-neutral-rgb: 122, 117, 98;
+  --csj-neutral-light: rgba(122, 117, 98, 0.12);
+
+  --csj-light: #EAE4D2;
+  --csj-light-rgb: 234, 228, 210;
+
+  --csj-bg: #F3F3F3;
+  --csj-card-bg: #FFFFFF;
+  --csj-border-color: #E2DFD8;
+
+  /* --- OVERRIDES GLOBALES DE TABLER.IO --- */
+  --tblr-primary: var(--csj-primary);
+  --tblr-primary-rgb: var(--csj-primary-rgb);
+  --tblr-primary-fg: #ffffff;
+
+  --tblr-body-bg: var(--csj-bg);
+  --tblr-body-color: var(--csj-dark);
+  --tblr-muted: var(--csj-neutral);
+  --tblr-border-color: var(--csj-border-color);
+
+  /* Bordes ligeramente redondeados (como en la imagen de referencia) */
+  --tblr-border-radius: 8px;
+  --tblr-border-radius-sm: 6px;
+  --tblr-border-radius-lg: 12px;
+
+  /* Sombras suaves y modernas (estilo tarjeta flotante) */
+  --tblr-box-shadow: 0 4px 20px -2px rgba(59, 65, 81, 0.05), 0 2px 6px -1px rgba(59, 65, 81, 0.03);
+  --tblr-box-shadow-card: 0 1px 3px rgba(59, 65, 81, 0.04), 0 10px 24px -8px rgba(59, 65, 81, 0.07);
+  --tblr-box-shadow-hover: 0 12px 30px -6px rgba(59, 65, 81, 0.12);
+}
+
+/* ==========================================================
+   1. ESTRUCTURA Y FONDO GLOBAL
+   ========================================================== */
+body {
+  background-color: var(--tblr-body-bg);
+  color: var(--tblr-body-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Encabezados con peso y autoridad */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: var(--csj-dark);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.text-muted, .text-secondary {
+  color: var(--csj-neutral) !important;
+}
+
+/* ==========================================================
+   2. TARJETAS FLOTANTES (ESTILO REFERENCIA UI)
+   ========================================================== */
+.card {
+  background-color: var(--csj-card-bg);
+  border: 1px solid rgba(234, 228, 210, 0.7); /* Contorno tenue con tono arena */
+  border-radius: var(--tblr-border-radius-lg);
+  box-shadow: var(--tblr-box-shadow-card);
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--tblr-box-shadow-hover);
+}
+
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(122, 117, 98, 0.12);
+  padding: 1.25rem 1.5rem;
+}
+
+.card-title {
+  color: var(--csj-dark);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.card-footer {
+  background-color: rgba(243, 243, 243, 0.4);
+  border-top: 1px solid rgba(122, 117, 98, 0.1);
+}
+
+/* ==========================================================
+   3. BOTONES Y ACCIONES
+   ========================================================== */
+.btn {
+  border-radius: var(--tblr-border-radius-sm);
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+}
+
+/* Botón Primario (Rojo Institucional) */
+.btn-primary {
+  background-color: var(--csj-primary) !important;
+  border-color: var(--csj-primary) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 6px rgba(164, 38, 18, 0.25);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--csj-primary-hover) !important;
+  border-color: var(--csj-primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(164, 38, 18, 0.35);
+}
+
+/* Botón Secundario / Neutro */
+.btn-secondary {
+  background-color: #FFFFFF;
+  border-color: var(--csj-border-color);
+  color: var(--csj-dark);
+}
+
+.btn-secondary:hover {
+  background-color: var(--csj-light);
+  border-color: var(--csj-neutral);
+  color: var(--csj-dark);
+}
+
+/* Botón Sutil/Light Institucional */
+.btn-light {
+  background-color: var(--csj-light);
+  border-color: transparent;
+  color: var(--csj-dark);
+}
+
+.btn-light:hover {
+  background-color: #ded6be;
+}
+
+/* ==========================================================
+   4. FORMULARIOS E INPUTS
+   ========================================================== */
+.form-control, .form-select {
+  border-radius: var(--tblr-border-radius-sm);
+  border: 1px solid var(--csj-border-color);
+  color: var(--csj-dark);
+  background-color: #FFFFFF;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--csj-primary);
+  box-shadow: 0 0 0 0.25rem rgba(164, 38, 18, 0.15);
+}
+
+/* ==========================================================
+   5. TABLAS DE DATOS (DATA GRIDS / CMR / ERP)
+   ========================================================== */
+.table {
+  color: var(--csj-dark);
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: rgba(234, 228, 210, 0.25);
+  color: var(--csj-neutral);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--csj-border-color);
+  padding: 0.85rem 1rem;
+}
+
+.table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #ECEAE5;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--csj-primary-subtle);
+}
+
+/* ==========================================================
+   6. BADGES, STATUS Y CHIPS
+   ========================================================== */
+.badge {
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 0.35em 0.6em;
+}
+
+.badge-primary, .bg-primary {
+  background-color: var(--csj-primary) !important;
+  color: #ffffff;
+}
+
+.badge-subtle-primary {
+  background-color: var(--csj-primary-subtle);
+  color: var(--csj-primary);
+}
+
+.badge-subtle-neutral {
+  background-color: var(--csj-light);
+  color: var(--csj-dark);
+}
+
+/* ==========================================================
+   7. NAVEGACIÓN Y SIDEBAR INSTITUCIONAL
+   ========================================================== */
+/* Barra lateral o cabecera limpia */
+.navbar {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--csj-border-color);
+}
+
+.navbar-nav .nav-link {
+  color: var(--csj-dark);
+  font-weight: 500;
+  border-radius: var(--tblr-border-radius-sm);
+  padding: 0.5rem 0.85rem;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--csj-primary);
+  background-color: var(--csj-primary-subtle);
+}
+
+.navbar-nav .nav-item.active .nav-link,
+.navbar-nav .nav-link.active {
+  color: var(--csj-primary);
+  background-color: var(--csj-primary-subtle);
+  font-weight: 600;
+}
+
+/* Indicador lateral activo (borde rojo de autoridad) */
+.navbar-vertical .nav-item.active .nav-link {
+  border-left: 3px solid var(--csj-primary);
+}
+
+/* ==========================================================
+   8. COMPONENTES METRIC/KPI (Simulando la imagen de referencia)
+   ========================================================== */
+.kpi-metric {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--csj-dark);
+  line-height: 1.2;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  color: var(--csj-neutral);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.metric-pill-badge {
+  background-color: var(--csj-light);
+  color: var(--csj-dark);
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+}

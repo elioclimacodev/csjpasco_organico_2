@@ -1,0 +1,66 @@
+{% extends 'components/datatable/displays/table.html' %}
+{% load datatable_tags %}
+
+
+{% block table_columns %}
+    {% sortable_header 'numero_documento'   'Usuario' %}
+    {% sortable_header 'apellido_paterno'   'Apellido paterno' %}
+    {% sortable_header 'apellido_materno'   'Apellido materno' %}
+    {% sortable_header 'nombres'            'Nombres' %}
+    {% sortable_header 'email'              'Correo electrónico' %}
+    {% sortable_header 'is_superuser'       'Super' %}
+    {% sortable_header 'is_staff'           'Admin' %}
+    {% sortable_header 'is_active'          'Activo' %}
+    {% sortable_header 'last_login'         'Último acceso' %}    
+    <th class="w-1">
+        <div class="d-flex justify-content-center align-items-center">
+            Acciones
+        </div>
+    </th>
+{% endblock table_columns %}
+
+
+{% block table_rows %}
+    <tr>
+        <td>
+            {{ o.numero_documento|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.persona.apellido_paterno|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.persona.apellido_materno|empty_to_dashes }}
+        </td>                        
+        <td>
+            {{ o.persona.nombres|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.email|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.is_superuser|status_si_no|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.is_staff|status_si_no|empty_to_dashes }}
+        </td> 
+        <td>
+            {{ o.is_active|status_si_no|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.last_login|date:'d/m/Y - H:i'|empty_to_dashes }}
+        </td>        
+        <td data-label="Acciones">
+            <div class="btn-actions gap-4 justify-content-center">
+                {% url 'ubicaciones:distrito_details' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/details_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:distrito_update' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/edit_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:distrito_toggle' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/toggle_icon_button.html' with url=url %}                                
+            </div>
+        </td>        
+    </tr>
+{% endblock table_rows %}
+    

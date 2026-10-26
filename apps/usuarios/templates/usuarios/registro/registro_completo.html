@@ -1,0 +1,128 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block content %}
+    {% if email_sent %}
+        <div class="text-center mb-3">
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                stroke-linejoin="round" 
+                class="icon icon-tabler icons-tabler-outline icon-tabler-mail-check text-success"
+                style="width: 48px; height: 48px;">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11 19h-6a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v6" />
+                <path d="M3 7l9 6l9 -6" /><path d="M15 19l2 2l4 -4" />
+            </svg>           
+        </div>
+
+        <h2 class="h3 mb-3 text-center">
+            Registro satisfactorio
+        </h2>
+
+        <p class="text-secondary mb-3">
+            Su cuenta se ha registrado correctamente.
+            Hemos enviado un enlace de activación al correo
+            electrónico proporcionado durante el registro.
+        </p>
+
+        <div class="alert alert-info" role="alert">
+            <div class="alert-icon">
+                <!-- Download SVG icon from http://tabler.io/icons/icon/info-circle -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon alert-icon icon-2">
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                    <path d="M12 9h.01"></path>
+                    <path d="M11 12h1v4h1"></path>
+                </svg>
+            </div>
+            <div>
+                El enlace de activación tiene una vigencia
+                máxima de <strong>24 horas</strong>.
+                Su cuenta permanecerá inactiva hasta que
+                complete la activación.
+            </div>
+        </div>
+
+        <p class="text-secondary">
+            Si no encuentra el mensaje, revise la carpeta de
+            correo no deseado o spam.
+        </p>
+    {% elif email_sent is False %}    
+        <div class="text-center mb-3">
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                class="icon icon-tabler icons-tabler-outline icon-tabler-mail-x text-danger"
+                style="width: 48px; height: 48px;">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M13.5 19h-8.5a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v6" /><path d="M3 7l9 6l9 -6" /><path d="M22 22l-5 -5" /><path d="M17 22l5 -5" /></svg>         
+        </div>
+
+        <h2 class="h3 mb-3 text-center">
+            No fue posible enviar el correo de activación
+        </h2>
+
+        <p class="text-secondary mb-3">
+            Su cuenta se ha registrado correctamente, no obstante, no fue posible enviar el correo de activación.
+        </p>
+
+        <p class="text-secondary mb-3">
+            Puede solicitar un nuevo enlace.
+        </p>        
+
+        <p>
+            <a 
+                href=""
+                class="btn btn-primary w-100">
+                Reenviar correo de activación
+            </a>            
+        </p>
+
+        <p class="text-secondary">
+            Si no encuentra el mensaje, revise la carpeta de
+            correo no deseado o spam.
+        </p>
+    {% else %}
+        <div class="text-center mb-3">
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                stroke-linejoin="round" 
+                class="icon icon-tabler icons-tabler-outline icon-tabler-mail-share text-info"
+                style="width: 48; height: 48;">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M13 19h-8a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v6" /><path d="M3 7l9 6l9 -6" /><path d="M16 22l5 -5" /><path d="M21 21.5v-4.5h-4.5" /></svg>
+        </div>
+
+        <h2 class="h3 mb-3 text-center">
+            Enlace de activación
+        </h2>
+
+        <p class="text-secondary mb-3">
+            Si tiene una cuenta de usuario pendiente de activación
+            puede solicitar un nuevo enlace.
+        </p>
+
+        <p>
+            <a 
+                href=""
+                class="btn btn-primary w-100">
+                Reenviar correo de activación
+            </a>            
+        </p>
+
+        <p class="text-secondary">
+            Si no encuentra el mensaje, revise la carpeta de
+            correo no deseado o spam.
+        </p>        
+    {% endif %}
+{% endblock content %}
+
+    
+{% block content_footer %}
+    {% include 'components/auth/footer_login.html' %}
+{% endblock content_footer %}

@@ -1,0 +1,28 @@
+{% extends 'project/layouts/auth-form.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+    
+
+{% block form-fields %}
+    <p class="text-secondary">
+        Ingrese su número de DNI y le enviaremos un nuevo enlace de verificación al correo registrado.
+    </p>
+    <div class="form-group">
+        <!--         <label for="" class="form-label">
+            Número de DNI
+        </label> -->
+        <input type="text" name="username" id="username" class="form-control" placeholder="Número de DNI" required autofocus>
+    </div>
+{% endblock form-fields %}
+    
+
+{% block form-footer %}
+    <button type="submit" class="btn btn-primary w-100">
+        Solicitar nuevo enlace de verificación
+    </button>
+{% endblock form-footer %}
+
+    

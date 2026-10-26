@@ -1,0 +1,6 @@
+from .distrito_judicial import DistritoJudicial
+from .corte_justicia import CorteJusticia
+from .sede_judicial import SedeJudicial
+from .organo_jurisdiccional import OrganoJurisdiccional
+from .materia_jurisdiccional import MateriaJurisdiccional
+from .instancia_jurisdiccional import InstanciaJurisdiccional

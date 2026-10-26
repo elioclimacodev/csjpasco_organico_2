@@ -1,0 +1,40 @@
+<div class="card-body border-bottom">
+    <form 
+        id="filters_form" 
+        method="GET" 
+        x-data="{
+            search: '{{ request.GET.search|default:''|escapejs }}'
+        }">
+
+        <!-- Toolbar principal -->
+        <div class="d-flex flex-column gap-3">
+            
+            <!-- Fila principal -->
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+
+                <!-- Buscador, visible en móvil y desktop -->
+                {% include 'components/datatable/filters/controls/search_input.html' %}
+                
+
+                <!-- Filtros. Visible en desktop -->
+                <div class="d-none d-lg-flex align-items-center gap-3">
+
+                    <!-- Estado -->
+                    {% include 'components/datatable/filters/controls/status_select.html' %}
+
+                    <!-- Limpiar filtros -->
+                    {% include 'components/datatable/filters/buttons/clean_filters.html' %}
+                </div>
+
+                <!-- Exportar. Visible en desktop. -->
+                {% if export_url %}
+                <div class="d-none d-lg-flex flex-shrink-0 border-start ps-3">                                        
+                    {% include 'components/datatable/filters/buttons/export_to_xlsx.html' %}                                                     
+                </div>
+                {% endif %} 
+            </div>
+        </div>
+    </form>
+</div>
+
+

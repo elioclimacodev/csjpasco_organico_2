@@ -1,0 +1,240 @@
+/**
+ * Tema Institucional: Corte Superior de Justicia de Pasco
+ * Basado en Tabler.io / Bootstrap 5
+ * Adaptado a UI SaaS Moderno (Autoridad + Ergonomía)
+ */
+
+:root {
+  /* --- PALETA INSTITUCIONAL BASE --- */
+  --csj-primary: #A42612;          /* Rojo Institucional Principal */
+  --csj-primary-hover: #861F0E;    /* Rojo Oscurecido para Hover */
+  --csj-primary-subtle: rgba(164, 38, 18, 0.08); /* Acento suave */
+  --csj-light: #EAE4D2;            /* Tono Pergamino Claro */
+  --csj-neutral: #7A7562;          /* Gris Neutro Cálido */
+  --csj-surface: #F3F3F3;          /* Fondo Superficie General */
+  --csj-dark: #3B4151;             /* Carbón Azulado Institucional */
+  --csj-card-bg: #FFFFFF;
+
+  /* --- OVERRIDES VARIABLES GLOBALES TABLER.IO --- */
+  --tblr-primary: var(--csj-primary);
+  --tblr-primary-rgb: 164, 38, 18;
+  --tblr-primary-fg: #ffffff;
+  
+  --tblr-body-bg: var(--csj-surface);
+  --tblr-body-color: var(--csj-dark);
+  --tblr-muted: var(--csj-neutral);
+  
+  /* Tipografía y bordes */
+  --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --tblr-border-color: rgba(122, 117, 98, 0.18);
+  --tblr-border-color-translucent: rgba(122, 117, 98, 0.12);
+  
+  /* Radios redondeados sutiles y modernos */
+  --tblr-border-radius: 10px;
+  --tblr-border-radius-sm: 6px;
+  --tblr-border-radius-lg: 14px;
+  --tblr-border-radius-pill: 50rem;
+  
+  /* Elevación suave */
+  --tblr-box-shadow-sm: 0 1px 2px rgba(59, 65, 81, 0.03);
+  --tblr-box-shadow: 0 2px 6px rgba(59, 65, 81, 0.04);
+}
+
+/* 1. ESTRUCTURA Y FONDO GLOBAL */
+body {
+  background-color: var(--tblr-body-bg);
+  color: var(--tblr-body-color);
+  letter-spacing: -0.01em;
+}
+
+/* 2. TARJETAS (CARDS) AL ESTILO DE LA REFERENCIA */
+.card {
+  background-color: var(--csj-card-bg);
+  border: 1px solid var(--tblr-border-color);
+  border-radius: var(--tblr-border-radius-lg);
+  box-shadow: var(--tblr-box-shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(122, 117, 98, 0.3);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--tblr-border-color-translucent);
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  color: var(--csj-dark);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* 3. BARRA LATERAL (SIDEBAR / NAVBAR VERTICAL) */
+.navbar-vertical {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid var(--tblr-border-color) !important;
+}
+
+.navbar-vertical .navbar-brand {
+  font-weight: 700;
+  color: var(--csj-dark);
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Categorías del Menú */
+.navbar-vertical .hr-text,
+.navbar-vertical .nav-header {
+  color: var(--csj-neutral);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Enlaces de navegación */
+.navbar-vertical .nav-link {
+  color: var(--csj-neutral);
+  font-weight: 500;
+  border-radius: var(--tblr-border-radius-sm);
+  padding: 0.6rem 0.85rem;
+  margin: 0.15rem 0.5rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.navbar-vertical .nav-link:hover {
+  color: var(--csj-dark);
+  background-color: rgba(234, 228, 210, 0.35); /* Tinte pergamino suave */
+}
+
+/* Ítem Activo */
+.navbar-vertical .nav-item.active > .nav-link,
+.navbar-vertical .nav-link.active {
+  color: var(--csj-primary) !important;
+  background-color: var(--csj-primary-subtle) !important;
+  font-weight: 600;
+}
+
+.navbar-vertical .nav-link-icon {
+  color: inherit;
+  margin-right: 0.75rem;
+}
+
+/* 4. BOTONES (BOTONES PRINCIPALES Y SECUNDARIOS) */
+.btn {
+  border-radius: var(--tblr-border-radius);
+  font-weight: 500;
+  padding: 0.55rem 1.1rem;
+  transition: all 0.2s ease;
+}
+
+/* Botón Primario (Acción Principal / Similar a 'Deposit') */
+.btn-primary {
+  background-color: var(--csj-primary) !important;
+  border-color: var(--csj-primary) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(164, 38, 18, 0.2);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--csj-primary-hover) !important;
+  border-color: var(--csj-primary-hover) !important;
+  box-shadow: 0 4px 10px rgba(164, 38, 18, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Botones Secundarios / Outline (Withdraw, Transfer, etc.) */
+.btn-outline-secondary,
+.btn-secondary,
+.btn-ghost-secondary {
+  background-color: #FFFFFF;
+  border: 1px solid var(--tblr-border-color);
+  color: var(--csj-dark);
+}
+
+.btn-outline-secondary:hover,
+.btn-secondary:hover {
+  background-color: var(--csj-surface);
+  border-color: var(--csj-neutral);
+  color: var(--csj-dark);
+}
+
+/* 5. CAMPOS DE ENTRADA, BÚSQUEDA Y FORMULARIOS */
+.form-control,
+.form-select {
+  background-color: #FFFFFF;
+  border: 1px solid var(--tblr-border-color);
+  border-radius: var(--tblr-border-radius);
+  color: var(--csj-dark);
+  padding: 0.55rem 0.85rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--csj-primary);
+  box-shadow: 0 0 0 3px rgba(164, 38, 18, 0.12);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: rgba(122, 117, 98, 0.7);
+}
+
+/* 6. BADGES, CHIPS Y METAS (KPIs) */
+.badge {
+  border-radius: var(--tblr-border-radius-pill);
+  padding: 0.35em 0.65em;
+  font-weight: 600;
+}
+
+/* Badge de porcentaje / Variación positiva suave */
+.badge-subtle-success {
+  background-color: rgba(46, 164, 79, 0.12);
+  color: #1a7f37;
+}
+
+/* Badge Institucional Primario */
+.badge-primary,
+.badge-csj {
+  background-color: var(--csj-primary-subtle);
+  color: var(--csj-primary);
+  border: 1px solid rgba(164, 38, 18, 0.15);
+}
+
+/* 7. TABLAS Y LISTAS DE ACTIVIDAD */
+.table {
+  color: var(--csj-dark);
+}
+
+.table th {
+  color: var(--csj-neutral);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--tblr-border-color);
+  background-color: transparent;
+}
+
+.table td {
+  border-bottom: 1px solid var(--tblr-border-color-translucent);
+  vertical-align: middle;
+}
+
+.list-group-item {
+  border-color: var(--tblr-border-color-translucent);
+}
+
+/* 8. AVATAR & ACENTOS DEL PERFIL */
+.avatar {
+  border-radius: var(--tblr-border-radius-sm);
+  background-color: var(--csj-light);
+  color: var(--csj-dark);
+  font-weight: 600;
+}

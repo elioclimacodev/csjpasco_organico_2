@@ -1,0 +1,129 @@
+<div class="page-wrapper">
+    <div class="page-header d-print-none" aria-label="Encabezado de la página">
+        <div class="container-xl">
+            <dif class="row g-2 align-items-center">
+                {% include 'components/header/title.html' %}
+
+                        <!-- Page title actions -->
+                {% if list %}
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+
+                            {% block page_header_actions %}                    
+                                {% block page_header_action_extra %}
+                                    <span class="d-none d-sm-inline">
+                                        <a 
+                                            href="#" 
+                                            class="btn btn-outline-success">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="icon icon-tabler icons-tabler-outline icon-tabler-table-export">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M12.5 21h-7.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" />
+                                                <path d="M3 10h18" />
+                                                <path d="M10 3v18" />
+                                                <path d="M16 19h6" />
+                                                <path d="M19 16l3 3l-3 3" />
+                                            </svg>
+                                            Exportar
+                                        </a>
+                                    </span>                            
+                                {% endblock page_header_action_extra %}
+                                
+                                {% block page_header_action_create %}
+                                    <a 
+                                        href="#" 
+                                        class="btn btn-primary btn-5 d-none d-sm-inline-block" 
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-report">
+                                        <!-- Download SVG icon from http://tabler.io/icons/icon/plus -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="icon icon-2">
+                                            <path d="M12 5l0 14" />
+                                            <path d="M5 12l14 0" />
+                                        </svg>
+                                        Nuevo registro
+                                    </a>                             
+                                {% endblock page_header_action_create %}
+                                    
+                                <!-- Versión solo ícono para pantallas pequeñas (xs) -->
+                                <a href="#" class="btn btn-primary btn-6 d-sm-none btn-icon" data-bs-toggle="modal"
+                                    data-bs-target="#modal-report" aria-label="Create new report">
+                                    <!-- Download SVG icon from http://tabler.io/icons/ -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="icon icon-2">
+                                        <path d="M12 5l0 14" />
+                                        <path d="M5 12l14 0" />
+                                    </svg>
+                                </a>
+                            {% endblock page_header_actions %}
+                        </div>
+                    </div>                      
+                {% endif %}                
+            </dif>
+        </div>
+    </div>
+
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="col-12">
+                <div class="card">
+                    {% if page_title %}
+                        <div class="card-header">
+                            <div class="card-title">
+                                {{ page_title|default:'Título de la página' }}
+                            </div>
+                        </div>        
+                    {% endif %}
+
+                    <form
+                        action="."
+                        method="POST"
+                        novalidate
+                        autocomplete="off"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% block form %}
+                            <div class="card-body">
+                                {% block form_fields %}
+                                {% endblock form_fields %}
+                            </div>
+                            
+                            <div class="card-footer text-end">
+                                <div class="d-flex">
+                                    {% block form_buttons %}
+                                        <a href="" class="btn btn-link">
+                                            ← Volver
+                                        </a>
+
+                                        <div class="ms-auto">
+                                            <!-- <a href="" class="btn btn-secondary">
+                                                Cancelar
+                                            </a>     -->
+                                            <button 
+                                                type="submit" 
+                                                class="btn btn-primary">
+                                                Guardar
+                                            </button>
+                                        </div>                
+                                    {% endblock form_buttons %}   
+                                </div>
+                            </div>
+                        {% endblock form %}
+                    </form>                
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+
+
+
+
+
+
+

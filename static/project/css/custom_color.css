@@ -1,0 +1,712 @@
+/* ============================================================
+   TEMA INSTITUCIONAL
+   Color principal: #A42612
+   ============================================================ */
+
+:root {
+    /* --------------------------------------------------------
+       COLOR INSTITUCIONAL PRINCIPAL
+       -------------------------------------------------------- */
+    --tblr-primary: #A42612;
+    --tblr-primary-rgb: 164, 38, 18;
+
+    /*
+     * Variantes utilizadas para hover / active.
+     * Se mantienen dentro de la misma gama institucional.
+     */
+    --institutional-primary: #A42612;
+    --institutional-primary-rgb: 164, 38, 18;
+
+    --institutional-primary-hover: #8D200F;
+    --institutional-primary-active: #741A0C;
+
+    /*
+     * Focus institucional.
+     * Evita el azul predeterminado de Bootstrap / Tabler.
+     */
+    --institutional-focus-ring: rgba(164, 38, 18, 0.20);
+}
+
+
+/* ============================================================
+   MODO OSCURO
+   ============================================================ */
+
+[data-bs-theme="dark"] {
+    --tblr-primary: #A42612;
+    --tblr-primary-rgb: 164, 38, 18;
+}
+
+
+/* ============================================================
+   BOTONES PRIMARIOS
+   No afecta a los botones .btn-action-ghost
+   ============================================================ */
+
+.btn-primary {
+    --tblr-btn-color: #fff;
+    --tblr-btn-bg: var(--institutional-primary);
+    --tblr-btn-border-color: var(--institutional-primary);
+
+    --tblr-btn-hover-color: #fff;
+    --tblr-btn-hover-bg: var(--institutional-primary-hover);
+    --tblr-btn-hover-border-color: var(--institutional-primary-hover);
+
+    --tblr-btn-focus-shadow-rgb: var(--institutional-primary-rgb);
+
+    --tblr-btn-active-color: #fff;
+    --tblr-btn-active-bg: var(--institutional-primary-active);
+    --tblr-btn-active-border-color: var(--institutional-primary-active);
+
+    --tblr-btn-disabled-color: #fff;
+    --tblr-btn-disabled-bg: var(--institutional-primary);
+    --tblr-btn-disabled-border-color: var(--institutional-primary);
+}
+
+
+/* ============================================================
+   FORMULARIOS
+   Corrección del borde azul de Bootstrap / Tabler
+   ============================================================ */
+
+/*
+ * Estado normal.
+ *
+ * NO usamos rojo permanentemente porque eso podría confundirse
+ * visualmente con un campo inválido.
+ */
+.form-control,
+.form-select,
+.form-file-text,
+.form-control-flush {
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+
+/*
+ * Estado focus.
+ * Sobrescribe el azul predeterminado de Tabler / Bootstrap.
+ */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--institutional-primary) !important;
+
+    box-shadow:
+        0 0 0 0.25rem
+        var(--institutional-focus-ring) !important;
+
+    outline: 0;
+}
+
+
+/*
+ * Inputs dentro de input-group.
+ *
+ * Esto es importante para buscadores, contraseñas,
+ * campos con botones laterales, etc.
+ */
+.input-group:focus-within {
+    border-color: var(--institutional-primary);
+}
+
+
+/*
+ * Si Tabler utiliza un input dentro de input-group,
+ * eliminamos cualquier focus azul heredado.
+ */
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-color: var(--institutional-primary) !important;
+
+    box-shadow:
+        0 0 0 0.25rem
+        var(--institutional-focus-ring) !important;
+
+    z-index: 5;
+}
+
+
+/*
+ * Botones que forman parte de un input-group.
+ *
+ * No modifica tus botones de acción.
+ */
+.input-group:focus-within > .btn:not(.btn-action-ghost) {
+    border-color: var(--institutional-primary);
+}
+
+
+/*
+ * Checkbox y radio.
+ */
+.form-check-input:focus {
+    border-color: var(--institutional-primary);
+
+    box-shadow:
+        0 0 0 0.25rem
+        var(--institutional-focus-ring) !important;
+}
+
+
+.form-check-input:checked {
+    background-color: var(--institutional-primary);
+    border-color: var(--institutional-primary);
+}
+
+
+/*
+ * Switch de Bootstrap / Tabler.
+ */
+.form-switch .form-check-input:focus {
+    border-color: var(--institutional-primary);
+
+    box-shadow:
+        0 0 0 0.25rem
+        var(--institutional-focus-ring) !important;
+}
+
+
+.form-switch .form-check-input:checked {
+    background-color: var(--institutional-primary);
+    border-color: var(--institutional-primary);
+}
+
+
+/*
+ * Range.
+ */
+.form-range::-webkit-slider-thumb {
+    background-color: var(--institutional-primary);
+}
+
+.form-range::-moz-range-thumb {
+    background-color: var(--institutional-primary);
+}
+
+
+/*
+ * Evitar estilos azules aplicados por algunos navegadores
+ * al utilizar autofill.
+ *
+ * Conservamos el fondo del formulario.
+ */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-text-fill-color: inherit;
+    caret-color: inherit;
+
+    transition:
+        background-color 9999s ease-out 0s;
+}
+
+
+/* ============================================================
+   LINKS / ELEMENTOS CON FOCUS
+   ============================================================ */
+
+/*
+ * Focus accesible institucional.
+ *
+ * Se limita a elementos interactivos comunes para evitar
+ * modificar botones de acción.
+ */
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible {
+    outline: none;
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar-custom {
+    background-color: #f9fafb !important;
+
+    border-right:
+        1px solid rgba(0, 0, 0, 0.05);
+}
+
+
+/* ============================================================
+   SIDEBAR - OCULTAR SCROLLBAR
+   ============================================================ */
+
+/*
+ * MUY IMPORTANTE:
+ *
+ * No usamos overflow-y: hidden porque eso impediría desplazarse
+ * cuando existan muchos elementos o submenús.
+ *
+ * El sidebar seguirá siendo desplazable con:
+ * - rueda del mouse
+ * - touchpad
+ * - teclado
+ * - pantalla táctil
+ *
+ * simplemente ocultamos visualmente la barra.
+ */
+
+
+/* Firefox */
+.sidebar-custom,
+.sidebar-custom .navbar-collapse,
+.sidebar-custom .navbar-nav {
+    scrollbar-width: none;
+}
+
+
+/* Edge / IE heredado */
+.sidebar-custom,
+.sidebar-custom .navbar-collapse,
+.sidebar-custom .navbar-nav {
+    -ms-overflow-style: none;
+}
+
+
+/* Chrome, Edge Chromium y Safari */
+.sidebar-custom::-webkit-scrollbar,
+.sidebar-custom .navbar-collapse::-webkit-scrollbar,
+.sidebar-custom .navbar-nav::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+
+    display: none;
+}
+
+
+/*
+ * Tabler normalmente utiliza .navbar-collapse como
+ * contenedor desplazable en el navbar vertical.
+ */
+.sidebar-custom .navbar-collapse {
+    overflow-y: auto;
+
+    /*
+     * Evita movimientos extraños cuando aparece/desaparece
+     * contenido dentro de los submenús.
+     */
+    overscroll-behavior: contain;
+
+    /*
+     * Scroll suave cuando se desplaza mediante código,
+     * anchors o teclado.
+     */
+    scroll-behavior: smooth;
+}
+
+
+/* ============================================================
+   SIDEBAR - COLOR BASE
+   ============================================================ */
+
+.sidebar-custom .nav-link,
+.sidebar-custom .nav-link .nav-link-icon,
+.sidebar-custom .navbar-brand {
+    color: #848484;
+}
+
+
+/*
+ * Transiciones de los enlaces.
+ */
+.sidebar-custom .nav-link {
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.sidebar-custom .nav-link .nav-link-icon {
+    transition:
+        color 0.18s ease;
+}
+
+
+/* ============================================================
+   SIDEBAR - HOVER
+   ============================================================ */
+
+.sidebar-custom .nav-link:hover {
+    color: #5a5a5a;
+
+    background-color:
+        rgba(0, 0, 0, 0.03);
+}
+
+
+.sidebar-custom .nav-link:hover .nav-link-icon {
+    color: #5a5a5a;
+}
+
+
+/* ============================================================
+   SIDEBAR - ELEMENTO ACTIVO
+   ============================================================ */
+
+.sidebar-custom .nav-item.active > .nav-link,
+.sidebar-custom .nav-link.active {
+    background-color: #ffffff;
+
+    color:
+        var(--institutional-primary) !important;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
+.sidebar-custom .nav-item.active > .nav-link .nav-link-icon,
+.sidebar-custom .nav-link.active .nav-link-icon {
+    color:
+        var(--institutional-primary) !important;
+}
+
+
+/* ============================================================
+   SIDEBAR - INDICADOR / FLECHA DE SUBMENÚ
+   ============================================================ */
+
+/*
+ * Tabler suele utilizar .nav-link-toggle para enlaces
+ * capaces de desplegar un submenu.
+ *
+ * La flecha gira suavemente cuando el menú está abierto.
+ */
+.sidebar-custom .nav-link-toggle::after {
+    transition:
+        transform 0.25s ease;
+}
+
+
+/*
+ * Bootstrap cambia aria-expanded automáticamente.
+ */
+.sidebar-custom
+.nav-link-toggle[aria-expanded="true"]::after {
+    transform: rotate(90deg);
+}
+
+
+/* ============================================================
+   SIDEBAR - ANIMACIÓN DE SUBMENÚ
+   ============================================================ */
+
+/*
+ * Bootstrap/Tabler utiliza:
+ *
+ * .collapse
+ * .collapsing
+ * .collapse.show
+ *
+ * durante la apertura y cierre.
+ *
+ * Bootstrap ya anima "height".
+ * Aquí mejoramos la transición agregando opacidad.
+ */
+
+
+/*
+ * Mientras se está abriendo o cerrando.
+ */
+.sidebar-custom .collapsing {
+    overflow: hidden;
+
+    transition:
+        height 0.28s ease,
+        opacity 0.22s ease;
+
+    opacity: 0;
+}
+
+
+/*
+ * Submenú completamente abierto.
+ */
+.sidebar-custom .collapse.show {
+    opacity: 1;
+}
+
+
+/*
+ * Suavizado de los elementos internos.
+ */
+.sidebar-custom .collapse .nav-link {
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease,
+        padding-left 0.25s ease;
+}
+
+
+/*
+ * Pequeño desplazamiento visual al hacer hover,
+ * sin producir saltos bruscos.
+ */
+.sidebar-custom .collapse .nav-link:hover {
+    padding-left:
+        calc(var(--tblr-navbar-nav-link-padding-x, 1rem) + 0.15rem);
+}
+
+
+/* ============================================================
+   SIDEBAR - NIVELES ANIDADOS
+   Soporte para menús de hasta 3 niveles
+   ============================================================ */
+
+/*
+ * Nivel 2.
+ */
+.sidebar-custom
+.navbar-nav
+.nav-item
+.collapse
+.nav-link {
+    position: relative;
+}
+
+
+/*
+ * Nivel 3.
+ */
+.sidebar-custom
+.navbar-nav
+.nav-item
+.collapse
+.collapse
+.nav-link {
+    position: relative;
+}
+
+
+/*
+ * Evitamos que los submenús cambien bruscamente de tamaño
+ * durante las transiciones.
+ */
+.sidebar-custom .collapse,
+.sidebar-custom .collapsing {
+    will-change:
+        height,
+        opacity;
+}
+
+
+/* ============================================================
+   ACCESIBILIDAD
+   Reduce animaciones cuando el sistema operativo así lo pide.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sidebar-custom .nav-link,
+    .sidebar-custom .nav-link .nav-link-icon,
+    .sidebar-custom .nav-link-toggle::after,
+    .sidebar-custom .collapsing,
+    .form-control,
+    .form-select {
+        transition: none !important;
+    }
+
+    .sidebar-custom .navbar-collapse {
+        scroll-behavior: auto;
+    }
+}
+
+
+/* ============================================================
+   BOTONES DE ACCIÓN
+   IMPORTANTE:
+   Se mantienen exactamente los colores definidos originalmente.
+   ============================================================ */
+
+.btn-action-ghost {
+    --btn-size: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--btn-size);
+    height: var(--btn-size);
+
+    border-radius: 6px;
+    border: none;
+
+    background: transparent;
+
+    color: #616876;
+
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out,
+        transform 0.1s ease-in-out;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    padding: 0;
+}
+
+
+.btn-action-ghost svg {
+    width:
+        calc(var(--btn-size) * 0.6);
+
+    height:
+        calc(var(--btn-size) * 0.6);
+}
+
+
+.btn-action-ghost:hover {
+    background-color:
+        rgba(var(--hover-rgb), 0.15) !important;
+
+    color:
+        rgb(var(--hover-rgb)) !important;
+}
+
+
+/* ------------------------------------------------------------
+   Tamaños
+   ------------------------------------------------------------ */
+
+.btn-size-24 {
+    --btn-size: 24px;
+
+    border-radius: 4px;
+}
+
+
+.btn-size-32 {
+    --btn-size: 32px;
+
+    border-radius: 6px;
+}
+
+
+.btn-size-40 {
+    --btn-size: 40px;
+
+    border-radius: 8px;
+}
+
+
+/* ------------------------------------------------------------
+   Variantes de color
+   NO MODIFICADAS
+   ------------------------------------------------------------ */
+
+.btn-ghost-danger {
+    --hover-rgb: 214, 57, 57;
+}
+
+.btn-ghost-success {
+    --hover-rgb: 47, 179, 68;
+}
+
+.btn-ghost-warning {
+    --hover-rgb: 247, 176, 43;
+}
+
+.btn-ghost-info {
+    --hover-rgb: 66, 153, 225;
+}
+
+.btn-ghost-primary {
+    --hover-rgb: 32, 107, 196;
+}
+
+.btn-ghost-secondary {
+    --hover-rgb: 101, 109, 119;
+}
+
+
+/* ============================================================
+   ENCABEZADO DE TABLAS
+   ============================================================ */
+
+.table-header-primary th {
+    background-color:
+        var(--institutional-primary) !important;
+
+    color:
+        var(--tblr-white, #ffffff) !important;
+
+    border-color:
+        var(--institutional-primary) !important;
+}
+
+
+/* ============================================================
+   ESCALA DE GRISES PERSONALIZADA
+   ============================================================ */
+
+.bg-gray-custom-5 {
+    background-color: #fcfcfd !important;
+}
+
+.bg-gray-custom-10 {
+    background-color: #fafbfc !important;
+}
+
+.bg-gray-custom-20 {
+    background-color: #f7f8fa !important;
+}
+
+.bg-gray-custom-30 {
+    background-color: #f4f6f8 !important;
+}
+
+.bg-gray-custom-40 {
+    background-color: #f1f3f5 !important;
+}
+
+
+.bg-gray-custom-50 {
+    background-color: #f9fafb !important;
+}
+
+.bg-gray-custom-100 {
+    background-color: #f3f4f6 !important;
+}
+
+.bg-gray-custom-200 {
+    background-color: #e5e7eb !important;
+}
+
+.bg-gray-custom-300 {
+    background-color: #d1d5db !important;
+}
+
+.bg-gray-custom-400 {
+    background-color: #9ca3af !important;
+}
+
+.bg-gray-custom-500 {
+    background-color: #6b7280 !important;
+}
+
+.bg-gray-custom-600 {
+    background-color: #4b5563 !important;
+}
+
+.bg-gray-custom-700 {
+    background-color: #374151 !important;
+}
+
+.bg-gray-custom-800 {
+    background-color: #1f2937 !important;
+}
+
+.bg-gray-custom-900 {
+    background-color: #111827 !important;
+}

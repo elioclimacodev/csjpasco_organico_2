@@ -1,0 +1,20 @@
+{% load static %}
+<header class="navbar navbar-expand-md d-none d-lg-flex d-print-none sticky-top bg-primary" data-bs-theme="dark">
+    <div class="container-xl">
+        <!-- BEGIN NAVBAR TOGGLER -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+            aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- END NAVBAR TOGGLER -->
+        <div class="navbar-nav flex-row order-md-last">
+            <div class="d-none d-md-flex">
+                {% include 'components/navigation/navbar/_dark_mode.html' %}
+                {% include 'components/navigation/navbar/_notifications.html' %}
+                {% include 'components/navigation/navbar/_app_menu.html' %}
+            </div>
+            {% include 'components/navigation/navbar/_user_options.html' %}
+        </div>
+        {% include 'components/navigation/navbar/_menu.html' %}
+    </div>
+</header>

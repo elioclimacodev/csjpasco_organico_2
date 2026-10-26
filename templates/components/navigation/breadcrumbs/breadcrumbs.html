@@ -1,0 +1,64 @@
+{% load i18n %}
+
+<!--
+  Componente reutilizable de breadcrumbs.
+  El toggle de la elipsis se maneja con Alpine.js (x-data local a la
+  elipsis, sin necesidad de estado global ni de HTMX).
+-->
+<nav aria-label="{% trans 'Ruta de navegación' %}">
+    <ol class="breadcrumb breadcrumb-arrows mb-2">
+
+        {# --- Niveles iniciales: siempre visibles --- #}
+        {% for crumb in start_items %}
+            <li class="breadcrumb-item">
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+                {% else %}
+                    <span class="text-secondary" aria-current="page">{{ crumb.label }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {# --- Elipsis: solo se muestra si hay niveles ocultos --- #}
+        {% if show_ellipsis %}
+            <li class="breadcrumb-item" x-data="{ open: false }">
+                <div class="dropdown">
+                    <button
+                        type="button"
+                        class="btn btn-icon btn-sm btn-ghost-secondary"
+                        @click="open = !open"
+                        @click.outside="open = false"
+                        :aria-expanded="open.toString()"
+                        aria-label="{% trans 'Mostrar niveles ocultos de la ruta' %}"
+                    >
+                        &hellip;
+                    </button>
+
+                    <!-- Menú desplegable con los niveles colapsados -->
+                    <div
+                        class="dropdown-menu"
+                        :class="{ 'show': open }"
+                        x-cloak
+                        @click="open = false"
+                    >
+                        {% for crumb in hidden_items %}
+                            <a class="dropdown-item" href="{{ crumb.url }}">{{ crumb.label }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+        {% endif %}
+
+        {# --- Niveles finales: siempre visibles (incluye el nivel actual) --- #}
+        {% for crumb in end_items %}
+            <li class="breadcrumb-item">
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+                {% else %}
+                    <span class="text-secondary" aria-current="page">{{ crumb.label }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+    </ol>
+</nav>

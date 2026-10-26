@@ -1,0 +1,170 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es-PE">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>
+        {{ title }} | ERP de la Corte Superior de Justicia de Pasco
+    </title>
+
+    <!-- Estilos globales obligatorios -->
+    <link href="{% static 'tabler/dist/css/tabler.min.css' %}" rel="stylesheet" />
+
+    <!-- Esquema personalizado de colores -->
+    <link href="{% static 'project/css/custom_color.css' %}" rel="stylesheet" />
+    
+    <!-- Estilos del proyecto -->
+    <link href="{% static 'project/css/datatable.css' %}" rel="stylesheet" />    
+    <link href="{% static 'project/css/custom_offcanvas.css' %}" rel="stylesheet" />
+    <link href="{% static 'project/css/forms.css' %}" rel="stylesheet">
+
+
+    <!-- Estilos a nivel de la página -->    
+    {% block page-level-styles %}
+    {% endblock page-level-styles %}
+        
+    <!-- Estilos de plugins -->    
+    {% block plugins-styles %}
+    {% endblock plugins-styles %}
+        
+    <!-- Estilos del demo de Tabler.io -->    
+    {% block demo-styles %}        
+    {% endblock demo-styles %}
+
+    <style>
+        .htmx-indicator {
+            display: none;
+        }
+        .htmx-request .htmx-indicator {
+            display: block;
+        }
+    </style>
+
+    <!-- Regla Alpine.js evita el parpadeo del menú antes de que Alpine inicialice -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+        
+    <!-- Fuente personalizada -->
+    <style>
+        @import url("https://rsms.me/inter/inter.css");
+    </style>
+</head>
+
+<!-- 
+Configura HTMX para enviar automáticamente el token CSRF en todas las solicitudes
+(POST, PUT, DELETE, etc.) que realice desde esta página.
+
+Django exige este token por seguridad (protección CSRF), y este atributo en <body>
+asegura que cada petición HTMX lo incluya en el encabezado "X-CSRFToken".
+
+De esta forma evitamos errores 403 y mantenemos la protección activa sin escribir
+código adicional en cada formulario o petición.
+-->
+{% block body %}
+<body 
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' 
+    class="{% if not container_size %}layout-fluid{% endif %}">
+    
+    <!-- Scripts del tema -->
+    <script src="{% static 'tabler/dist/js/tabler-theme.min.js' %}"></script>
+
+    <!-- Página -->    
+    {% block page %}
+    {% endblock page %}
+        
+    <!-- Modal -->    
+    <div 
+        id="modal_htmx" 
+        class="modal modal-blur fade" 
+        tabindex="-1" 
+        role="dialog" 
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div 
+            id="modal_dialog"
+            class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content" id="modal_content">
+                {% block modal %}
+                {% endblock modal %} 
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast -->
+    <div 
+        id="toastContainer"
+        class="toast-container position-fixed bottom-0 end-0 p-3"
+        style="z-index: 1100;">
+        <div 
+            id="liveToast"
+            class="toast border-0" 
+            role="alert" 
+            aria-live="assertive" 
+            aria-atomic="true" 
+            data-bs-autohide="true"
+            data-bs-toggle="toast">
+            <div class="d-flex align-items-center">
+                <div
+                    id="toastBody" 
+                    class="toast-body flex-grow-1">
+                    Mensaje
+                </div>
+                <button type="button" class="ms-2 btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de offcanvas -->    
+    {% block offcanvas %}        
+    {% endblock offcanvas %}
+        
+    <script>
+        // Cuando HTMX recibe la respuesta, ajusta el tamaño
+        function setModalSize(event) {
+            const size = event.detail.xhr.getResponseHeader('HX-Modal-Size');
+            const dialog = document.getElementById('modal_dialog');
+            dialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl', 'modal-fullscreen');
+            dialog.classList.add(size || 'modal-lg');
+        }
+
+        // También limpia el tamaño cuando el modal se cierra,
+        // para que nunca quede "contaminado" con la clase anterior
+        document.addEventListener('hidden.bs.modal', function () {
+            const dialog = document.getElementById('modal_dialog');
+            dialog.classList.remove('modal-sm', 'modal-lg', 'modal-xl', 'modal-fullscreen');
+            dialog.classList.add('modal-lg'); // tamaño por defecto
+        });
+    </script>
+    
+    <!-- Librerías de la página -->    
+    {% block page-libraries %}      
+    {% endblock page-libraries %}
+        
+    <!-- Script globales obligatorio -->
+    <script src="{% static 'tabler/dist/js/tabler.min.js' %}" defer></script>
+    <script src="{% static 'libs/htmx/htmx_2.0.6.min.js' %}" defer></script>
+    <script src="{% static 'libs/alpine.js/alpinejs_mask_3.x.x.min.js' %}" defer></script>
+    <script src="{% static 'libs/alpine.js/alpinejs_3.15.0.min.js' %}" defer></script>
+
+    <!-- Scripts del demo original de Tabler.io -->
+    <script src="{% static 'tabler/preview/js/demo.min.js' %}" defer></script>
+
+    <!-- Scripts del proyecto -->
+    <script src="{% static 'project/js/toast.js' %}" defer></script>
+    <script src="{% static 'project/js/modal.js' %}" defer></script>
+
+    <!-- Scripts de la página -->    
+    {% block page-script %}        
+    {% endblock page-script %}
+
+</body>    
+{% endblock body %}
+</html>

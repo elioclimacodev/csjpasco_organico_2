@@ -1,0 +1,57 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block form-fields %}
+    <fielset class="form-section">
+        <legend class="mb-4">Datos para su cuenta de usuario</legend>
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.tipo_documento column_class='col-md-6' %}
+            {% include 'components/forms/fields/field.html' with field=form.numero_documento column_class='col-md-6' %}
+        </div>        
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.email %}        
+        </div>
+        <div class="row mb-4">
+            {% include 'components/forms/fields/field.html' with field=form.password1 column_class='col-md-6' %}        
+            {% include 'components/forms/fields/field.html' with field=form.password2 column_class='col-md-6' %}
+        </div>            
+    </fielset>
+
+    <fielset class="form-section">
+        <legend class="mb-4">Datos personales</legend>
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.nombres %}
+        </div>
+
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.apellido_paterno column_class='col-md-6' %}
+            {% include 'components/forms/fields/field.html' with field=form.apellido_materno column_class='col-md-6' %}        
+        </div>
+
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.fecha_nacimiento column_class='col-md-6' %}        
+            {% include 'components/forms/fields/field.html' with field=form.genero column_class='col-md-6' %}
+        </div>
+
+        <div class="row mb-4">
+            {% include 'components/forms/fields/field.html' with field=form.estado_civil %}        
+        </div>        
+    </fielset>
+{% endblock form-fields %}
+
+
+{% block form-buttons %}
+    <button type="submit" class="btn btn-primary w-100">
+        <!-- https://tabler.io/icons?icon=user-plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M16 19h6" /><path d="M19 16v6" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /></svg>        
+        Registrarse
+    </button>    
+{% endblock form-buttons %}
+
+
+{% block form-footer-text %}
+    <div class="text-center text-secondary mt-3">Si ya tiene una cuenta puede <a href="{% url 'usuarios:login' %}"
+            tabindex="-1">inciar sesión.</a></div>
+{% endblock form-footer-text %}
+    
+    

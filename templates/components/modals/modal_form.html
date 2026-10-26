@@ -1,0 +1,49 @@
+<!-- Encabezado del modal -->
+<div class="modal-header">
+    <h5 class="modal-title">
+        {{ modal_title|default:'Formulario modal' }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<!-- Formulario modal -->
+<form
+    x-data="{}"
+    hx-post="{{ url }}"
+    hx-target="#modal_content"
+    hx-swap="innerHTML"
+    hx-encoding="multipart/form-data"
+    method="POST"
+    enctype="multipart/form-data"
+    novalidate>
+    {% csrf_token %}
+
+    <!-- Contenido del modal -->
+    <div id="modal_body" class="modal-body">
+        <!-- Campos del formulario -->
+        {% block modal_form_fields %}
+            {% include 'components/forms/form_fields.html' %}
+        {% endblock modal_form_fields %}
+    </div>
+
+    <!-- Pie del modal -->
+    <div class="modal-footer">
+        <!-- Botones del modal -->
+        {% block modal_buttons %}
+            <div class="me-auto">
+                {% include 'components/forms/buttons/close_button.html' %}
+            </div>
+
+            <div class="d-flex gap-2">
+                {% if create %}
+                    {% include 'components/forms/buttons/save_and_add_another_button.html' %}
+                {% endif %}
+
+                {% include 'components/forms/buttons/save_button.html' %}
+            </div>
+        {% endblock modal_buttons %}
+    </div>
+</form>
+
+
+

@@ -1,0 +1,33 @@
+{% extends 'layouts/base_list.html' %}
+
+
+{% block page_header_actions %}
+    {% if is_empty_database %}
+        <button 
+            type="button"
+            class="btn btn-primary d-none d-sm-inline-block"
+            hx-get="{% url 'organizacion:corte_create' distrito_judicial.pk %}"
+            hx-trigger="click"
+            hx-target="#modal_content"
+            hx-swap="innerHTML"
+            data-bs-toggle="modal"
+            data-bs-target="#modal_htmx">
+            <!-- https://tabler.io/icons?icon=plus -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+            Nueva Corte
+        </button>        
+    {% endif %}
+{% endblock page_header_actions %}
+    
+
+{% block datatable %}
+    {% include 'organizacion/corte_justicia/partials/_datatable.html' %}
+{% endblock datatable %}
+    
+<!-- TODO: Singleton en modelo CorteJusticia -->
+<!-- TODO: Archivos PDF de instalación y funcionamiento -->
+<!-- https://chat.z.ai/c/b0876a08-fc5d-44aa-a88b-3b4eb1fbe8c9 -->
+<!-- TODO: Rediseñar el formulario de Nueva Corte -->
+<!-- TODO: Que se desactive el botón Nueva Corte o quizá crear la corte con su sigla al momento de crear el Disttrito Judicial -->
+<!-- TODO: Crear un reporte general que muestre a todas las cortes -->
+<!-- TODO: Completar la vista de exportación. -->

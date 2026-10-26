@@ -1,0 +1,12 @@
+<button 
+    hx-get="{{ url }}"
+    hx-target="#modal_content"
+    hx-swap="innerHTML"
+    data-bs-toggle="modal"
+    data-bs-target="#modal_htmx"
+    type="button" 
+    class="btn btn-primary d-none d-sm-inline-block"
+    aria-label="Crear {{ model_name|default:'nuevo registro' }}"
+    title="Crear {{ model_name|default:'nuevo registro' }}">
+    Crear {{ model_name|default:'nuevo registro' }}
+</button>

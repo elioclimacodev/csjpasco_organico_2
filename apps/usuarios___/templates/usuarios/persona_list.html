@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Personas{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>Personas registradas</h1>
+    <form method="get" class="barra-busqueda">
+        <input type="text" name="q" value="{{ busqueda }}" placeholder="Buscar por documento, nombres o correo">
+        <select name="tipo_documento">
+            <option value="">Todos los tipos</option>
+            {% for valor, etiqueta in tipo_opciones %}
+                <option value="{{ valor }}" {% if filtro_tipo == valor %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    {% if perms.usuarios.add_persona %}
+        <a class="boton" href="{% url 'persona_nueva' %}">Registrar nueva persona</a>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>N.º documento</th>
+                <th>Tipo</th>
+                <th>Nombre completo</th>
+                <th>Correo</th>
+                <th>¿Cuenta?</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for persona in personas %}
+                <tr>
+                    <td>{{ persona.numero_documento }}</td>
+                    <td>{{ persona.tipo_documento }}</td>
+                    <td>{{ persona.full_name }}</td>
+                    <td>{{ persona.email }}</td>
+                    <td>{% if persona.tiene_usuario %}Sí{% else %}No{% endif %}</td>
+                    <td>
+                        <a href="{% url 'persona_detalle' persona.pk %}">Ver</a>
+                        {% if perms.usuarios.change_persona %} | <a href="{% url 'persona_editar' persona.pk %}">Editar</a>{% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6">No se encontraron personas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+        <div class="paginacion">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ busqueda }}&tipo_documento={{ filtro_tipo }}&page=1">Primera</a>
+                <a href="?q={{ busqueda }}&tipo_documento={{ filtro_tipo }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            {% if page_obj.has_next %}
+                <a href="?q={{ busqueda }}&tipo_documento={{ filtro_tipo }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+                <a href="?q={{ busqueda }}&tipo_documento={{ filtro_tipo }}&page={{ page_obj.paginator.num_pages }}">Última</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

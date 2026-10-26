@@ -1,0 +1,62 @@
+{% extends 'components/datatable/displays/table.html' %}
+{% load datatable_tags %}
+
+
+{% block table_columns %}
+    {% sortable_header 'nombre' 'Distrito Judicial' %}
+    {% sortable_header 'corte' 'Corte' %}
+    {% sortable_header 'siglas' 'Siglas' %}
+    <!-- {% sortable_header 'latitud' 'Latitud' %}
+    {% sortable_header 'longitud' 'Longitud' %} -->
+    {% sortable_header 'activo' 'Estado' %}
+    <th class="w-1">
+        <div class="d-flex justify-content-center align-items-center">
+            Acciones
+        </div>
+    </th>              
+{% endblock table_columns %}
+
+
+{% block table_rows %}
+    <tr>
+        <td>
+            <a 
+                href="{% url 'organizacion:sedes_list' o.pk %}"
+                class="text-truncate text-reset"
+                style="max-width: 550px;">
+                {{ o.nombre|empty_to_dashes }}
+            </a>
+        </td>
+        <td>
+            {{ o.corte|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.siglas|empty_to_dashes }}
+        </td>
+        <!-- <td>
+            <div class="d-flex justify-content-end">
+                {{ o.latitud|empty_to_dashes }}
+            </div>                            
+        </td>
+        <td>
+            <div class="d-flex justify-content-end">
+                {{ o.longitud|empty_to_dashes }}
+            </div>                            
+        </td>  -->
+        <td>
+            {{ o.activo|status_badge  }}
+        </td>
+        <td>
+            <div class="btn-actions gap-1 d-flex justify-content-center">
+                {% url 'organizacion:distrito_judicial_details' o.pk as url %}
+                {% include 'components/datatable/buttons/details_icon_button.html' with url=url %}
+
+                {% url 'organizacion:distrito_judicial_update' o.pk as url %}
+                {% include 'components/datatable/buttons/edit_icon_button.html' with url=url %}
+
+                {% url 'organizacion:distrito_judicial_toggle' o.pk as url %}
+                {% include 'components/datatable/buttons/toggle_icon_button.html' with url=url %}   
+            </div>
+        </td>
+    </tr>                    
+{% endblock table_rows %}

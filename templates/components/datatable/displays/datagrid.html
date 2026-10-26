@@ -1,0 +1,16 @@
+{% load datatable_tags %}
+
+<div class="datagrid">
+    {% for label, value in items %}
+        <div class="datagrid-item">
+            <div class="text-secondary">{{ label }}</div>
+            <div class="datagrid-content">
+                {% if label == 'Estado' %}
+                    {{ value|status_badge }}
+                {% else %}
+                    {{ value|empty_to_dashes }}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

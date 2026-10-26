@@ -1,0 +1,12 @@
+{% extends 'layouts/base_list.html' %}
+
+
+{% block page_header_actions %}
+    {% url 'ubicaciones:provincia_create' departamento.id as url %}
+    {% include 'components/datatable/buttons/create_object.html' with url=url %}
+{% endblock page_header_actions %}
+
+
+{% block datatable %}
+    {% include 'ubicaciones/provincias/partials/_datatable.html' %}
+{% endblock datatable %}

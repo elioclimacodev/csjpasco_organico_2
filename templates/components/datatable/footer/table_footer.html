@@ -1,0 +1,71 @@
+{% load static datatable_tags %}
+
+
+<div class="card-footer mobile-sticky-pagination">
+    <div class="row g-2 justify-content-center justify-content-sm-between align-items-center">
+        <div class="col-auto">
+            <p class="m-0 text-secondary">
+                Mostrando <strong>{{ page_obj.start_index }}</strong> a <strong>{{ page_obj.end_index }}</strong> 
+                de <strong>{{ page_obj.paginator.count }}</strong> registros
+            </p>
+        </div>
+
+        <div class="col-auto">
+            <ul class="pagination m-0">
+                <!-- Botón Anterior -->
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    <a class="page-link" 
+                        {% if page_obj.has_previous %}
+                            hx-get="?{% url_replace page=page_obj.previous_page_number %}"
+                            hx-target="#datatable"
+                            hx-swap="innerHTML show:window:top"
+                            hx-push-url="true"
+                        {% else %}
+                            href="#"
+                            aria-disabled="true"
+                        {% endif %}
+                        aria-label="Anterior">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M15 6l-6 6l6 6" /></svg>
+                    </a>
+                </li>
+
+
+                <!-- Rango de páginas centrales -->
+                {% for num in page_range %}
+                    {% if num == paginator.ELLIPSIS %}
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link"
+                                hx-get="?{% url_replace page=num %}"
+                                hx-target="#datatable"
+                                hx-swap="innerHTML show:window:top"
+                                hx-push-url="true">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+
+                <!-- Botón Siguiente -->
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link" 
+                        {% if page_obj.has_next %}
+                            hx-get="?{% url_replace page=page_obj.next_page_number %}"
+                            hx-target="#datatable"
+                            hx-swap="innerHTML show:window:top"
+                            hx-push-url="true"
+                        {% else %}
+                            href="#"   
+                        {% endif %}
+                        aria-label="Siguiente">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M9 6l6 6l-6 6" /></svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

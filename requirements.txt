@@ -1,0 +1,11 @@
+django
+python-dotenv
+pillow
+# django-filter
+django-tables2
+# openpyxl
+# reportlab
+# tablib
+# django-allauth
+xlsxwriter
+django-dbml

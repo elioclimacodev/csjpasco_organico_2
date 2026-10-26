@@ -1,0 +1,56 @@
+{% extends 'layouts/base_form.html' %}
+
+
+{% block form_fields %}
+    <div
+        class=""
+        x-data="{
+            newPassword1: '',
+            newPassword2: '',
+
+            get contrasenasCoinciden() {
+                return this.newPassword1 === this.newPassword2
+            },
+
+            get mostrarErrorCoincidencia() {
+                return (
+                    this.newPassword2.length > 0 &&
+                    !this.contrasenasCoinciden
+                )
+            }
+        }">
+        <div class="mb-4">
+            {% include 'components/forms/fields/field.html' with field=form.old_password %}
+        </div>
+
+        <div class="mb-4">
+            {% include 'components/forms/fields/field.html' with field=form.new_password1 %}
+        </div>
+
+        <div class="mb-2">
+            {% include 'components/forms/fields/field.html' with field=form.new_password2 %}
+        </div>
+
+        <div
+            x-show="mostrarErrorCoincidencia"
+            x-cloak
+            class="mb-4">
+            <div
+                class="invalid-feedback d-block"
+                role="alert">
+                Las contraseñas ingresadas no coinciden.
+            </div>
+        </div>
+    </div>
+{% endblock form_fields %}
+
+
+{% block form_buttons %}
+    <button
+        type="submit"
+        class="btn btn-primary">
+        Cambiar contraseña
+    </button>
+{% endblock form_buttons %}
+    
+    

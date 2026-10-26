@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load breadcrumb_tags %}
+
+{% block page %}
+    <!-- Sidebar -->
+    {% include 'components/navigation/aside/base.html' %}
+
+    <!-- Navbar -->
+    {% include 'components/navigation/navbar/base.html' %}
+
+    <div 
+        id="page_wrapper" 
+        class="page-wrapper">
+    </div>
+{% endblock page %}
+
+<div
+    id="page_header"
+    class="page-header d-print-none"
+    aria-label="{{ title }}">
+    <div class="container-">
+        <div class="row g-2 align-items-center">
+            {% include 'components/header/title.html' %}
+            {% include 'components/header/title_actions.html' %}
+        </div>
+    </div>
+</div>
+
+<div
+    id="page_body"
+    class="page-body">
+    <div class="container-xl">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        {{ card_title|default:'Título de la tarjeta' }}
+                    </div>
+                </div>
+
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,286 @@
+/**
+ * TEMA INSTITUCIONAL CSJ PASCO - PODER JUDICIAL
+ * Adaptado a Tabler.io / Bootstrap 5
+ * Paleta:
+ *   - #A42612 (Rojo Judicial / Primario)
+ *   - #EAE4D2 (Arena Institucional / Claro)
+ *   - #7A7562 (Gris Neutro Institucional)
+ *   - #F3F3F3 (Fondo Superficie)
+ *   - #3B4151 (Pizarra Oscuro / Texto y Títulos)
+ */
+
+:root {
+  /* --- PALETA BASE TABLER --- */
+  --tblr-primary: #A42612;
+  --tblr-primary-rgb: 164, 38, 18;
+  --tblr-primary-fg: #ffffff;
+
+  --tblr-secondary: #7A7562;
+  --tblr-secondary-rgb: 122, 117, 98;
+
+  --tblr-dark: #3B4151;
+  --tblr-dark-rgb: 59, 65, 81;
+
+  --tblr-light: #EAE4D2;
+  --tblr-light-rgb: 234, 228, 210;
+
+  /* Superficies y Bordes */
+  --tblr-body-bg: #F3F3F3;
+  --tblr-body-color: #3B4151;
+  --tblr-card-bg: #FFFFFF;
+  --tblr-border-color: rgba(122, 117, 98, 0.22);
+  --tblr-muted: #7A7562;
+
+  /* --- RADIOS LIGERAMENTE REDONDEADOS (6px - 8px) --- */
+  --tblr-border-radius: 8px;
+  --tblr-border-radius-sm: 6px;
+  --tblr-border-radius-lg: 8px;
+  --tblr-border-radius-pill: 6px; /* Eliminamos redondeo excesivo */
+}
+
+/* ==========================================================================
+   1. ESTRUCTURA GLOBAL Y TIPOGRAFÍA
+   ========================================================================== */
+body {
+  background-color: var(--tblr-body-bg) !important;
+  color: var(--tblr-body-color);
+  font-family: var(--tblr-font-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Títulos y Jerarquía (Color Oscuro Institucional) */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #3B4151;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.text-muted, .text-secondary {
+  color: #7A7562 !important;
+}
+
+/* Migas de pan (Breadcrumbs) como en la referencia */
+.breadcrumb-item, .breadcrumb-item a {
+  color: #7A7562;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.breadcrumb-item.active {
+  color: #3B4151;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   2. BARRA LATERAL (SIDEBAR)
+   ========================================================================== */
+.navbar-vertical.navbar-expand-lg {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid rgba(122, 117, 98, 0.18) !important;
+  box-shadow: none !important; /* Flat y limpio como en la imagen */
+}
+
+/* Logo institucional */
+.navbar-brand {
+  color: #3B4151 !important;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Enlaces del Menú de Navegación */
+.navbar-vertical .navbar-nav .nav-link {
+  color: #7A7562;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 8px; /* Ligeramente redondeado */
+  margin: 3px 12px;
+  padding: 0.6rem 0.85rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.navbar-vertical .navbar-nav .nav-link .nav-link-icon {
+  color: #7A7562;
+  margin-right: 0.75rem;
+}
+
+/* Hover en Menú */
+.navbar-vertical .navbar-nav .nav-link:hover {
+  background-color: rgba(234, 228, 210, 0.45); /* Tinte de #EAE4D2 */
+  color: #3B4151;
+}
+
+.navbar-vertical .navbar-nav .nav-link:hover .nav-link-icon {
+  color: #A42612;
+}
+
+/* Ítem Activo (Estilo Dashboard de la imagen en Rojo Institucional) */
+.navbar-vertical .navbar-nav .nav-item.active .nav-link,
+.navbar-vertical .navbar-nav .nav-link.active {
+  background-color: #A42612 !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.navbar-vertical .navbar-nav .nav-link.active .nav-link-icon {
+  color: #FFFFFF !important;
+}
+
+/* Tarjeta inferior de Perfil de Usuario */
+.navbar-vertical .nav-item-user-box {
+  margin: 12px;
+  padding: 8px 10px;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(122, 117, 98, 0.25);
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   3. TARJETAS (CARDS) - BORDES SUAVES Y ESTRUCTURA PLANA
+   ========================================================================== */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(122, 117, 98, 0.18) !important;
+  border-radius: 8px !important; /* Esquinas ligeramente redondeadas */
+  box-shadow: none !important; /* Estilo sobrio y limpio */
+  margin-bottom: 1.25rem;
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(122, 117, 98, 0.12);
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #3B4151;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* ==========================================================================
+   4. COMPONENTES ESPECÍFICOS DE LA IMAGEN DE REFERENCIA
+   ========================================================================== */
+
+/* Botón "See Details" de las tarjetas KPI */
+.btn-see-details {
+  border: 1px solid rgba(122, 117, 98, 0.28);
+  background-color: transparent;
+  color: #7A7562;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-see-details:hover {
+  background-color: #EAE4D2;
+  border-color: #7A7562;
+  color: #3B4151;
+}
+
+/* Botones de acción y controles [ - | ... | Monthly v ] */
+.card-action-btn-group {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.btn-card-action {
+  border: 1px solid rgba(122, 117, 98, 0.25);
+  background: #FFFFFF;
+  color: #7A7562;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.btn-card-action:hover {
+  background-color: #EAE4D2;
+  color: #3B4151;
+}
+
+/* Insignias de Crecimiento / Porcentajes (+10%, +12%) */
+.badge-trend-success {
+  background-color: #E8F7EE;
+  color: #0F8B4C;
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Botones de Cabecera Superior (Buscador, Notificaciones) */
+.btn-header-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(122, 117, 98, 0.22);
+  border-radius: 8px;
+  color: #3B4151;
+}
+
+.btn-header-icon:hover {
+  background-color: #EAE4D2;
+}
+
+/* ==========================================================================
+   5. BOTONES Y FORMULARIOS
+   ========================================================================== */
+.btn {
+  border-radius: 6px !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.45rem 0.95rem;
+}
+
+/* Botón Primario Institucional */
+.btn-primary {
+  background-color: #A42612 !important;
+  border-color: #A42612 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+  background-color: #881D0C !important;
+  border-color: #881D0C !important;
+}
+
+/* Formularios y Selectores */
+.form-control, .form-select {
+  border: 1px solid rgba(122, 117, 98, 0.3);
+  border-radius: 6px !important;
+  color: #3B4151;
+  font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #A42612;
+  box-shadow: 0 0 0 2px rgba(164, 38, 18, 0.15);
+}
+
+/* ==========================================================================
+   6. LISTA DE ACTIVIDAD RECIENTE (TABLAS Y FILAS)
+   ========================================================================== */
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(122, 117, 98, 0.1);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.avatar {
+  border-radius: 50%; /* Los avatares de personas sí se mantienen redondos */
+}

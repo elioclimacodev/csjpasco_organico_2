@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Eliminar persona{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>Eliminar persona</h1>
+    <p>
+        ¿Estás seguro de que deseas eliminar a
+        <strong>{{ persona.full_name }}</strong> ({{ persona.tipo_documento }} {{ persona.numero_documento }})?
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="boton-rojo" type="submit">Sí, eliminar</button>
+        <a class="boton boton-secundario" href="{% url 'persona_detalle' persona.pk %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

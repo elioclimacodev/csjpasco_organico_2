@@ -1,0 +1,19 @@
+{% autoescape off %}
+    Estimado {% if user.nombres or user.apellido_paterno or user.apellido_materno %}
+    {{ user.nombres|default_if_none:'' }} {{ user.apellido_paterno|default_if_none:'' }} {{ user.apellido_materno|default_if_none:'' }}
+    {% else %}
+    {{ user.username }}
+    {% endif %}
+        
+    Para recuperar su contraseña haga click en el siguiente enlace:
+
+    {{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+    Si el enlace no funciona, por favor, copie y pegue el enlace en una nueva ventana de su navegador.
+
+    Atentamente,
+
+
+    Oficina de Personal
+    Corte Superior de Justicia de Pasco
+{% endautoescape %}

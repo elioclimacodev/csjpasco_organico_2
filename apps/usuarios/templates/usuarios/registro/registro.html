@@ -1,0 +1,366 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block non_field_errors %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4" role="alert">
+            <div>
+                Al parecer, usted ya tiene una cuenta de usuario, puede
+                <!-- TODO: CORREGIR URLS -->
+                <a href="{% url 'usuarios:iniciar_sesion' %}" class="alert-link">iniciar sesión</a>,
+                <a href="/restablecer-contraseña" class="alert-link">restablecer su contraseña</a> o
+                solicitar un nuevo <a href="" class="alert-link">enlace de activación</a>.
+            </div>
+        </div>
+    {% endif %}                                
+{% endblock non_field_errors %}
+
+{% block form_fields %}
+    <div x-data="registrationValidation()">
+        <fieldset class="form-section">
+            <legend class="">Datos para su cuenta de usuario</legend>
+            <div class="row">
+                {% include 'components/forms/fields/field.html' with field=form.tipo_documento column_class='col-md-6' %}
+                {% include 'components/forms/fields/field.html' with field=form.numero_documento column_class='col-md-6' %}
+            </div>        
+            <div class="row">
+                {% include 'components/forms/fields/field.html' with field=form.email %}        
+            </div>
+            <div class="row ">
+                {% include 'components/forms/fields/field.html' with field=form.password1 column_class='col-md-6' %}        
+                {% include 'components/forms/fields/field.html' with field=form.password2 column_class='col-md-6' %}
+            </div>            
+        </fieldset>
+
+        <fieldset class="form-section">
+            <legend class="">Datos personales</legend>
+            <div class="row">
+                {% include 'components/forms/fields/field.html' with field=form.nombres %}
+            </div>
+
+            <div class="row">
+                {% include 'components/forms/fields/field.html' with field=form.apellido_paterno column_class='col-md-6' %}
+                {% include 'components/forms/fields/field.html' with field=form.apellido_materno column_class='col-md-6' %}        
+            </div>
+
+            <div class="row">
+                {% include 'components/forms/fields/field.html' with field=form.fecha_nacimiento column_class='col-md-6' %}        
+                {% include 'components/forms/fields/field.html' with field=form.genero column_class='col-md-6' %}
+            </div>
+
+            <div class="row ">
+                {% include 'components/forms/fields/field.html' with field=form.estado_civil %}        
+            </div>        
+        </fieldset>
+    </div>
+{% endblock form_fields %}
+
+
+{% block form_buttons %}
+    <button type="submit" class="btn btn-primary w-100">
+        <!-- https://tabler.io/icons?icon=user-plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M16 19h6" /><path d="M19 16v6" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /></svg>        
+        Registrarse
+    </button>    
+{% endblock form_buttons %}
+
+
+{% block content_footer %}
+    {% include 'components/auth/footer_login.html' %}
+{% endblock content_footer %}
+    
+
+{% block page-script %}
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('registrationValidation', () => ({
+        errors: {},
+        documentRules: {
+            DNI: {
+                pattern: /^\d{8}$/,
+                message: 'El DNI debe tener 8 dígitos numéricos.'
+            },
+            PAS: {
+                pattern: /^[A-Za-z0-9]{9,12}$/,
+                message: 'El pasaporte debe tener entre 9 y 12 caracteres alfanuméricos.'
+            },
+            CFP: {
+                pattern: /^\d{8}$/,
+                message: 'El Carné Policial debe tener 8 dígitos numéricos.'
+            },
+            CFA: {
+                pattern: /^\d{8}$/,
+                message: 'El Carné de las FF.AA. debe tener 8 dígitos numéricos.'
+            },
+            CEX: {
+                pattern: /^[A-Za-z]\d{8}$/,
+                message: 'El Carné de Extranjería debe comenzar con una letra seguida de 8 dígitos.'
+            },
+            CPP: {
+                pattern: /^\d{9}$/,
+                message: 'El Carné de Permiso Temporal debe tener 9 dígitos numéricos.'
+            }
+        },
+
+        namePattern: /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$/,
+
+        init() {
+            const form = this.$root.closest('form');
+
+            if (!form) {
+                return;
+            }
+
+            const documentType = form.elements.tipo_documento;
+            const documentNumber = form.elements.numero_documento;
+
+            documentType?.addEventListener('change', () => {
+                documentNumber?.setCustomValidity('');
+                this.validateDocument(documentNumber);
+            });
+
+            documentNumber?.addEventListener('input', event => {
+                event.target.value = event.target.value
+                    .trimStart()
+                    .toUpperCase();
+
+                this.validateDocument(event.target);
+            });
+
+            const emailField = form.elements.email;
+
+            emailField?.addEventListener('input', event => {
+                this.validateEmail(event.target);
+            });
+
+            emailField?.addEventListener('blur', event => {
+                event.target.value = event.target.value.trim();
+                this.validateEmail(event.target);
+            });          
+
+            ['nombres', 'apellido_paterno', 'apellido_materno']
+                .forEach(fieldName => {
+                    const field = form.elements[fieldName];
+
+                    field?.addEventListener('input', event => {
+                        this.validateName(event.target);
+                    });
+                });
+
+            form.elements.fecha_nacimiento?.addEventListener(
+                'change',
+                event => this.validateBirthDate(event.target)
+            );
+
+            form.elements.password2?.addEventListener(
+                'input',
+                event => this.validatePasswordConfirmation(event.target)
+            );
+
+            form.elements.password1?.addEventListener('input', () => {
+                const confirmation = form.elements.password2;
+
+                if (confirmation?.value) {
+                    this.validatePasswordConfirmation(confirmation);
+                }
+            });
+
+            form.addEventListener('submit', event => {
+                this.validateAll(form);
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    form.reportValidity();
+                }
+            });
+
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('invalid', event => {
+                    event.preventDefault();
+
+                    this.errors[field.name] = field.validationMessage;
+                    field.classList.add('is-invalid');
+                    field.classList.remove('is-valid');
+                });
+
+                field.addEventListener('input', () => {
+                    if (field.validity.valid) {
+                        delete this.errors[field.name];
+                        field.classList.remove('is-invalid');
+                    }
+                });
+            });            
+        },
+
+        setValidity(field, message = '') {
+            if (!field) {
+                return;
+            }
+
+            field.setCustomValidity(message);
+
+            if (message) {
+                this.errors[field.name] = message;
+            } else {
+                delete this.errors[field.name];
+            }
+
+            field.classList.toggle('is-invalid', Boolean(message));
+            field.classList.toggle(
+                'is-valid',
+                !message && Boolean(field.value)
+            );
+        },
+
+        validateDocument(field) {
+            const form = field?.form;
+            const documentType = form?.elements.tipo_documento?.value;
+            const value = field?.value.trim().toUpperCase();
+
+            if (!field || !value) {
+                this.setValidity(field, '');
+                return true;
+            }
+
+            const rule = this.documentRules[documentType];
+
+            if (!rule) {
+                this.setValidity(
+                    field,
+                    'Seleccione un tipo de documento válido.'
+                );
+                return false;
+            }
+
+            const valid = rule.pattern.test(value);
+            this.setValidity(field, valid ? '' : rule.message);
+
+            return valid;
+        },
+
+        validateName(field) {
+            const value = field?.value.trim();
+
+            if (!value) {
+                this.setValidity(field, '');
+                return true;
+            }
+
+            const valid = this.namePattern.test(value);
+
+            this.setValidity(
+                field,
+                valid
+                    ? ''
+                    : 'Solo debe contener letras, espacios, apóstrofes o guiones.'
+            );
+
+            return valid;
+        },
+
+        validateBirthDate(field) {
+            if (!field?.value) {
+                this.setValidity(field, '');
+                return true;
+            }
+
+            const birthDate = new Date(`${field.value}T00:00:00`);
+            const today = new Date();
+
+            today.setHours(0, 0, 0, 0);
+
+            if (birthDate > today) {
+                this.setValidity(
+                    field,
+                    'La fecha de nacimiento no puede ser futura.'
+                );
+                return false;
+            }
+
+            const minimumAdultDate = new Date(
+                today.getFullYear() - 18,
+                today.getMonth(),
+                today.getDate()
+            );
+
+            if (birthDate > minimumAdultDate) {
+                this.setValidity(
+                    field,
+                    'La persona debe ser mayor de edad.'
+                );
+                return false;
+            }
+
+            this.setValidity(field, '');
+            return true;
+        },
+
+        validatePasswordConfirmation(field) {
+            const password = field?.form?.elements.password1?.value;
+            const confirmation = field?.value;
+
+            if (!confirmation) {
+                this.setValidity(field, '');
+                return true;
+            }
+
+            const valid = password === confirmation;
+
+            this.setValidity(
+                field,
+                valid ? '' : 'Las contraseñas no coinciden.'
+            );
+
+            return valid;
+        },
+
+        validateEmail(field) {
+            const value = field?.value ?? '';
+
+            if (!value) {
+                this.setValidity(
+                    field,
+                    'Debe ingresar un correo electrónico.'
+                );
+                return false;
+            }
+
+            if (/\s/.test(value)) {
+                this.setValidity(
+                    field,
+                    'El correo electrónico no debe contener espacios.'
+                );
+                return false;
+            }
+
+            const emailPattern =
+                /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/;
+
+            if (!emailPattern.test(value)) {
+                this.setValidity(
+                    field,
+                    'Ingrese un correo válido, por ejemplo: usuario@dominio.com.'
+                );
+                return false;
+            }
+
+            this.setValidity(field, '');
+            return true;
+        },
+
+        validateAll(form) {
+            this.validateDocument(form.elements.numero_documento);
+            this.validateEmail(form.elements.email);
+
+            ['nombres', 'apellido_paterno', 'apellido_materno']
+                .forEach(name => this.validateName(form.elements[name]));
+
+            this.validateBirthDate(form.elements.fecha_nacimiento);
+            this.validatePasswordConfirmation(form.elements.password2);
+        }
+    }));
+});
+</script>
+{% endblock page-script %}

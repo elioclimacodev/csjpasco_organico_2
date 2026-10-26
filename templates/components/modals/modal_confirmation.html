@@ -1,0 +1,87 @@
+<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+<div class="modal-status bg-{% if obj.activo %}danger{% else %}success{% endif %}"></div>
+<form 
+    hx-post="{{ url }}"
+    method="POST">
+    {% csrf_token %}
+    <div class="modal-body text-center py-4">
+        {% block modal_icon %}
+            {% if obj.activo %}
+                <!-- https://tabler.io/icons?icon=circle-x -->
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-circle-x text-danger icon-lg mb-2">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+            {% else %}
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check text-success icon-lg mb-2">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M9 12l2 2l4 -4" />
+                </svg>
+            {% endif %}
+        {% endblock modal_icon %}
+
+        <h3>
+            {% block modal_title %}
+                ¿Confirma la {% if obj.activo %}desactivación{% else %}activación{% endif %} del registro?
+            {% endblock modal_title %}
+        </h3>
+        <div class="text-secondary">                            
+            <p class="mb-2">
+                {% if model_name %}
+                    {{ model_name }}: 
+                {% endif %}                
+                <strong class="{% if obj.activo %}text-danger{% else %}text-success{% endif %}">{{ obj.nombre }}</strong>
+            </p>
+            <small>
+                {% block modal_content %}
+                    {% if obj.activo %}
+                        El registro dejará de estar disponible.
+                    {% else %}
+                        El registro volverá a estar disponible.
+                    {% endif %}
+                {% endblock modal_content %}
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="w-100">
+            <div class="row">
+                {% block modal_buttons %}
+                    <div class="col">
+                        <button
+                            type="button"
+                            class="btn btn-3 w-100" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button 
+                            type="submit" 
+                            class="btn btn-{% if obj.activo %}danger{% else %}success{% endif %} btn-4 w-100"
+                            data-bs-dismiss="modal">
+                            {% block modal_default_button %}
+                                {% if obj.activo %}
+                                    Desactivar
+                                {% else %}
+                                    Activar
+                                {% endif %}
+                            {% endblock modal_default_button %}
+                        </button>
+                    </div>                    
+                {% endblock modal_buttons %}
+            </div>
+        </div>
+    </div>
+</form>

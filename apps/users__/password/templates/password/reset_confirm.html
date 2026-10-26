@@ -1,0 +1,7 @@
+{% extends 'project/layouts_/auth/page.html' %}
+
+{% block content %}
+    {% url 'password_reset_confirm' uidb64=uid token=token as link %}
+    {% include './reset_confirm_form.html' with link=link %}
+{% endblock content %}
+    

@@ -1,0 +1,29 @@
+{% extends 'layouts/base_page.html' %}
+
+
+{% block page_header_actions %}
+    <a href="{% url 'personas:create' %}" class="btn btn-primary">
+        Nueva persona
+    </a>
+    |
+    <a 
+        class="btn btn-primary"
+        hx-get="{% url 'personas:create' %}"
+        hx-trigger="click"
+        hx-target="#page_wrapper"
+        hx-swap="innerHTML"
+        hx-push-url="true">
+        Nueva persona
+    </a>
+    {# url 'ubicaciones:distrito_create' provincia.id as url #}
+    {# include 'components/datatable/buttons/create_object.html' with url=url #}
+{% endblock page_header_actions %}
+
+
+{% block datatable %}
+    {% include 'personas/partials/_datatable.html' %}
+{% endblock datatable %}
+
+
+<!-- TODO: Agregar el campo de foto. -->
+<!-- TODO: Añadir datos de contacto y direcciones -->

@@ -1,0 +1,88 @@
+{% extends 'layouts/base_form.html' %}
+    <div class="card-header">
+        <ul 
+            class="nav nav-tabs card-header-tabs nav-fill"
+            data-bs-toggle="tabs"
+            role="tablist">
+            <li 
+                class="nav-item"
+                role="presentation">
+                <a 
+                    href="" class="nav-link active text-info"
+                    data-bs-toggle="tab"
+                    aria-selected="true"
+                    role="tab">
+                    <!-- https://tabler.io/icons?icon=circle-number-1 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-number-1 me-2 icon-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 10l2 -2v8" /></svg>
+                    <strong>Datos personales</strong>
+                </a>
+            </li>
+            <li 
+                class="nav-item"
+                role="presentation">
+                <a 
+                    href="" class="nav-link"
+                    data-bs-toggle="tab"
+                    aria-selected="true"
+                    role="tab">
+                    <!-- https://tabler.io/icons?icon=circle-number-2 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-number-2 icon-2 me-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 8h3a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 0 -1 1v2a1 1 0 0 0 1 1h3" /></svg>
+                    Datos de contacto
+                </a>
+            </li>
+            <li 
+                class="nav-item"
+                role="presentation">
+                <a 
+                    href="" class="nav-link"
+                    data-bs-toggle="tab"
+                    aria-selected="true"
+                    role="tab">
+                    <!-- https://tabler.io/icons?icon=circle-number-3 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-number-3 me-2 icon-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 9a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1" /></svg>
+                    Direcciones
+                </a>
+            </li>                        
+        </ul>
+    </div>
+
+{% block form %}
+    <fieldset class="form-section">
+        <legend class="mb-3">Identificación</legend>
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.tipo_documento column_class='col-md-4' %}
+            {% include 'components/forms/fields/field.html' with field=form.numero_documento column_class='col' %}
+        </div>
+    </fieldset>
+
+    <fieldset class="form-section">
+        <legend class="mb-3">Nombres y apellidos</legend>
+        <div class="mb-3">
+            {% include 'components/forms/fields/field.html' with field=form.nombres %}
+        </div>
+        
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.apellido_paterno column_class='col-md-6' %}
+            {% include 'components/forms/fields/field.html' with field=form.apellido_materno column_class='col-md-6' %}
+        </div>
+    </fieldset>
+
+    <fieldset class="form-section">
+        <legend class="mb-3">Información personal</legend>
+        <div class="row">
+            {% include 'components/forms/fields/field.html' with field=form.fecha_nacimiento column_class='col-md-4' %}
+            {% include 'components/forms/fields/field.html' with field=form.genero column_class='col-md-4' %}
+            {% include 'components/forms/fields/field.html' with field=form.estado_civil column_class='col-md-4' %}
+        </div>
+    </fieldset>
+
+    <div class="text-end">
+        <a href="" class="btn">
+            Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary">
+            Siguiente →
+        </button>
+    </div>
+{% endblock form %}
+    

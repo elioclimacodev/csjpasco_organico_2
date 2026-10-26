@@ -1,0 +1,1 @@
+from apps.organizacion.data.distritos_judiciales import DISTRITOS_JUDICIALES_DATA

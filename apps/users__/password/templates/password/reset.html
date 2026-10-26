@@ -1,0 +1,13 @@
+{% extends 'project/layouts_/auth/page.html' %}
+
+
+{% block content %}
+    {% url 'password_reset' as link %}
+    {% include './reset_form.html' with link=link %}
+{% endblock content %}
+
+{% block content-footer %}
+    {% include 'users/footers/already_user.html' %}
+{% endblock content-footer %}
+    
+    

@@ -1,0 +1,42 @@
+{% extends 'project/layouts_/auth/partials/form_htmx.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+    
+
+{% block form-fields %}
+    <p class="text-secondary mb-4">
+        Ingrese su dirección de correo electrónico y le enviaremos un enlace para crear su contraseña.
+    </p>
+    <div class="mb-3">
+        <label for="{{ form.email.id_for_label }}" class="form-label">
+            {{ form.email.label }}
+        </label>
+        {{ form.email }}
+
+        <!-- Muestra la ayuda del campo -->
+        {% if form.email.help_text %}
+            <small class="form-hint">
+                {{ form.email.help_text }}
+            </small>
+        {% endif %}
+            
+        <!-- Muestra los errores del campo -->
+        {% if form.email.errors %}            
+            <div class="invalid-feedback d-block">
+                {{ form.email.errors }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock form-fields %}
+
+
+{% block form-buttons %}
+    <button type="submit" class="btn btn-primary w-100">
+        Enviar enlace
+    </button>
+{% endblock form-buttons %}
+    
+    

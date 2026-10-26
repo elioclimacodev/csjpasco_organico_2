@@ -1,0 +1,29 @@
+{% load datatable_tags %}
+
+<!-- Indicador de carga -->
+<div></div>
+
+<!-- Tabla -->
+<div
+    id="table_container"
+    class="table-responsive">
+    <table
+        class="
+            table card-table table-vcenter
+            text-nowrap datatable table-mobile-md">
+        <thead>
+            <tr>
+                {% block table_columns %}      
+                {% endblock table_columns %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in page_obj %}
+                {% block table_rows %}             
+                {% endblock table_rows %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- Paginación -->
+{% include 'components/datatable/footer/table_footer.html' %}

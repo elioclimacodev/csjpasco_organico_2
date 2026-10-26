@@ -1,0 +1,21 @@
+<div 
+    id="datatable" 
+    hx-get="{{ request.path }}"
+    hx-swap="innerHTML"
+    hx-trigger="
+        object_created from:body, 
+        object_updated from:body, 
+        object_list_updated from:body">
+
+    {% include toolbar_template %}
+
+    <!-- Tabla versión desktop. -->
+    <div class="d-none d-md-block">
+        {% include table_template %}
+    </div>
+
+    <!-- Tabla versión móvil/tablet -->
+    <div class="d-md-none d-block">
+        {% include cards_template %}
+    </div>
+</div>

@@ -1,0 +1,30 @@
+{% extends 'project/layouts/auth/partials/content_htmx.html' %}
+
+
+{% block title %}
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" height="24" viewBox="0 0 24 24" fill="currentColor" 
+        class="icon icon-tabler icons-tabler-filled icon-tabler-mail text-success"
+        style="width: 48px; height: 48px;">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 7.535v9.465a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-9.465l9.445 6.297l.116 .066a1 1 0 0 0 .878 0l.116 -.066l9.445 -6.297z" /><path d="M19 4c1.08 0 2.027 .57 2.555 1.427l-9.555 6.37l-9.555 -6.37a2.999 2.999 0 0 1 2.354 -1.42l.201 -.007h14z" />
+    </svg>
+{% endblock title %}
+
+
+{% block content-body %}
+    <h3 class="h3 mb-3 text-center">
+        {{ title }}
+    </h3>
+    <p class="fs-h3 text-secondary">Le hemos enviado instrucciones para activar su cuenta a la dirección de correo electrónico que registró.</p>
+    <p class="fs-h3 text-secondary">Por favor, revise su bandeja de entrada y siga las instrucciones. No olvide revisar la carpeta de correos no deseados.</p>
+{% endblock content-body %}
+
+
+{% block content-buttons %}
+    <a href="" class="btn btn-primary w-100">
+        Ir al inicio de sesión
+    </a>
+{% endblock content-buttons %}
+    
+    

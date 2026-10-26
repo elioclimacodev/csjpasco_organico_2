@@ -1,0 +1,11 @@
+{% extends 'project/base/auth.html' %}
+
+
+                {% block content %}
+                    {% url 'login_user' as link %}
+                    {% include './login_form.html' with link=link %}
+                {% endblock content %}
+                
+                {% block content-footer %}
+                    {% include 'users/footers/contact.html' %}
+                {% endblock content-footer %}

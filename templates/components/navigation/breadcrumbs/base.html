@@ -1,0 +1,37 @@
+{# ==========================================================================
+   Componente Breadcrumbs
+   ==========================================================================
+   Uso:
+
+   {% include "components/navigation/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
+
+   breadcrumbs = [
+       {"label": "Inicio", "url": "/"},
+       {"label": "Distritos Judiciales", "url": "/districts/"},
+       {"label": "Pasco", "url": None}
+   ]
+   ========================================================================== #}
+
+{% if breadcrumbs %}
+<div class="mb-1">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        {% for item in breadcrumbs %}
+            {% if forloop.last %}
+                <li
+                    class="breadcrumb-item active"
+                    aria-current="page">
+                    <span>
+                        {{ item.label }}
+                    </span>
+                </li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    <a href="{{ item.url }}" class="text-decoration-none">
+                        {{ item.label }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</div>
+{% endif %}

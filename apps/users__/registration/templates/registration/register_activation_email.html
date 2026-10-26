@@ -1,0 +1,33 @@
+{% load static %}
+<p>
+    Señor/a {% if user.nombres or user.apellido_paterno or user.apellido_materno %}
+    {{ user.nombres|default_if_none:'' }} {{ user.apellido_paterno|default_if_none:'' }} {{ user.apellido_materno|default_if_none:'' }}
+    {% else %}
+    {{ user.username }}
+    {% endif %}
+</p>
+
+<p>
+    Le agradecemos por registrarse en la plataforma digital de la Corte Superior de Justicia de Pasco. 
+    Por favor, haga clic en el siguiente enlace para activat tu cuenta:
+</p>
+
+<p>
+    <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+        Activar cuenta de usuario
+    </a>
+</p>
+    
+<p>
+    Si tiene problemas, puede copiar y pegar el enlace en su navegador:
+</p>
+<a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+    {{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+</a>
+
+<p>Atentamente,</p>
+
+<p>---</p>
+<p>Oficina de Personal</p>
+<p>Corte Superior de Justicia de Pasco</p>
+

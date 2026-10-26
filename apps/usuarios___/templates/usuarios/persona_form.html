@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{% if persona %}Editar persona{% else %}Registrar persona{% endif %}{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>{% if persona %}Editar persona{% else %}Registrar nueva persona{% endif %}</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="ayuda">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}<div class="campo-error">{{ error }}</div>{% endfor %}
+        {% endif %}
+        <button type="submit">Guardar</button>
+        <a class="boton boton-secundario" href="{% url 'persona_lista' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'components/modals/modal_content.html' %}
+{% load datatable_tags %}
+
+
+{% block modal_body %}
+    {% render_datagrid datagrid_items %}
+{% endblock modal_body %}
+    

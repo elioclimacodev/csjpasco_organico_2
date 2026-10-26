@@ -1,0 +1,34 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block form_fields %}
+    {% include 
+        'components/forms/fields/field.html' 
+        with field=form.username 
+    %}
+
+    <div class="mb-5">
+        <!-- TODO: COMPLETAR URL -->
+        {% url 'usuarios:restablecer_contrasena' as url %}
+        {% include 
+            'components/forms/fields/field.html' 
+            with 
+                field=form.password 
+                url=url
+                url_label='Restablecer contraseña'
+        %}
+    </div>
+{% endblock form_fields %}
+    
+{% block form_buttons %}
+    <button 
+        type="submit"
+        class="btn btn-primary w-100">
+        Iniciar sesión
+    </button>
+{% endblock form_buttons %}  
+
+
+{% block content_footer %}
+    {% include 'components/auth/footer_register.html' %}                  
+{% endblock content_footer %}

@@ -1,0 +1,5 @@
+{% url '' as export_url %}
+{% include 
+    'components/datatable/filters/toolbars/search_status_export.html'
+    with export_url=export_url
+%}

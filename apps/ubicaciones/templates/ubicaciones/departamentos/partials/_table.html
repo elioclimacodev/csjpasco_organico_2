@@ -1,0 +1,58 @@
+{% extends 'components/datatable/displays/table.html' %}
+{% load datatable_tags %}
+
+
+{% block table_columns %}
+    {% sortable_header 'nombre_normalizado' 'Departamento' %}
+    {% sortable_header 'ubigeo_inei' 'Ubigeo INEI' %}
+    {% sortable_header 'ubigeo_reniec' 'Ubigeo RENIEC' %}
+    {% sortable_header 'codigo_postal' 'Cód. Postal' %}
+    {% sortable_header 'activo' 'Estado' %}
+    <th class="w-1">
+        <div class="d-flex justify-content-center align-items-center">
+            Acciones
+        </div>
+    </th>    
+{% endblock table_columns %}
+
+
+{% block table_rows %}
+    <tr>
+        <td class="" data-label="Región">
+            <a 
+                href="{% url 'ubicaciones:provincias_list' o.pk %}"
+                class="d-inline-block text-truncate text-reset text-decoration-none" 
+                style="max-width: 550px;">
+                {{ o.nombre }}                
+            </a>
+        </td>
+        <td class="" data-label="Ubigeo">
+            {{ o.ubigeo_inei|empty_to_dashes }}
+        </td>
+        <td class="" data-label="Ubigeo">
+            {{ o.ubigeo_reniec|empty_to_dashes }}
+        </td>                        
+        <td class="" data-label="Código Postal">
+            {{ o.codigo_postal|empty_to_dashes }}
+        </td>                        
+        <td data-label="Estado">                            
+            {{ o.activo|status_badge }}
+        </td>
+        <td data-label="Acciones">
+            <div class="btn-actions gap-1 justify-content-center">
+                {% url 'ubicaciones:departamento_details' pais_id=pais.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/details_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:departamento_update' pais_id=pais.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/edit_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:departamento_toggle' pais_id=pais.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/toggle_icon_button.html' with url=url %}                                
+            </div>
+        </td>
+    </tr>
+{% endblock table_rows %}
+
+    
+
+

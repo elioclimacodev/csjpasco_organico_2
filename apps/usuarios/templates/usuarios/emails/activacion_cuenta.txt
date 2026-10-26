@@ -1,0 +1,16 @@
+Estimado(a) usuario(a):
+
+Se ha registrado una cuenta de usuario asociada a esta dirección de correo electrónico.
+
+Para completar el registro, active su cuenta mediante el siguiente enlace:
+
+{{ activation_url }}
+
+Este enlace tiene una vigencia máxima de {{ expiration_hours }} horas.
+
+Si usted no realizó este registro, puede ignorar este mensaje.
+
+Atentamente,
+
+Corte Superior de Justicia de Pasco
+Poder Judicial del Perú

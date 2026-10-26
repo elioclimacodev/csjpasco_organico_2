@@ -1,0 +1,19 @@
+{% load static %}
+<aside class="navbar navbar-vertical navbar-expand-lg sidebar-custom bg-primary">
+    <div class="container-fluid">
+        <!-- Inicio Navbar toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+            aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Fin Navbar toggler -->
+
+        <!-- Inicio Navbar logo -->
+        {% include 'components/navigation/aside/_logo.html' %}
+        <!-- Fin Navbar logo -->
+
+        {% include 'components/navigation/aside/_user_options.html' %}
+
+        {% include 'components/navigation/aside/_menu.html' %}
+    </div>
+</aside>

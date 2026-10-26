@@ -1,0 +1,26 @@
+{% extends 'layouts/base_page.html' %}
+
+
+{% block page_content_header %}
+    Nueva persona
+{% endblock page_content_header %}
+    
+
+{% block page_content_body %}
+    <form 
+        action=""
+        method="POST"
+        novalidate
+        autocomplete="off"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% block form %}
+            {% block form_fields %}
+            {% endblock form_fields %}
+
+            {% block form_buttons %}
+            {% endblock form_buttons %}
+        {% endblock form %}            
+    </form>
+{% endblock page_content_body %}

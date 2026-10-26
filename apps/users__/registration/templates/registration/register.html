@@ -1,0 +1,11 @@
+{% extends 'project/layouts/auth/page.html' %}
+
+
+{% block content %}
+    {% url 'register' as link %}
+    {% include './register_form.html' with link=link %}
+{% endblock content %}
+
+{% block content-footer %}
+    {% include './footers/already_user.html' %}
+{% endblock content-footer %}   

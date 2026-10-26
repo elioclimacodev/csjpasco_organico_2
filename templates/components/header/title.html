@@ -1,0 +1,17 @@
+{% load breadcrumb_tags %}                    
+                    
+<div class="col">
+    {% if breadcrumbs %}
+        <!-- Breadcrumbs -->
+        {% render_breadcrumbs breadcrumbs max_visible=4 start_count=1 end_count=2 %}
+    {% elif pre_title %}
+        <!-- Page pre-title -->
+        <div class="page-pretitle">
+            {{ pre_title|default:'Pre título' }}
+        </div>
+    {% endif %}
+        
+    <h2 class="page-title">
+        {{ title|default:'Título de la página'}}
+    </h2>
+</div>

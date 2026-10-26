@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block page %}
+    <div class="page page-center">
+        <div class="container container-{{ container_size }} py-4">
+            <div class="text-center mb-4">
+                <!-- BEGIN NAVBAR LOGO -->
+                <a href="." aria-label="Tabler"
+                    class="navbar-brand navbar-brand-autodark">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 108 107">
+                    <path fill="#90100C" d="M50.847 39.469H16.671v10.046h34.176zM34.709.023H.532V10.07H34.71zm.116 24.232H.532v10.047h34.293z"/>
+                    <path fill="#90100C" d="M51.03.023H40.985V49.39h10.047zM34.927 0H24.881v34.066h10.046zM10.579.023H.532V49.39H10.58z"/>
+                    <path fill="#7A7562" d="M50.315 96.438H16.138v10.047h34.177zM34.176 56.993H0v10.046h34.176zm.117 24.232H0V91.27h34.293z"/>
+                    <path fill="#7A7562" d="M50.498 56.993H40.452v49.365h10.046zm-16.103-.023H24.348v34.065h10.047zm-24.348.023H0v49.365h10.047zm97.77-17.524H73.64v10.046h34.177zM91.678.023H57.502V10.07h34.176zm.116 24.232H57.502v10.047h34.292z"/>
+                    <path fill="#7A7562" d="M108 .023H97.953V49.39H108zM91.897 0H81.85v34.066h10.047zM67.548.023H57.502V49.39h10.046z"/>
+                    <path fill="#90100C" d="M107.284 96.438H73.108v10.047h34.176zM91.146 56.993H56.969v10.046h34.177zm.116 24.232H56.969V91.27h34.293z"/>
+                    <path fill="#90100C" d="M107.468 56.993H97.421v49.365h10.047zm-16.104-.023H81.318v34.065h10.046zm-24.348.023H56.969v49.365h10.047z"/>
+                    </svg>
+                </a>
+                <!-- END NAVBAR LOGO -->
+
+                <h3 class="mb-0 mt-1 text-primary">
+                    Corte Superior de Justicia de Pasco
+                </h3>
+                <p class="text-secondary">Poder Judicial del Perú</p>
+            </div>
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="h2 text-center mb-4">
+                        {{ title }}
+                    </h2>
+                    
+                    {% block content %}
+                        <!-- BEGIN formulario -->
+                        <form action="." method="POST" autocomplete="off" novalidate>
+                            {% csrf_token %}
+                                                        
+                            {% block non_field_errors %}
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger alert-important" role="alert">                                    
+                                        {% for error in form.non_field_errors %}
+                                            <div>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}                                        
+                                    </div>
+                                {% endif %}                                
+                            {% endblock non_field_errors %}
+                                
+                            {% block form_fields %}
+                                {% include 'components/forms/fields/fields.html' %}
+                            {% endblock form_fields %}
+                            
+                            {% block form_buttons %}
+                            {% endblock form_buttons %}                                        
+                        </form>
+                        <!-- END formulario -->                            
+                    {% endblock content %}                        
+                </div>
+            </div>
+            
+            {% block content_footer %}
+                {% include 'components/auth/footer_login.html' %}
+            {% endblock content_footer %}
+        </div>
+    </div>
+{% endblock page %}
+

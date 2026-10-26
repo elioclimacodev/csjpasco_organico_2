@@ -1,0 +1,65 @@
+{% extends 'components/datatable/displays/table.html' %}
+{% load datatable_tags %}
+
+
+{% block table_columns %}
+    {% sortable_header 'numero_documento' 'N° Documento' %}
+    {% sortable_header 'apellido_paterno' 'Apellido paterno' %}
+    {% sortable_header 'apellido_materno' 'Apellido materno' %}
+    {% sortable_header 'nombres' 'Nombres' %}    
+    {% sortable_header 'genero' 'Género' %}
+    {% sortable_header 'fecha_nacimiento' 'Fecha de nacimiento' %}
+    {% sortable_header 'estado_civil' 'Estado civil' %}
+    {% sortable_header 'activo' 'Estado' %}
+    <th class="w-1">
+        <div class="d-flex justify-content-center align-items-center">
+            Acciones
+        </div>
+    </th>
+{% endblock table_columns %}
+
+
+{% block table_rows %}
+    <tr>
+        <td>
+            {{ o.numero_documento|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.apellido_paterno|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.apellido_materno|empty_to_dashes }}
+        </td>                        
+        <td>
+            {{ o.nombres|empty_to_dashes }}
+        </td>     
+        <td>
+            {{ o.get_genero_display|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.fecha_nacimiento|date:'d-m-Y'|empty_to_dashes }}
+        </td>
+        <td>
+            {{ o.get_estado_civil_display|empty_to_dashes }}
+        </td>
+        <td>                            
+            {{ o.activo|status_badge }}
+        </td>
+        <td data-label="Acciones">
+            <div class="btn-actions gap-1 justify-content-center">
+                {% url 'ubicaciones:distrito_details' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/details_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:distrito_update' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/edit_icon_button.html' with url=url %}
+
+                {% url 'ubicaciones:distrito_toggle' prov_id=provincia.pk pk=o.pk as url %}
+                {% include 'components/datatable/buttons/toggle_icon_button.html' with url=url %}                                
+            </div>
+        </td>
+    </tr>
+{% endblock table_rows %}
+
+    
+
+

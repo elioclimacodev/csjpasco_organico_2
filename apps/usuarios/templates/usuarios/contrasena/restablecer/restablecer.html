@@ -1,0 +1,21 @@
+{% extends 'layouts/auth/base.html' %}
+
+
+{% block form_fields %}
+    <p class="text-secondary mb-3">
+        Ingrese el correo electrónico asociado a su cuenta.
+        Le enviaremos las instrucciones para restablecer su contraseña.
+    </p>
+    
+    <div class="mb-5">
+        {% include 'components/forms/fields/fields.html' %}
+    </div>
+{% endblock %}
+
+
+{% block form_buttons %}
+    <button type="submit" class="btn btn-primary w-100">
+        Enviar enlace de restablecimiento
+    </button>
+{% endblock form_buttons %}
+    
