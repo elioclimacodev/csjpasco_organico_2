@@ -52,7 +52,12 @@
     --tblr-btn-hover-bg: var(--institutional-primary-hover);
     --tblr-btn-hover-border-color: var(--institutional-primary-hover);
 
-    --tblr-btn-focus-shadow-rgb: var(--institutional-primary-rgb);
+    /*
+     * Tabler 1.7.x: el token --tblr-btn-focus-shadow-rgb fue retirado.
+     * El anillo de foco define ahora con --tblr-btn-focus-box-shadow.
+     */
+    --tblr-btn-focus-box-shadow: 0 0 0 var(--tblr-focus-ring-width, 0.25rem)
+        var(--institutional-focus-ring);
 
     --tblr-btn-active-color: #fff;
     --tblr-btn-active-bg: var(--institutional-primary-active);

@@ -1,7 +1,14 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es-PE">
+    <!--
+        Tema raíz fijado en claro: desde Tabler 1.5 el modo por defecto de
+        tabler-theme.js es "auto" (sigue el sistema operativo) y podría
+        activar el modo oscuro en equipos con preferencia dark sin decisión
+        explícita del proyecto. El <header> de la barra superior mantiene su
+        propio data-bs-theme="dark" de forma independien.
+    -->
+    <html lang="es-PE" data-bs-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -50,10 +57,8 @@
         [x-cloak] { display: none !important; }
     </style>
         
-    <!-- Fuente personalizada -->
-    <style>
-        @import url("https://rsms.me/inter/inter.css");
-    </style>
+    <!-- Fuente Inter variable self-hosted (antes: @import rsms.me, dependía de internet) -->
+    <link href="{% static 'project/css/inter_fonts.css' %}" rel="stylesheet" />
 </head>
 
 <!-- 
@@ -153,9 +158,6 @@ código adicional en cada formulario o petición.
     <script src="{% static 'libs/htmx/htmx_2.0.6.min.js' %}" defer></script>
     <script src="{% static 'libs/alpine.js/alpinejs_mask_3.x.x.min.js' %}" defer></script>
     <script src="{% static 'libs/alpine.js/alpinejs_3.15.0.min.js' %}" defer></script>
-
-    <!-- Scripts del demo original de Tabler.io -->
-    <script src="{% static 'tabler/preview/js/demo.min.js' %}" defer></script>
 
     <!-- Scripts del proyecto -->
     <script src="{% static 'project/js/toast.js' %}" defer></script>

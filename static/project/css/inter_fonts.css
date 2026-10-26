@@ -1,0 +1,60 @@
+/* ============================================================
+   INTER VARIABLE — fuente self-hosted (Inter 4.1)
+   ------------------------------------------------------------
+   Reemplaza el @import externo a https://rsms.me/inter/inter.css
+   para que la aplicación no dependa de internet y no expose la
+   IP de cada usuario en cada carga de página.
+
+   La fuente variable cubre los pesos 100–900 en un solo archivo,
+   normal e itálica. Se declara con los tres nombres de familia
+   que resuelven la pila de Tabler ("Inter Var" primero, "Inter"
+   como alternativa) y "InterVariable" por compatibilidad.
+   ============================================================ */
+
+@font-face {
+    font-family: 'InterVariable';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'InterVariable';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable-Italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter Var';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter Var';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable-Italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('../fonts/InterVariable-Italic.woff2') format('woff2');
+}
