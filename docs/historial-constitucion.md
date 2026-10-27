@@ -6,4 +6,5 @@ Cada enmienda se integra además en un commit propio (por ejemplo,
 
 | Versión | Fecha | Cambio | Aprobador |
 |---------|-------|--------|-----------|
+| 1.0.0 | 2026-10-27 | Ratificación inicial de la Constitución (texto final y aprobado, registrado sin modificaciones de contenido) | ELIO GERSON CLÍMACO HERRERA |
 

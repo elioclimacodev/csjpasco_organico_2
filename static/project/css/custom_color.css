@@ -1,21 +1,21 @@
 /* ============================================================
    TEMA INSTITUCIONAL
-   Color principal: #A42612
+   Color principal: #A42622
    ============================================================ */
 
 :root {
     /* --------------------------------------------------------
        COLOR INSTITUCIONAL PRINCIPAL
        -------------------------------------------------------- */
-    --tblr-primary: #A42612;
-    --tblr-primary-rgb: 164, 38, 18;
+    --tblr-primary: #A42622;
+    --tblr-primary-rgb: 164, 38, 34;
 
     /*
      * Variantes utilizadas para hover / active.
      * Se mantienen dentro de la misma gama institucional.
      */
-    --institutional-primary: #A42612;
-    --institutional-primary-rgb: 164, 38, 18;
+    --institutional-primary: #A42622;
+    --institutional-primary-rgb: 164, 38, 34;
 
     --institutional-primary-hover: #8D200F;
     --institutional-primary-active: #741A0C;
@@ -24,7 +24,7 @@
      * Focus institucional.
      * Evita el azul predeterminado de Bootstrap / Tabler.
      */
-    --institutional-focus-ring: rgba(164, 38, 18, 0.20);
+    --institutional-focus-ring: rgba(164, 38, 34, 0.20);
 }
 
 
@@ -33,8 +33,8 @@
    ============================================================ */
 
 [data-bs-theme="dark"] {
-    --tblr-primary: #A42612;
-    --tblr-primary-rgb: 164, 38, 18;
+    --tblr-primary: #A42622;
+    --tblr-primary-rgb: 164, 38, 34;
 }
 
 
