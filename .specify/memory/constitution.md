@@ -1,39 +1,3 @@
-<!--
-Sync Impact Report (material temporal de revisión — NO es contenido de gobernanza;
-remover antes de commitear .specify/memory/constitution.md)
-======================================================================
-Versión anterior: ninguna (primera versión registrada)
-Versión nueva:   1.0.0 (ratificación inicial)
-Sesión:          /speckit.constitution — fecha 2026-10-27
-
-Principios o secciones modificados: NINGUNO.
-  El contenido (Título, Propósito, Definiciones, Principios I–IV,
-  Restricciones Tecnológicas y Estructura del Proyecto, Estándares de
-  UI/UX y Accesibilidad, Validación Normalización y Testing y
-  Gobernanza) se conservó textual, en español, sin reescritura,
-  resumen reformulación, reordenamiento ni adiciones.
-Secciones añadidas: ninguna (solo se añadió la línea de metadatos de
-  versión al final de Gobernanza y este reporte temporal).
-Secciones eliminadas: ninguna.
-
-Decisiones de metadatos:
-- CONSTITUTION_VERSION: 1.0.0 (ratificación inicial; primer registro).
-- RATIFICATION_DATE: 2026-10-27 (fecha de registro; el historial estaba
-  vacío y no constaba fecha de adopción anterior).
-- LAST_AMENDED_DATE: 2026-10-27 (idem ratificación inicial).
-
-Historial: entrada de la versión 1.0.0 añadida en
-docs/historial-constitucion.md (la tabla estaba vacía). No se registró
-ningún historial dentro de la constitución.
-Contradicción reportada — RESUELTA por decisión del Responsable (2026-10-27):
-1. "Identidad visual" declara `#A42622` como color institucional
-   principal y PERMANECE sin cambios (la constitución prevalece).
-   El archivo de tokens del proyecto usa `#A42612` y DEBE alinearse a
-   `#A42622` en una corrección aparte (intento diferido de código, no
-   parte de la gobernanza; la constitución NO se enmienda).
-TODOs de placeholders: ninguno pendiente.
-======================================================================
--->
 # Constitución del ERP Administrativo — Corte Superior de Justicia de Pasco
 
 ## Propósito
@@ -321,6 +285,20 @@ Una excepción es una desviación puntual, temporal y documentada respecto de un
 
 Las excepciones SOLO PUEDEN aplicarse a los estándares de testing, de estructura de directorios y de UI/UX. NO PUEDEN aplicarse a los Principios II y III. Toda desviación de los Principios I y IV o de las restricciones tecnológicas requiere enmienda.
 
+### Brechas preexistentes
+
+Una brecha preexistente es un incumplimiento de un principio que ya existía antes de una feature, o que depende de una capacidad transversal aún no implementada, y que la feature no puede resolver sin exceder su alcance. No es una excepción ni modifica la constitución.
+
+Una feature PUEDE avanzar con una brecha preexistente registrada solo si se cumplen todas estas condiciones:
+
+1. **Origen**: el incumplimiento existe en código o capacidades que la feature no crea; o, cuando la feature genera eventos que un principio exige tratar (por ejemplo, auditar), ese tratamiento depende de una capacidad transversal que aún no existe y que, conforme al Principio IV, DEBE implementarse una sola vez en su propio módulo.
+2. **No ampliación**: la feature NO DEBE extender la brecha a operaciones nuevas propias. Toda operación que la feature cree DEBE cumplir los Principios II y III en todo lo que no dependa de la capacidad faltante.
+3. **Punto de enganche**: cuando la brecha dependa de una capacidad faltante, la feature DEBE producir los eventos mediante mecanismos nativos que esa capacidad pueda interceptar sin modificar la feature.
+4. **Registro**: la brecha DEBE registrarse en `docs/decisiones/`, con alcance, origen, riesgo aceptado, cierre comprometido (feature responsable), fecha de revisión y aprobación del Responsable Técnico, y DEBE referenciarse desde el plan de la feature.
+5. **Vigencia**: al llegar la fecha de revisión sin haberse cerrado la brecha, el Responsable Técnico DEBE priorizar su cierre o tramitar una enmienda.
+
+Esta figura NO PUEDE aplicarse a la eliminación física de información institucional ni a la ausencia de autenticación o autorización en operaciones que la propia feature crea.
+
 ### Limitaciones del stack
 
 En caso de que una funcionalidad no se pueda implementar con las características nativas de Django ni con el stack establecido, se deberá informar al desarrollador sobre la limitación y proponer alternativas compatibles con esta constitución antes de implementar. Si la alternativa elegida implica una desviación, DEBE tramitarse como enmienda o excepción según corresponda.
@@ -329,6 +307,6 @@ En caso de que una funcionalidad no se pueda implementar con las característica
 
 - Toda especificación, plan y tarea DEBE ser revisada contra esta constitución antes de su aprobación e implementación.
 - Las especificaciones DEBEN identificar explícitamente los requisitos de autenticación, autorización, auditoría, protección de datos e información sensible aplicables.
-- Las desviaciones que no hayan sido enmendadas ni exceptuadas constituyen incumplimiento y DEBEN corregirse o tramitarse antes de considerarse aceptables.
+- Las desviaciones que no hayan sido enmendadas, exceptuadas ni registradas como brecha preexistente conforme a esta Gobernanza constituyen incumplimiento y DEBEN corregirse o tramitarse antes de considerarse aceptables.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-10-27
+**Version**: 1.1.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-10-28
