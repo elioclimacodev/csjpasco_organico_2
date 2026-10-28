@@ -38,9 +38,9 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 **Purpose**: Estructura mínima para el resto de tareas.
 
-- [ ] T001 [P] Crear el paquete de tests de common: `apps/common/tests/__init__.py` (vacío). Comprobar que `apps/common/` no tenga un `tests.py` que entre en conflicto con el paquete (plan.md §Project Structure)
-- [ ] T002 [P] Crear `static/project/css/sidebar.css` con un comentario de cabecera en español ("Estilos del componente aside; consume tokens de custom_color.css, no define valores de la paleta") y cargarlo en `templates/base.html` con `<link href="{% static 'project/css/sidebar.css' %}" rel="stylesheet" />` inmediatamente después de la línea de `project/css/custom_color.css` (research R8)
-- [ ] T003 [P] Crear el directorio `templates/components/icons/` para los parciales SVG (research R6)
+- [X] T001 [P] Crear el paquete de tests de common: `apps/common/tests/__init__.py` (vacío). Comprobar que `apps/common/` no tenga un `tests.py` que entre en conflicto con el paquete (plan.md §Project Structure)
+- [X] T002 [P] Crear `static/project/css/sidebar.css` con un comentario de cabecera en español ("Estilos del componente aside; consume tokens de custom_color.css, no define valores de la paleta") y cargarlo en `templates/base.html` con `<link href="{% static 'project/css/sidebar.css' %}" rel="stylesheet" />` inmediatamente después de la línea de `project/css/custom_color.css` (research R8)
+- [X] T003 [P] Crear el directorio `templates/components/icons/` para los parciales SVG (research R6)
 
 ---
 
