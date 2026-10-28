@@ -193,7 +193,7 @@ Resumen consolidado de los requisitos que la constitución exige identificar (Go
   - *Denegación de autorización* al acceder sin permiso a una página de destino del menú inicial (FR-008a).
   - Esta feature **no** crea registros de auditoría: ambos eventos se producen mediante los mecanismos nativos (el evento estándar de cierre de sesión y la denegación estándar de acceso), que son los puntos de enganche del futuro módulo de auditoría. La brecha temporal se registra en el plan (Complexity Tracking).
 - **Información sensible y protección de datos**: el área de usuario muestra el nombre completo del usuario autenticado (dato personal visible solo para su titular) y, como dato secundario, el nombre de su grupo principal. El **número de documento de identidad** (que es el nombre de usuario) es un dato personal y **NO DEBE mostrarse** en el menú lateral, salvo como último recurso para el nombre principal cuando el usuario no tiene nombre completo registrado (ver Edge Cases).
-- **Brechas registradas**: la auditoría pendiente (cierre de sesión y denegaciones) y la protección parcial de vistas se registran como brechas preexistentes, no introducidas por esta feature, en `docs/decisiones/2026-10-28-brechas-feature-001.md`.
+- **Brechas registradas**: la auditoría pendiente (cierre de sesión y denegaciones) y la protección parcial de vistas se registran como brechas preexistentes, no introducidas por esta feature, en `docs/decisiones/2026-10-28-brechas-feature-001.md` (constitución v1.1.0 §Gobernanza › Brechas preexistentes).
 - **Información no persistida**: la feature no almacena datos nuevos (ver Key Entities).
 
 ### Key Entities *(include if feature involves data)*

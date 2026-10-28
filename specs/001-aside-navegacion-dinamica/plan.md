@@ -220,7 +220,7 @@ Ejecución: `python manage.py test` (SQLite en desarrollo). Antes de desplegar, 
 
 ## Complexity Tracking
 
-> Las tres filas son **brechas preexistentes** (no introducidas por esta feature), registradas y aprobadas por el Responsable Técnico en `docs/decisiones/2026-10-28-brechas-feature-001.md`, con fecha de revisión y cierre comprometido. No son excepciones: la constitución §Excepciones no las admite para los Principios II y III.
+> Las tres filas son **brechas preexistentes** (no introducidas por esta feature), registradas y aprobadas por el Responsable Técnico en `docs/decisiones/2026-10-28-brechas-feature-001.md`, con fecha de revisión y cierre comprometido, conforme a constitución v1.1.0 §Gobernanza › Brechas preexistentes (las 5 condiciones están justificadas en ese documento).
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|

@@ -7,7 +7,7 @@ description: "Lista de tareas de implementación: navegación lateral dinámica 
 
 **Input**: Documentos de diseño de `specs/001-aside-navegacion-dinamica/`
 
-**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/ (menu-declaration.md, sidebar-template.md), quickstart.md · constitución v1.0.0 · `docs/decisiones/2026-10-28-brechas-feature-001.md`
+**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/ (menu-declaration.md, sidebar-template.md), quickstart.md · constitución v1.1.0 · `docs/decisiones/2026-10-28-brechas-feature-001.md`
 
 **Tests**: OBLIGATORIOS (constitución §Requisitos de testing; plan.md §Estrategia de tests). En cada fase, las tareas de test van antes que las de implementación y DEBEN fallar antes de implementar.
 
@@ -102,7 +102,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 - [ ] T011 Crear `apps/common/checks.py` con una función de system check (`django.core.checks.register`, tag `Tags.urls`) que valide el registro real con los códigos `common.E101`–`common.E111` y los mensajes en español del contrato; usar `django.template.loader.get_template` para E108 (contracts/menu-declaration.md §Reglas; research R5)
 - [ ] T012 Modificar `apps/common/apps.py`: en `CommonConfig.ready()`, `autodiscover_modules('menu')` (`django.utils.module_loading`) e importar `apps.common.checks` para registrar el check. No importar ningún módulo de negocio por nombre (research R2; constitución Principio IV)
 - [ ] T013 Crear `apps/common/templatetags/navigation_tags.py` con `@register.simple_tag(takes_context=True) def get_sidebar(context)`, que lee `context.get('request')` y devuelve `build_sidebar(request.user, request)` o `None` si no hay `request` o el usuario no está autenticado; docstring en español (contracts/sidebar-template.md §2; research R3)
-- [ ] T014 Ejecutar `python manage.py check` y `python manage.py test apps.common`: T005–T007 en verde (salvo los casos que dependen de declaraciones reales, que se completan en US1)
+- [ ] T014 Ejecutar `python manage.py check` y `python manage.py test apps.common`: T005–T007 en verde. Con el registro todavía vacío, los casos "el registro real pasa sin errores" y "cada permiso declarado existe en `Permission`" de T007 pasan de forma trivial; se revalidan con las declaraciones reales en T037
 
 **Checkpoint**: Registro, constructor, check y template tag listos. Las historias pueden comenzar.
 
@@ -131,7 +131,8 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   (spec FR-001, FR-010, FR-011, FR-028, FR-031, SC-002, SC-007; contracts/sidebar-template.md §4)
 - [ ] T019 [P] [US1] Tests de páginas de error en `apps/common/tests/test_error_pages.py` (bloque US1) con `@override_settings(DEBUG=False)`:
   - 403 de una lista sin permiso: usa `403.html`, contiene el texto en español, NO contiene `view_` ni el nombre del permiso, contiene el aside y el enlace a `main:index`;
-  - 404 autenticado: con aside; 404 anónimo: sin aside.
+  - 404 autenticado: con aside; 404 anónimo: sin aside;
+  - ni el 403 ni el 404 contienen "Título de la página", "Pre título" ni "Nuevo registro" (valores por defecto y acciones de demostración de `base_page.html`).
 
   (spec FR-008b, Edge Cases "Páginas de error"; research R14)
 
@@ -179,8 +180,8 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   - el mismo tratamiento de enlaces externos que T033.
 
   (spec FR-016, FR-018, FR-019; contrato)
-- [ ] T035 [P] [US1] Crear `templates/403.html`, que extiende `layouts/base_page.html`, con un título y un mensaje en español formal: "No tiene permiso para acceder a esta página. Si considera que necesita acceso, solicítelo al administrador del sistema." Incluye el enlace "Volver a Inicio" (`{% url 'main:index' %}`), sin nombre del permiso ni detalles técnicos (spec FR-008b; research R14)
-- [ ] T036 [P] [US1] Crear `templates/404.html`, que extiende `layouts/base_page.html`, con el mensaje en español formal "La página solicitada no existe o ha sido movida." y un enlace a Inicio (spec Edge Cases "Páginas de error"; research R14)
+- [ ] T035 [P] [US1] Crear `templates/403.html`, que extiende `layouts/base_page.html`, con un título y un mensaje en español formal: "No tiene permiso para acceder a esta página. Si considera que necesita acceso, solicítelo al administrador del sistema." Incluye el enlace "Volver a Inicio" (`{% url 'main:index' %}`), sin nombre del permiso ni detalles técnicos. Sobrescribir `{% block page_header %}` con un encabezado propio (`<h2 class="page-title">Acceso denegado</h2>`), porque el manejador 403 no pasa `title` y `base_page.html` mostraría "Título de la página", "Pre título" y acciones de demostración (spec FR-008b; research R14)
+- [ ] T036 [P] [US1] Crear `templates/404.html`, que extiende `layouts/base_page.html`, con el mensaje en español formal "La página solicitada no existe o ha sido movida." y un enlace a Inicio. Sobrescribir `{% block page_header %}` con `<h2 class="page-title">Página no encontrada</h2>`, por el mismo motivo que T035 (spec Edge Cases "Páginas de error"; research R14)
 - [ ] T037 [US1] Ejecutar `python manage.py check` y `python manage.py test apps.common apps.main apps.organizacion apps.personas`: T015–T019 y el test de permisos existentes de T007 en verde
 
 **Checkpoint**: US1 funcional. Valida los escenarios de aceptación US1-1 a US1-6 y los escenarios 1–4 y 12 de quickstart.md.
@@ -312,7 +313,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   Sin valores hex de la paleta (research R8, R9; spec FR-017, FR-028, FR-030)
 - [ ] T053 [US4] Verificar el comportamiento responsive con el navegador: por debajo de 992 px el menú está colapsado al cargar y el botón lo despliega, y el desplegable activo se ve abierto; desde 992 px el menú está siempre expandido. Guardar `movil-375-colapsado.png`, `movil-375-desplegado.png` y `escritorio-1280.png` en `specs/001-aside-navegacion-dinamica/evidencias/`. Si algo no se cumple, corregirlo en las plantillas o en `sidebar.css` (spec FR-010, FR-029; quickstart esc. 9)
 - [ ] T054 [US4] Recorrido con teclado: orden toggler → logo → opciones → área de usuario; Enter o Espacio abren; Esc cierra y devuelve el foco; foco visible. Registrarlo en `specs/001-aside-navegacion-dinamica/evidencias/teclado.md`. Prueba con NVDA (región "Menú principal", "página actual", íconos no anunciados, aviso de enlace externo): registrarla en `evidencias/lector-pantalla.md`. Corregir las desviaciones encontradas (spec FR-028, SC-005; quickstart esc. 10–11)
-- [ ] T055 [US4] Medir el contraste de todas las combinaciones (texto, títulos de sección, submenús, ítem activo, foco, insignias de cada variante, avatar y área de usuario) con DevTools o Colour Contrast Analyser, y registrar la tabla en `specs/001-aside-navegacion-dinamica/evidencias/contraste.md`. Eliminar del conjunto de `Badge` (en `menu.py` y en el check E109) cualquier variante que no cumpla ≥ 4.5:1 de texto y ≥ 3:1 frente al fondo (spec FR-017, FR-030, SC-006; research R9; quickstart esc. 13)
+- [ ] T055 [US4] Medir el contraste de todas las combinaciones (texto, títulos de sección, submenús, ítem activo, foco, insignias de cada variante, avatar y área de usuario) con DevTools o Colour Contrast Analyser, y registrar la tabla en `specs/001-aside-navegacion-dinamica/evidencias/contraste.md`. Ajustar en `sidebar.css` los colores de cualquier variante que no cumpla ≥ 4.5:1 de texto y ≥ 3:1 frente al fondo hasta que cumpla. El conjunto de variantes de spec FR-017 (neutra, advertencia e informativa) no se reduce (spec FR-017, FR-030, SC-006; research R9; quickstart esc. 13)
 
 **Checkpoint**: Valida los escenarios US4-1 a US4-4 y los escenarios 9, 10, 11 y 13 de quickstart.md.
 
@@ -359,13 +360,14 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 - [ ] T063 Buscar referencias a `_user_options.html` y eliminar `templates/components/navigation/aside/_user_options.html` (spec FR-033)
 - [ ] T064 Eliminar de `static/project/css/custom_color.css` el bloque `.sidebar-custom` (fondo `#f9fafb !important` y las reglas de barra de desplazamiento ya trasladadas en T052). Buscar con `grep -rn "sidebar-custom" templates static/project apps` que no quedan usos (research R8; spec FR-030)
 - [ ] T065 [P] Crear `templates/500.html`, autocontenido: HTML completo sin `{% extends %}`, sin template tags del proyecto ni variables de contexto, sin `style=` (puede usar `{% load static %}` para enlazar `tabler/dist/css/tabler.min.css`, que no requiere contexto), con el mensaje en español formal "Ocurrió un error interno. Inténtelo nuevamente en unos minutos." y un enlace `<a href="/">Volver a Inicio</a>` (spec Edge Cases; research R14)
-- [ ] T066 [P] Crear `templates/403_csrf.html`, autocontenido: mensaje en español formal "La solicitud no pudo verificarse. Vuelva a la página anterior o regrese a Inicio e inténtelo nuevamente.", con enlaces a `/` y a la página de inicio de sesión (`/usuarios/sesion/iniciar/`), sin detalles técnicos ni `style=` (spec Edge Cases; research R14)
+- [ ] T066 [P] Crear `templates/403_csrf.html`, autocontenido: mensaje en español formal "La solicitud no pudo verificarse. Vuelva a la página anterior o regrese a Inicio e inténtelo nuevamente.", con enlaces a `{% url 'main:index' %}` y a `{% url 'usuarios:iniciar_sesion' %}` (la etiqueta `url` funciona aunque la plantilla se renderice sin `RequestContext`), sin detalles técnicos ni `style=` (spec Edge Cases; research R14)
 - [ ] T067 Auditoría de restricciones con búsquedas:
   - (a) `grep -rn "style=" templates/components/navigation/aside templates/components/icons templates/403.html templates/404.html templates/500.html templates/403_csrf.html` → vacío;
   - (b) textos en inglés y enlaces `.html` de demostración en `templates/components/navigation/aside/` → ninguno;
   - (c) valores de la paleta (`A42622`, `EAE4D2`, `7A7562`) fuera de `static/project/css/custom_color*.css` → ninguno nuevo;
   - (d) `apps/common/` sin `import apps.(main|organizacion|personas|usuarios|ubicaciones|configuracion)`;
-  - (e) los `apps/*/menu.py` solo importan `apps.common.components.menu`.
+  - (e) los `apps/*/menu.py` solo importan `apps.common.components.menu`;
+  - (f) `git diff --stat master -- static/project/js` → sin cambios, y `grep -rn "<script" templates/components/navigation/aside templates/components/icons` → vacío.
 
   (spec FR-027, FR-031, FR-032, SC-007; constitución)
 - [ ] T068 Medición de carga según el escenario 14 de quickstart.md (20 + 20 solicitudes a `/organizacion/distritos-judiciales/`) y registro en `specs/001-aside-navegacion-dinamica/evidencias/rendimiento.md` (diferencia ≤ 20 ms) (spec SC-009)
