@@ -7,7 +7,7 @@
 | Principios afectados | II (Seguridad por Diseño) y III (Integridad de Datos y Auditoría) |
 | Tipo | Brecha preexistente conforme a constitución **v1.1.0 §Gobernanza › Brechas preexistentes**. No es una excepción (§Excepciones no se aplica a II y III) ni una enmienda. |
 | Aprobador | Responsable Técnico vigente según `docs/responsables.md`, en la sesión de revisión del checklist `revision-requisitos.md` (CHK008) |
-| Fecha de revisión | Al entregarse la feature del módulo de auditoría, o el **2027-01-31**, lo que ocurra primero (fecha propuesta; ajustable por el Responsable Técnico) |
+| Fecha de revisión | Al entregarse la feature del módulo de auditoría, o el **2027-01-31**, lo que ocurra primero (confirmada por el Responsable Técnico el 2026-10-28) |
 
 ## Contexto
 
