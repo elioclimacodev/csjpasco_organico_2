@@ -327,7 +327,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T056 [P] [US5] Test en `apps/common/tests/test_sidebar_render.py` (bloque US5), con `registry.isolated()`: un ítem con insignia, uno externo, un contenedor con `columns=2` y 3 hijos, y un `dropend` de nivel 2 con hijos de nivel 3. El HTML debe contener:
+- [X] T056 [P] [US5] Test en `apps/common/tests/test_sidebar_render.py` (bloque US5), con `registry.isolated()`: un ítem con insignia, uno externo, un contenedor con `columns=2` y 3 hijos, y un `dropend` de nivel 2 con hijos de nivel 3. El HTML debe contener:
   - `sidebar-badge-` con el texto de la insignia;
   - `rel="noopener"` y "(se abre en una pestaña nueva)";
   - dos `dropdown-menu-column`;
@@ -337,7 +337,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementation for User Story 5
 
-- [ ] T057 [US5] Ejecutar el escenario §4 de quickstart.md: declarar temporalmente una opción en `apps/personas/menu.py`, ejecutar `python manage.py check`, comprobar la visibilidad con y sin el permiso y comprobar con `git diff --stat` que solo cambió el módulo. Registrarlo en `specs/001-aside-navegacion-dinamica/evidencias/extensibilidad.md` y revertir la opción temporal (spec SC-008, US5-1, US5-4)
+- [X] T057 [US5] Ejecutar el escenario §4 de quickstart.md: declarar temporalmente una opción en `apps/personas/menu.py`, ejecutar `python manage.py check`, comprobar la visibilidad con y sin el permiso y comprobar con `git diff --stat` que solo cambió el módulo. Registrarlo en `specs/001-aside-navegacion-dinamica/evidencias/extensibilidad.md` y revertir la opción temporal (spec SC-008, US5-1, US5-4)
 
 **Checkpoint**: Las cinco historias funcionan de forma independiente.
 

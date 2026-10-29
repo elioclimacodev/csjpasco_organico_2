@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase
 from django.urls import resolve, reverse
 
-from apps.common.components.menu import MenuItem, registry
+from apps.common.components.menu import Badge, MenuItem, registry
 from apps.common.tests.helpers import crear_usuario
 from apps.organizacion.models import DistritoJudicial
 
@@ -264,3 +264,56 @@ class SidebarRenderUS4Tests(TestCase):
         for archivo in ICONS_DIR.glob('*.html'):
             with self.subTest(archivo=archivo.name):
                 self.assertIn('aria-hidden="true"', archivo.read_text(encoding='utf-8'))
+
+
+class SidebarRenderUS5Tests(TestCase):
+    """
+    Las capacidades del patrón de referencia se renderizan solo a partir de
+    la declaración, sin tocar las plantillas (spec US5-3, FR-014–FR-019).
+    """
+
+    def setUp(self):
+        self.usuario = crear_usuario()
+
+    def hoja(self, item_id, **campos):
+        campos.setdefault('url_name', 'main:index')
+        return MenuItem(id=item_id, label=f'Opción {item_id}', visible_to_authenticated=True, **campos)
+
+    def render(self, *items):
+        with registry.isolated():
+            for item in items:
+                registry.register_item(item)
+            return render_aside(self.usuario, reverse('usuarios:list'))
+
+    def test_insignia(self):
+        aside = self.render(self.hoja('a', badge=Badge(text='Nuevo', variant='warning')))
+
+        self.assertRegex(aside, r'class="badge badge-sm sidebar-badge-warning ms-auto">Nuevo<')
+
+    def test_enlace_externo(self):
+        aside = self.render(self.hoja('externo', url_name=None, url='https://www.pj.gob.pe/'))
+
+        self.assertRegex(aside, r'href="https://www.pj.gob.pe/"\s*target="_blank" rel="noopener"')
+        self.assertIn('(se abre en una pestaña nueva)', aside)
+
+    def test_contenedor_en_dos_columnas(self):
+        aside = self.render(MenuItem(
+            id='grupo', label='Grupo', columns=2,
+            children=(self.hoja('a', order=1), self.hoja('b', order=2), self.hoja('c', order=3)),
+        ))
+
+        self.assertEqual(aside.count('class="dropdown-menu-column"'), 2)
+
+    def test_submenu_de_segundo_nivel(self):
+        aside = self.render(MenuItem(
+            id='nivel1', label='Nivel 1',
+            children=(
+                MenuItem(id='nivel2', label='Nivel 2', children=(self.hoja('n3a'), self.hoja('n3b'))),
+            ),
+        ))
+
+        self.assertRegex(aside, r'<div class="dropend">\s*<a\s+class="dropdown-item dropdown-toggle"')
+        inicio_dropend = aside.index('<div class="dropend">')
+        self.assertIn('class="dropdown-menu"', aside[inicio_dropend:])
+        self.assertIn('Opción n3a', aside[inicio_dropend:])
+        self.assertIn('Opción n3b', aside[inicio_dropend:])
