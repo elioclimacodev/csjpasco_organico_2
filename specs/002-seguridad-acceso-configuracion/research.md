@@ -87,7 +87,7 @@ Hechos verificados en el código instalado: Django 6.0 (`venv/Lib/site-packages/
 
 ## R7. Aviso de cuenta sin permisos (FR-003a)
 
-- **Decisión**: la vista `main:index` añade al contexto `cuenta_sin_permisos = not user.is_superuser and not user.get_all_permissions()`. `main/index.html` muestra un aviso Tabler `alert alert-warning` con el texto de FR-003a, `role="status"` y sin botón de cerrar, porque es persistente mientras dure la condición. El componente `components/alerts/alert.html` es para mensajes de `django.contrib.messages` de un solo uso y no encaja con un aviso persistente; se usa la misma clase visual para mantener la coherencia.
+- **Decisión**: la vista `main:index` añade al contexto `cuenta_sin_permisos = not user.is_superuser and not user.get_all_permissions()`. `main/index.html` incluye el componente transversal `components/alerts/aviso_persistente.html` con `tipo="warning"`, `rol="status"` y el texto de FR-003a. El componente se crea en esta feature (análisis H1, constitución §Mensajes): un aviso Tabler `alert alert-{{ tipo }}` sin botón de cerrar, para avisos que duran mientras se cumpla una condición. `components/alerts/alert.html` sigue reservado a los mensajes de un solo uso de `django.contrib.messages`.
 - **Costo**: `get_all_permissions` usa la caché de permisos del usuario que ya llenó el aside (`has_perms`), así que no añade consultas en el mismo request.
 - **Alternativas descartadas**: un mensaje de `messages` al iniciar sesión (desaparece y no refleja el estado); una página dedicada (descartada en la clarificación).
 

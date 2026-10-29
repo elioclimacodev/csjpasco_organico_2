@@ -81,7 +81,7 @@
 - [x] CHK028 ¿Están definidos los requisitos de foco cuando la ventana se reemplaza por el aviso de denegación (a qué elemento va el foco, cómo se anuncia el título)? [Gap, Contract respuestas-acceso §5]
   - ✔ Evidencia: spec FR-011 (aviso de la ventana en región de alerta; foco en "Cerrar") y contracts/respuestas-acceso.md §5 (role="alert" + autofocus, que HTMX 2 aplica tras el intercambio); cumple constitución §Accesibilidad (anuncio de cambios parciales).
 - [x] CHK029 ¿Están definidos el rol y el anuncio a tecnologías de asistencia del aviso de cuenta sin permisos (FR-003a), y su persistencia sin botón de cerrar? [Clarity, Research R7]
-  - ✔ Evidencia: research R7: aviso alert-warning con role="status", persistente y sin botón de cerrar mientras dure la condición.
+  - ✔ Evidencia: research R7: componente transversal components/alerts/aviso_persistente.html (tipo warning, role="status"), persistente y sin botón de cerrar mientras dure la condición (actualizado tras /speckit-analyze, H1).
 - [x] CHK030 ¿Exigen los requisitos que los textos por defecto del componente de advertencia reutilizado estén en español y sin contenido de demostración? [Completeness, Contract respuestas-acceso §4]
   - ✔ Evidencia: contracts/respuestas-acceso.md §4: modal_warning.html con bloque modal_footer y textos por defecto en español; se elimina el botón "Eliminar 84 items".
 

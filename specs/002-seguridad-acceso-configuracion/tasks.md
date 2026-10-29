@@ -37,7 +37,7 @@ description: "Lista de tareas de implementación: protección de operaciones y c
   - eliminar `apps/usuarios/tests.py`;
   - comprobar con `python manage.py test apps.usuarios --noinput` que siguen pasando los mismos tests (plan §Project Structure).
 - [ ] T002 [P] Dejar `apps/ubicaciones/tests.py` preparado para los tests de US2: hoy es un stub. Reemplazar el comentario por un docstring de módulo en español y mantener el import de `TestCase` (plan §Project Structure).
-- [ ] T003 **BLOQUEANTE – tarea manual del Responsable Técnico, antes de T039**: generar una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"` y añadirla al `.env` local, junto con `DEBUG=true` para desarrollo. No reutilizar la clave del historial de git (FR-017). Desde T039, `settings.py` la exige y la aplicación no arranca sin ella (contracts/variables-entorno.md).
+- [ ] T003 **BLOQUEANTE – tarea manual del Responsable Técnico, antes de T040**: generar una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"` y añadirla al `.env` local, junto con `DEBUG=true` para desarrollo. No reutilizar la clave del historial de git (FR-017). Desde T040, `settings.py` la exige y la aplicación no arranca sin ella (contracts/variables-entorno.md).
 
 ---
 
@@ -72,11 +72,12 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 - [ ] T007 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`:
   - **(a)** para cada ruta de `rutas_enrutadas()` que no esté en `RUTAS_PUBLICAS`, un `GET` anónimo responde `302` con `Location` que empieza por `resolve_url(settings.LOGIN_URL)` y contiene `next=` (R8-a, contracts/vistas-y-permisos.md §3 C1, FR-001, FR-005, SC-001);
-  - **(b)** la exigencia de sesión no añade consultas: `assertNumQueries` igual en una vista protegida con un usuario autenticado y con permiso, antes y después del middleware (SC-007b).
+  - **(b)** SC-007b: con un usuario autenticado que tiene el permiso, la misma petición a una vista protegida hace las mismas consultas con el middleware y sin él, quitándolo con `modify_settings(MIDDLEWARE={'remove': ['apps.usuarios.middleware.LoginRequiredMiddleware']})`.
 - [ ] T008 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`, las rutas de `RUTAS_PUBLICAS` responden sin sesión y sin redirigir al login (FR-003, SC-002):
   - `GET` a login, recuperación y registro → código distinto de `302` hacia `LOGIN_URL`;
   - `activar_cuenta` y `restablecer_contrasena_confirmar` con `uidb64` y `token` de prueba → no redirigen al login;
-  - `POST` anónimo a `cerrar_sesion` → redirige a `LOGOUT_REDIRECT_URL` **sin** `next`, que es la regresión de la feature 001.
+  - `POST` anónimo a `cerrar_sesion` → redirige a `LOGOUT_REDIRECT_URL` **sin** `next`, que es la regresión de la feature 001;
+  - un `POST` válido a `usuarios:iniciar_sesion` con `?next=/ubicaciones/paises/` redirige a `/ubicaciones/paises/` (FR-005, US1-4).
 - [ ] T009 [P] [US1] En `apps/usuarios/tests/test_respuestas_htmx.py`, bloque "sin sesión" (contracts/respuestas-acceso.md §1, FR-012):
   - `GET` anónimo con `HX-Request: true` y `HX-Current-URL: http://testserver/organizacion/distritos-judiciales/?page=2` a `organizacion:distrito_judicial_details` → `401`, cuerpo vacío, cabecera `HX-Redirect` igual a la URL de login con `next=/organizacion/distritos-judiciales/?page=2` codificado;
   - sin `HX-Current-URL`, o con un host externo (`https://evil.example/`) → `next` igual a la ruta de `LOGIN_REDIRECT_URL`.
@@ -101,7 +102,7 @@ description: "Lista de tareas de implementación: protección de operaciones y c
   - conservar `permission_required` y limpiar el import de `login_required` donde ya no se use.
 - [ ] T017 [US1] Ejecutar `python manage.py check` y la suite completa: T007–T010 y los tests de la feature 001 en verde.
 
-**Checkpoint**: valida US1-1 a US1-4 y los escenarios 1–3 de quickstart.md.
+**Checkpoint**: valida US1-1 a US1-4 y los escenarios 1–3 y 11 de quickstart.md.
 
 ---
 
@@ -116,7 +117,8 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 - [ ] T018 [P] [US2] En `apps/usuarios/tests/test_acceso_global.py`, cobertura de permisos (contracts/vistas-y-permisos.md §3 C2, research R4):
   - para cada fila de `MATRIZ_PERMISOS`, la vista resuelta conserva la marca del decorador `permission_required` con el permiso de la fila;
   - método recomendado: comprobar con un usuario autenticado sin permisos que la ruta responde `403` y, con solo ese permiso, que no responde `403`;
-  - toda ruta enrutada fuera de `RUTAS_PUBLICAS` y `RUTAS_SOLO_SESION` está en la matriz.
+  - toda ruta enrutada fuera de `RUTAS_PUBLICAS` y `RUTAS_SOLO_SESION` está en la matriz;
+  - FR-008: con un middleware de prueba añadido con `modify_settings` que registra las excepciones recibidas en `process_exception`, una denegación produce `PermissionDenied`, que es el punto de enganche de la futura auditoría (research R3).
 - [ ] T019 [P] [US2] En `apps/organizacion/tests.py`, matriz por entidad para distrito judicial, materia, órgano y sede (C3), usando `MATRIZ_PERMISOS` y `fabricas.py`:
   - sin permiso → `403`; con el permiso → no `403`;
   - **C4/FR-009**:
@@ -132,9 +134,9 @@ description: "Lista de tareas de implementación: protección de operaciones y c
   - **sin exigir el permiso de la entidad padre** (decisión CHK003).
 - [ ] T022 [P] [US2] En `apps/common/tests/test_menu_checks.py`: para cada ítem del registro real con `url_name`, sus `permissions` coinciden con el permiso de `MATRIZ_PERMISOS` para esa ruta (C5, FR-010, SC-008).
 - [ ] T023 [P] [US2] En `apps/main/tests.py`, aviso de cuenta sin permisos (FR-003a, SC-007a, SC-007b):
-  - un usuario sin permisos ve "Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." con `role="status"`;
+  - un usuario sin permisos ve "Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." con `role="status"`, y la respuesta usa la plantilla `components/alerts/aviso_persistente.html` (`assertTemplateUsed`);
   - con un permiso directo, con un permiso por grupo o como superusuario, no lo ve;
-  - `assertNumQueries`: Inicio con aviso hace el mismo número de consultas que sin aviso.
+  - SC-007b: para un usuario sin permisos, tras renderizar Inicio, `assertNumQueries(0)` al llamar a `user.get_all_permissions()`, porque el menú lateral ya cargó la caché. Además, Inicio hace las mismas consultas con y sin la variable `cuenta_sin_permisos`, comparando el mismo usuario con `mock.patch` sobre el cálculo.
 
 ### Implementation for User Story 2
 
@@ -149,9 +151,10 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 - [ ] T030 [P] [US2] `apps/ubicaciones/views/departamentos.py`: list, details y export (`view_departamento`), create (`add_departamento`), update y toggle (`change_departamento`).
 - [ ] T031 [P] [US2] `apps/ubicaciones/views/provincias.py`: list, details y export (`view_provincia`), create (`add_provincia`), update y toggle (`change_provincia`).
 - [ ] T032 [P] [US2] `apps/ubicaciones/views/distritos.py`: list, details y export (`view_distrito`), create (`add_distrito`), update y toggle (`change_distrito`).
-- [ ] T033 [US2] Aviso FR-003a (research R7):
+- [ ] T033 [US2] Aviso FR-003a (research R7, constitución §Mensajes):
+  - crear el componente transversal `templates/components/alerts/aviso_persistente.html` con los parámetros `tipo`, `rol` y `mensaje`, que renderiza `<div class="alert alert-{{ tipo }}" role="{{ rol|default:'status' }}">{{ mensaje }}</div>`, sin botón de cerrar y sin `style=`;
   - en `apps/main/views.py:index`, añadir al contexto `cuenta_sin_permisos = not request.user.is_superuser and not request.user.get_all_permissions()`;
-  - en `apps/main/templates/main/index.html`, mostrarlo con `<div class="alert alert-warning" role="status">…</div>`, sin botón de cerrar y con el texto exacto de FR-003a.
+  - en `apps/main/templates/main/index.html`, `{% if cuenta_sin_permisos %}{% include "components/alerts/aviso_persistente.html" with tipo="warning" mensaje="Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." %}{% endif %}`.
 - [ ] T034 [US2] Ejecutar `python manage.py check` y la suite completa: T018–T023 y la regresión de la feature 001 en verde.
 
 **Checkpoint**: valida US2-1 a US2-4 y los escenarios 4–6, 8, 10 y 17 de quickstart.md.
@@ -223,7 +226,7 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 - [ ] T044 [P] [US3] En `apps/usuarios/tests/test_respuestas_htmx.py`, CSRF (contracts/respuestas-acceso.md §2b, CHK025): `Client(enforce_csrf_checks=True)` autenticado:
   - `POST` con `HX-Request: true` y sin token a `organizacion:distrito_judicial_toggle` → `403`, cuerpo vacío y `HX-Refresh: true`;
   - sin `HX-Request` → `403` con `403_csrf.html`.
-- [ ] T045 [P] [US3] En `apps/common/tests/test_sidebar_render.py`, o en un archivo nuevo `apps/common/tests/test_htmx_config.py`:
+- [ ] T045 [P] [US3] En `apps/common/tests/test_htmx_config.py` (nuevo):
   - `templates/base.html` contiene `<meta name="htmx-config"` y su `content` es JSON válido con `responseHandling` que incluye `{"code":"403","swap":true,"error":false}` antes de la regla `[45]..`;
   - `templates/components/modals/modal_warning.html` no contiene "Eliminar 84 items" ni textos en inglés y define `{% block modal_footer %}` (contracts/respuestas-acceso.md §3–§4).
 
@@ -256,7 +259,7 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 - [ ] T052 Actualizar `docs/decisiones/2026-10-28-brechas-feature-001.md` (FR-018, constitución §Gobernanza › Brechas preexistentes):
   - marcar **II.4 como cerrada** por la feature 002, con fecha y commit;
   - **ampliar III.2b** a las denegaciones de las 51 rutas y de las páginas en modal y tabla, con la tabla de cumplimiento de las 5 condiciones: origen (no hay módulo de auditoría), no ampliación (ninguna operación queda sin protección), punto de enganche (`PermissionDenied` y `process_exception`), registro (este documento y plan §Complexity Tracking) y vigencia (revisión 2027-01-31).
-- [ ] T053 [P] Crear `docs/despliegue/002-permisos-por-grupo.md` (spec §Assumptions "Preparación del despliegue", FR-017):
+- [ ] T053 [P] Crear `specs/002-seguridad-acceso-configuracion/despliegue-permisos-por-grupo.md` (spec §Assumptions "Preparación del despliegue", FR-017):
   - plantilla con la lista de grupos existentes, que se obtiene con `Group.objects.values_list('name', flat=True)`, y una columna por entidad con los permisos `view`, `add` y `change` propuestos;
   - un espacio para la aprobación del Responsable Técnico, con nombre y fecha;
   - el texto del aviso a usuarios por la rotación de la clave: cierre de sesiones e invalidación de los enlaces de activación y recuperación.

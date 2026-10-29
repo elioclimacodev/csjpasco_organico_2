@@ -58,7 +58,7 @@ Aplicar **denegación por defecto** a todo el ERP:
 | C.1 | Secretos y configuración desde el entorno; falla explícita | `config/entorno.py` + `settings.py` (R6) | ✅ |
 | C.2 | `.env` no versionado; `.env.example` sin secretos | Se actualiza `.env.example` | ✅ |
 | U.1 | Español formal y componentes transversales de mensajes | `modal_warning` (componente), toast transversal, `403.html` | ✅ |
-| U.2 | WCAG 2.1 AA | Modal con título y botón enfocable; toast con `role="alert"` | ✅ |
+| U.2 | WCAG 2.1 AA | Aviso del modal en región `role="alert"` y `autofocus` en «Cerrar»; toast con `role="alert"`; aviso FR-003a con `role="status"` | ✅ |
 | T.1 | Tests proporcionales y en PostgreSQL | Estrategia R8 | ✅ |
 
 **Resultado**: GATE superado. III.1 es una brecha preexistente que ya estaba registrada: esta feature solo la amplía a las nuevas denegaciones y cumple las 5 condiciones de §Gobernanza › Brechas preexistentes:
@@ -95,7 +95,9 @@ specs/002-seguridad-acceso-configuracion/
 │   ├── respuestas-acceso.md
 │   └── variables-entorno.md
 ├── checklists/requirements.md
-└── tasks.md                # /speckit-tasks
+├── tasks.md                # /speckit-tasks
+├── despliegue-permisos-por-grupo.md   # T053: grupos y permisos para aprobación
+└── evidencias/                        # T055–T056
 ```
 
 ### Source Code (repository root)
@@ -136,13 +138,20 @@ apps/
 ├── personas/tests.py                   # MODIFICAR
 ├── ubicaciones/views/{paises,departamentos,provincias,distritos}.py   # MODIFICAR: 24 vistas
 ├── ubicaciones/tests.py                # MODIFICAR: matriz de permisos
-└── common/tests/test_entorno.py        # NUEVO: config/entorno.py y arranque en subproceso
+└── common/tests/
+    ├── helpers.py                      # MODIFICAR: matriz única del contrato (T004)
+    ├── fabricas.py                     # NUEVO: registros mínimos por entidad
+    ├── test_matriz_acceso.py           # NUEVO: clasificación completa de rutas
+    ├── test_htmx_config.py             # NUEVO: htmx-config y modal_warning
+    └── test_entorno.py                 # NUEVO: config/entorno.py y arranque en subproceso
 
 templates/
 ├── base.html                           # MODIFICAR: <meta name="htmx-config"> con la regla del 403
-└── components/modals/
-    ├── modal_warning.html              # MODIFICAR: bloque modal_footer, textos en español, sin demo
-    └── modal_denegado.html             # NUEVO: "Acceso denegado" + botón "Cerrar"
+└── components/
+    ├── alerts/aviso_persistente.html   # NUEVO: aviso persistente transversal (FR-003a)
+    └── modals/
+        ├── modal_warning.html          # MODIFICAR: bloque modal_footer, textos en español, sin demo
+        └── modal_denegado.html         # NUEVO: "Acceso denegado" + botón "Cerrar"
 
 docs/decisiones/2026-10-28-brechas-feature-001.md   # MODIFICAR: II.4 cerrada (002); III.2b ampliada
 ```
@@ -175,6 +184,8 @@ Todo se ejecuta en SQLite y en PostgreSQL.
 5. `handler403`, `modal_denegado`, `modal_warning`, `htmx-config` y tests de respuestas HTMX (P2).
 6. Aviso FR-003a.
 7. Registro de brechas, quickstart manual y suite en PostgreSQL.
+
+Nota: tasks.md reordena por historias (US1, US2, US4, US3); la clave nueva queda asegurada con T003 antes de modificar `settings.py`.
 
 ## Impacto en despliegue
 
