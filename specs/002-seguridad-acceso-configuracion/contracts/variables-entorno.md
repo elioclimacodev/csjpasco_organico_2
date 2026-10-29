@@ -23,7 +23,11 @@
 
 **Mensajes de error**: en español, con el nombre de la variable y la indicación "Revise el archivo .env (ver .env.example)".
 
-**Despliegue (FR-017)**: cada entorno genera una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"`. La clave del historial de git se da por comprometida.
+**Reglas de coherencia** (spec FR-015 y FR-016a; se documentan en `.env.example`):
+- Detrás de un proxy HTTPS, `CSRF_TRUSTED_ORIGINS` debe incluir `https://<host>` para cada host de `ALLOWED_HOSTS` que reciba formularios.
+- Si `SECURE_SSL_REDIRECT=true` detrás de un proxy que termina TLS, hay que definir `SECURE_PROXY_SSL_HEADER`; si no, cada solicitud se redirige indefinidamente.
+
+**Despliegue (FR-017)**: cada entorno genera una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"`. La clave del historial de git se da por comprometida. Al rotarla se cierran todas las sesiones y dejan de valer los enlaces pendientes de activación y de restablecimiento de contraseña; hay que avisar a los usuarios.
 
 **Producción típica detrás de un proxy HTTPS**:
 

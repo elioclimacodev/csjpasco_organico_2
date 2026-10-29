@@ -54,3 +54,6 @@ Todos deben estar **activos**.
 | 14 | Poner `DEBUG=quizas` | Falla indicando los valores aceptados | FR-014 |
 | 15 | Con `SECURE_SSL_REDIRECT=true` y `SECURE_HSTS_SECONDS=31536000`, pedir una URL por HTTP | Redirección a HTTPS; la respuesta HTTPS incluye `Strict-Transport-Security` | FR-016a, SC-006a |
 | 16 | `git grep -n "django-insecure\|socket.gethostbyname" config/` | Sin resultados | FR-015, FR-017, SC-006 |
+| 17 | Como `consulta`, abrir `/ubicaciones/departamentos/999999/provincias/` | 404 (tiene el permiso y el departamento no existe); sin `view_provincia` → 403 | spec §Edge Cases, C6 |
+| 18 | Abrir una ventana, cerrar la sesión en otra pestaña, volver a iniciarla y enviar el formulario de la ventana original | La página se recarga (token CSRF nuevo); no aparece la página de error dentro de la ventana | spec §Edge Cases, FR-011 |
+| 19 | Con un lector de pantalla, provocar la denegación en una ventana | Se anuncia "Acceso denegado…" y el foco queda en "Cerrar" | FR-011 |

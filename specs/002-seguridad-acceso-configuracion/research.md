@@ -9,6 +9,7 @@ Hechos verificados en el código instalado: Django 6.0 (`venv/Lib/site-packages/
 ## R1. Denegación por defecto (FR-001, FR-002)
 
 - **Decisión**: añadir a `MIDDLEWARE` un `LoginRequiredMiddleware` propio, subclase del nativo de Django (ver R2), justo después de `AuthenticationMiddleware`. Las vistas públicas se marcan explícitamente con `django.contrib.auth.decorators.login_not_required` (o con `method_decorator(login_not_required, name='dispatch')` en las clases).
+- **Panel de administración** (CHK010): no se exentan sus vistas. Un anónimo pasa por el login del ERP y, ya autenticado, el admin aplica `is_staff`. Así lo recoge spec §Edge Cases.
 - **Vistas ya exentas de forma nativa** (verificado):
   - `LoginView` y las cuatro `PasswordReset*View` (`contrib/auth/views.py:66, 210, 241, 248, 335`). Sus subclases del proyecto (`UsuarioLoginView`, `UsuarioPasswordReset*`) heredan la exención, porque `as_view()` copia los atributos de `dispatch`.
   - `AdminSite.login` (`contrib/admin/sites.py:414`).
@@ -43,6 +44,8 @@ Hechos verificados en el código instalado: Django 6.0 (`venv/Lib/site-packages/
   2. **Configuración declarativa de HTMX** en `templates/base.html`: `<meta name="htmx-config">` con `responseHandling` que **dibuja el `403`** (`{"code":"403","swap":true,"error":false}`, antes de la regla `[45]..`). El resto queda igual que por defecto. Es configuración, no JavaScript del proyecto.
   3. **`modal_warning.html`**: hoy no lo usa nadie y su pie trae un botón de demostración ("Eliminar 84 items") y textos de ejemplo en inglés. Se convierte en componente reutilizable con un `{% block modal_footer %}` y textos por defecto en español.
 - **Justificación**: un único punto transversal (Principio IV) que reutiliza los componentes de mensajes existentes (constitución, UI/UX). La vista sigue lanzando `PermissionDenied` nativo, que atraviesa `process_exception` de cualquier middleware: el futuro módulo de auditoría podrá engancharse sin tocar las vistas (FR-008, brecha III.2b). El código `403` se conserva para pruebas y auditoría.
+- **Fallo CSRF en HTMX** (CHK025): la regla global que dibuja los `403` haría que la página completa `403_csrf.html` se insertara en la ventana. **Decisión**: `CSRF_FAILURE_VIEW = 'apps.usuarios.views.denegacion.fallo_csrf'`, que delega en `django.views.csrf.csrf_failure` para peticiones normales y, con `HX-Request`, responde `403` vacío con `HX-Refresh: true`. HTMX procesa `HX-Refresh` antes de `responseHandling` (verificado en `htmx_2.0.6.min.js`: `if(l){…location.reload();return}`), así que no se dibuja nada.
+- **Accesibilidad del aviso en ventana** (CHK028): `modal_denegado.html` envuelve título y mensaje en una región `role="alert"` y pone `autofocus` en "Cerrar". HTMX 2 enfoca el elemento con `autofocus` después del intercambio.
 - **Alternativas descartadas**:
   - Middleware `process_exception` que convierta `PermissionDenied` en respuesta: cortaría la cadena para otros middleware, como la futura auditoría.
   - Responder `200` en el caso de la ventana: pierde la semántica del `403`.
@@ -99,6 +102,14 @@ Hechos verificados en el código instalado: Django 6.0 (`venv/Lib/site-packages/
 | (d) Configuración | Funciones de `config/entorno.py` (unitarias); subproceso `python -c "import django; django.setup()"` con `SECRET_KEY=''` → error; con `DEBUG=''` → `settings.DEBUG is False`. La variable se fija vacía porque `load_dotenv()` no sobrescribe las ya definidas. | `apps/common/tests/test_entorno.py` |
 | (e) FR-003a | El aviso aparece con un usuario sin permisos, no aparece con un permiso ni con superusuario, y no añade consultas | `apps/main/tests.py` |
 | Regresión 001 | La suite de la feature 001 sigue en verde; el menú sigue coherente con los permisos | existentes |
+
+Bloques adicionales tras la revisión de requisitos:
+- **(f) Rutas anidadas (C6)**: sin permiso → `403` aunque el padre no exista; con permiso y padre inexistente → `404`.
+- **(g) CSRF en HTMX**: `Client(enforce_csrf_checks=True)` con `HX-Request` y sin token → `403` + `HX-Refresh: true`; sin `HX-Request` → `403_csrf.html`.
+- **(h) Transporte seguro (SC-006a)**: con `override_settings(SECURE_SSL_REDIRECT=True, SECURE_HSTS_SECONDS=31536000)`, `client.get(url)` → `301` a `https://`; `client.get(url, secure=True)` → cabecera `Strict-Transport-Security`.
+- **(i) Consultas (SC-007b)**: `assertNumQueries` sobre una vista protegida con y sin el middleware (misma cantidad), y sobre Inicio con y sin el aviso de FR-003a.
+
+Supuesto verificado (CHK039): `load_dotenv()` no sobrescribe las variables ya presentes en el entorno, aunque estén vacías (`dotenv/main.py:105`: `if k in os.environ and not self.override: continue`; `load_dotenv` usa `override=False`). Las pruebas de arranque fijan `SECRET_KEY=''` y `DEBUG=''` en el subproceso.
 
 Se ejecutan en SQLite y en PostgreSQL. Los tests convierten `apps/usuarios/tests.py` en paquete `apps/usuarios/tests/`, conservando los tests actuales.
 

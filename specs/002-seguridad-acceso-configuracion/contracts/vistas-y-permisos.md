@@ -55,9 +55,13 @@ Excluidas del recorrido de "debe exigir sesión": `admin:*` (tiene su propio con
 | ubicaciones | `distrito_create` | `ubicaciones.add_distrito` |
 | ubicaciones | `distrito_update`, `distrito_toggle` | `ubicaciones.change_distrito` |
 | usuarios | `list` | `usuarios.view_usuario` (ya existente) |
-| usuarios | `cambiar_contrasena`, `cambiar_contrasena_completado` | solo sesión (nativo) |
+| usuarios | `cambiar_contrasena`, `cambiar_contrasena_completado` | solo sesión (nativo): es una operación sobre la propia cuenta, no sobre información institucional (spec FR-006) |
 
 Codenames verificados en la base (2026-10-29): `ubicaciones.view_pais`, `…_departamento`, `…_provincia`, `…_distrito` y `organizacion.*_sedejudicial`.
+
+### Rutas anidadas (spec §Edge Cases, CHK003)
+
+Las rutas con `pais_id`, `dpto_id`, `prov_id` o `dj_id` exigen **solo** el permiso de la entidad de la ruta (p. ej., `ubicaciones.view_provincia` para `provincias_list`), no el de la entidad padre. El decorador de permiso es el más externo, así que el permiso se comprueba antes de buscar el padre: un usuario sin permiso recibe `403` tanto si el padre existe como si no, y uno con permiso recibe `404` si el padre no existe.
 
 ## 3. Reglas verificadas por tests
 
@@ -66,3 +70,4 @@ Codenames verificados en la base (2026-10-29): `ubicaciones.view_pais`, `…_dep
 - C3. Con un usuario sin permiso → `403`; con el permiso indicado → no `403`.
 - C4. Las rutas de escritura y exportación denegadas no cambian datos ni devuelven archivos.
 - C5. Los `apps/<app>/menu.py` declaran el mismo permiso que la tabla para su ruta destino.
+- C6. En rutas anidadas, sin permiso → `403` aunque el padre no exista; con permiso y padre inexistente → `404`.

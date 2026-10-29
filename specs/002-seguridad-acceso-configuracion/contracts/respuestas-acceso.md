@@ -25,6 +25,17 @@ La vista lanza `PermissionDenied` (decorador `permission_required(raise_exceptio
 | `HX-Request: true` y `HX-Target: modal_content` | `403`, `components/modals/modal_denegado.html`: título "Acceso denegado", texto "No tiene permiso para acceder a esta página. Si considera que necesita acceso, solicítelo al administrador del sistema.", un solo botón "Cerrar" (`data-bs-dismiss="modal"`), sin aside ni detalles técnicos |
 | `HX-Request: true` y cualquier otro objetivo (tablas) | `403`, cuerpo vacío, `HX-Reswap: none`, `HX-Trigger: {"show_toast": {"type": "error", "message": "No tiene permiso para realizar esta operación."}}` |
 
+## 2b. Fallo de verificación CSRF (spec §Edge Cases, CHK025)
+
+Proveedor: `apps/usuarios/views/denegacion.py:fallo_csrf`, configurado como `CSRF_FAILURE_VIEW`.
+
+| Petición | Respuesta |
+|---|---|
+| Normal | `403`, `templates/403_csrf.html` (sin cambios respecto de la feature 001) |
+| `HX-Request: true` | `403`, cuerpo vacío, `HX-Refresh: true`: la página completa se recarga con un token válido o, si no hay sesión, el middleware la dirige al login |
+
+Como HTMX procesa `HX-Refresh` antes de `responseHandling`, la regla del `403` (§3) no llega a insertar contenido. Así se evita incrustar la página completa de error CSRF en la ventana (spec FR-011).
+
 ## 3. Configuración de HTMX (`templates/base.html`)
 
 ```html
@@ -44,5 +55,5 @@ Se agregan los bloques `modal_footer` (por defecto: botón "Cerrar") y textos po
 
 ## 5. Accesibilidad
 
-- El modal conserva el `role="dialog"` del contenedor `#modal_htmx`; el título se anuncia con `<h3>`; el botón "Cerrar" es enfocable.
+- El modal conserva el `role="dialog"` del contenedor `#modal_htmx`. El cuerpo del aviso es una región `role="alert"` (título `<h3>` y mensaje), que se anuncia al insertarse. El botón "Cerrar" lleva `autofocus`: HTMX 2 enfoca el elemento con `autofocus` tras el intercambio (spec FR-011; constitución §Accesibilidad).
 - El toast transversal ya usa `role="alert"` y `aria-live="assertive"` (`static/project/js/toast.js`).

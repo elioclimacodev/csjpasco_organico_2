@@ -43,6 +43,8 @@ Ver la tabla de [research.md](research.md) R6 y [contracts/variables-entorno.md]
 | Sin sesión, vista protegida | `302` → `LOGIN_URL?next=<ruta>` | `401` + `HX-Redirect: LOGIN_URL?next=<ruta de HX-Current-URL>` |
 | Sesión sin permiso | `403` + `templates/403.html` | `HX-Target: modal_content` → `403` + `modal_denegado.html`; otro objetivo → `403` vacío + `HX-Trigger` (`show_toast` error) + `HX-Reswap: none` |
 | Con permiso | respuesta de la vista | respuesta de la vista |
+| Ruta anidada, con permiso y padre inexistente | `404` | `404` (no se dibuja: regla `[45]..`) |
+| Fallo de verificación CSRF | `403` + `403_csrf.html` | `403` vacío + `HX-Refresh: true` |
 
 Detalle en [contracts/respuestas-acceso.md](contracts/respuestas-acceso.md).
 

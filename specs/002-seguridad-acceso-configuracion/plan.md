@@ -104,7 +104,7 @@ specs/002-seguridad-acceso-configuracion/
 config/
 ├── entorno.py                          # NUEVO: env_requerida (trasladada), env_bool, env_lista, env_entero
 ├── settings.py                         # MODIFICAR: SECRET_KEY/DEBUG/ALLOWED_HOSTS/CSRF/cookies/HSTS/SSL/proxy desde el entorno;
-│                                       #            sin socket; MIDDLEWARE + LoginRequiredMiddleware del proyecto
+│                                       #            sin socket; MIDDLEWARE + LoginRequiredMiddleware del proyecto; CSRF_FAILURE_VIEW
 └── urls.py                             # MODIFICAR: handler403 = 'apps.usuarios.views.denegacion.permiso_denegado'
 .env.example                            # MODIFICAR: variables nuevas, sin secretos
 
@@ -112,7 +112,7 @@ apps/
 ├── usuarios/
 │   ├── middleware.py                   # NUEVO: LoginRequiredMiddleware (respuesta HTMX con HX-Redirect)
 │   ├── views/
-│   │   ├── denegacion.py               # NUEVO: permiso_denegado (handler403: página, modal o toast)
+│   │   ├── denegacion.py               # NUEVO: permiso_denegado (handler403: página, modal o toast) y fallo_csrf (CSRF_FAILURE_VIEW: HX-Refresh en HTMX)
 │   │   ├── acceso.py                   # MODIFICAR: UsuarioLogoutView con login_not_required
 │   │   └── registro.py                 # MODIFICAR: registro, activar_cuenta, registro_completo con @login_not_required
 │   └── tests/                          # NUEVO paquete (tests.py actual → tests/test_cerrar_sesion.py)
@@ -161,6 +161,7 @@ Ver research R8. Resumen:
 - **(c)** respuestas HTMX;
 - **(d)** módulo de entorno y arranque en subproceso;
 - **(e)** aviso FR-003a;
+- **(f)** rutas anidadas, **(g)** CSRF en HTMX, **(h)** transporte seguro simulado (SC-006a) e **(i)** conteo de consultas (SC-007b);
 - regresión completa de la feature 001.
 
 Todo se ejecuta en SQLite y en PostgreSQL.
@@ -181,7 +182,8 @@ Todo se ejecuta en SQLite y en PostgreSQL.
   - `SECRET_KEY`, **nueva por entorno** (FR-017), porque la del historial de git se da por comprometida;
   - `ALLOWED_HOSTS`, cuando `DEBUG` no esté activo.
 - **Producción detrás de HTTPS**: activar `SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS` y `SECURE_PROXY_SSL_HEADER` según contracts/variables-entorno.md.
-- **Permisos en el Admin**: asignar a los grupos de usuarios los permisos `view`, `add` y `change` de cada entidad. Sin ellos, los usuarios actuales perderán acceso a las operaciones que hoy usan sin control.
+- **Permisos en el Admin**: asignar a los grupos de usuarios los permisos `view`, `add` y `change` de cada entidad, según la lista aprobada por el Responsable Técnico (spec §Assumptions, "Preparación del despliegue"). Sin ellos, los usuarios actuales perderán acceso a las operaciones que hoy usan sin control.
+- **Rotación de la clave** (FR-017): avisar a los usuarios de que deberán iniciar sesión de nuevo y de que los enlaces pendientes de activación o restablecimiento dejarán de valer.
 
 ## Complexity Tracking
 

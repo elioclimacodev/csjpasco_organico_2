@@ -85,11 +85,15 @@ Como Responsable Técnico, necesito que la clave secreta, el modo de depuración
 - Cuenta autorregistrada recién activada, sin grupos ni permisos: ve Inicio con el aviso de FR-003a y el menú lateral solo con "Inicio".
 - Usuario inactivo: no puede iniciar sesión ni operar.
 - Página de error (403, 404, 500) y página de verificación fallida: se muestran sin exigir sesión, con el comportamiento de la feature 001.
-- Recursos estáticos (estilos, imágenes, scripts de terceros) y el panel de administración: no se ven afectados (el panel conserva su propio control de acceso).
+- Recursos estáticos (estilos, imágenes, scripts de terceros): no se ven afectados.
+- Panel de administración: conserva su propio control de acceso (solo personal autorizado). Un visitante sin sesión que lo abre pasa primero por el inicio de sesión del ERP y, tras autenticarse, vuelve al panel, que aplica su control.
 - Exportación denegada: no se genera ni descarga ningún archivo parcial.
 - Inactivación denegada: el registro conserva su estado y no se registra ningún cambio.
-- Solicitud a una página pública estando ya autenticado (por ejemplo, el inicio de sesión): se comporta como hoy (redirige a Inicio).
+- Solicitud a una página pública estando ya autenticado: el inicio de sesión redirige a Inicio (como hoy); el autorregistro, la activación por correo y la recuperación de contraseña se muestran normalmente, sin cambios respecto del comportamiento actual.
 - Valor inválido del modo de depuración en el entorno (distinto de verdadero/falso): el sistema no arranca e indica el valor esperado.
+- Rutas anidadas (por ejemplo, las provincias de un departamento o las sedes de un distrito judicial): se exige solo el permiso de la entidad de la ruta (no el de la entidad padre). El permiso se comprueba primero; si el registro padre no existe, la respuesta es "página no encontrada". Así no se revela la existencia de registros a quien no tiene permiso.
+- Envío de un formulario dentro de una ventana con la sesión expirada: la página completa va al inicio de sesión y, tras autenticarse, vuelve a la página en la que estaba. Los datos ingresados y no guardados se pierden (comportamiento aceptado; no se reintenta el envío).
+- Fallo de la verificación anti-falsificación en una solicitud de fragmento (por ejemplo, una ventana abierta antes de volver a iniciar sesión): la página completa se recarga para obtener una verificación válida (o va al inicio de sesión si no hay sesión). No se incrusta la página de error dentro de la ventana. En solicitudes normales se muestra la página de verificación fallida en español.
 
 ## Requirements *(mandatory)*
 
@@ -101,7 +105,7 @@ Como Responsable Técnico, necesito que la clave secreta, el modo de depuración
 - **FR-002**: La declaración de páginas públicas DEBE ser explícita, estar junto a cada página pública y ser revisable; no DEBE existir una vía implícita para que una página quede pública.
 - **FR-003**: Las páginas públicas DEBEN limitarse a: inicio de sesión; cierre de sesión (solo envío protegido); recuperación de contraseña (solicitud, aviso de envío, confirmación y finalización); páginas de error y de verificación fallida; y el autorregistro de cuentas (registro, activación por correo y registro completo). Una cuenta autorregistrada no obtiene ningún permiso hasta que un administrador le asigne grupos o permisos, por lo que solo ve Inicio.
 - **FR-003a**: Mientras un usuario autenticado no tenga ningún permiso asignado (directamente o por grupos), Inicio DEBE mostrar un aviso en español formal: "Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." El aviso DEBE desaparecer en cuanto el usuario tenga al menos un permiso, y NO DEBE mostrarse a superusuarios.
-- **FR-004**: La página de demostración de registro del módulo principal (`signup`, basada en una plantilla de ejemplo del design system) DEBE retirarse.
+- **FR-004**: La página de demostración de registro del módulo principal (`signup`, basada en una plantilla de ejemplo del design system) DEBE retirarse; su dirección DEBE responder "página no encontrada". No existen enlaces a ella en el sistema (verificado el 2026-10-29).
 - **FR-005**: Un visitante sin sesión que intenta abrir una página interna DEBE ser dirigido al inicio de sesión y, tras autenticarse, volver a la página que intentaba abrir.
 
 **Autorización por operación**
@@ -111,6 +115,8 @@ Como Responsable Técnico, necesito que la clave secreta, el modo de depuración
   - registro → permiso de alta (`add`);
   - modificación → permiso de cambio (`change`);
   - inactivación y reactivación → permiso de cambio (`change`) de la entidad.
+
+  Las operaciones del usuario sobre su propia cuenta (cambio de su contraseña) no son información institucional: exigen sesión, pero no un permiso de entidad.
 - **FR-007**: El alcance de FR-006 DEBE cubrir todas las operaciones de: Distritos judiciales, Materias jurisdiccionales, Órganos jurisdiccionales, Sedes judiciales, Personas, Países, Departamentos, Provincias y Distritos (ubicación geográfica). Las operaciones ya protegidas por la feature 001 DEBEN conservar su protección.
 - **FR-008**: Un usuario autenticado sin el permiso requerido DEBE recibir una denegación de acceso con el mecanismo nativo de denegación, de modo que el futuro módulo de auditoría pueda registrarla sin modificar las vistas.
 - **FR-009**: Una operación denegada NO DEBE producir efectos: ni cambios de datos, ni archivos de exportación, ni cambios de estado.
@@ -121,21 +127,21 @@ Como Responsable Técnico, necesito que la clave secreta, el modo de depuración
 - **FR-011**: Cuando una solicitud de fragmento se deniega por falta de permiso, el sistema DEBE usar los componentes transversales de mensajes existentes, con un aviso en español formal sin detalles técnicos ni nombres de permisos:
   - **en ventanas** (detalle, registro, edición, inactivación): la ventana muestra la advertencia transversal de ventana con el mensaje y un botón "Cerrar";
   - **en actualizaciones de tabla** (filtrar, ordenar, paginar): se muestra una notificación flotante de error y la tabla conserva su contenido.
-  En ningún caso DEBE incrustarse la página completa de denegación ni el menú lateral.
+  En ningún caso DEBE incrustarse la página completa de denegación ni el menú lateral. El aviso de la ventana DEBE anunciarse a las tecnologías de asistencia (región de alerta) y el foco DEBE quedar en el botón "Cerrar"; la notificación flotante ya se anuncia como alerta.
 - **FR-012**: Cuando una solicitud de fragmento llega sin sesión, el sistema DEBE dirigir la página completa al inicio de sesión (con retorno a la página en la que estaba el usuario) y NO DEBE incrustar la página de inicio de sesión dentro de la ventana o del área actualizada.
 
 **Configuración sensible**
 
 - **FR-013**: La clave secreta DEBE obtenerse del entorno y ser obligatoria; si falta, el sistema NO DEBE arrancar y DEBE indicar en español la variable faltante.
 - **FR-014**: El modo de depuración DEBE obtenerse del entorno y quedar desactivado si no se define; un valor no reconocido DEBE impedir el arranque con un mensaje que indique los valores aceptados.
-- **FR-015**: Los hosts permitidos y los orígenes de confianza DEBEN obtenerse del entorno como listas; el código versionado NO DEBE contener valores propios de un entorno (direcciones, puertos o dominios concretos).
+- **FR-015**: Los hosts permitidos y los orígenes de confianza DEBEN obtenerse del entorno como listas; el código versionado NO DEBE contener valores propios de un entorno (direcciones, puertos o dominios concretos). En producción detrás de un proxy HTTPS, los orígenes de confianza DEBEN incluir el origen `https://` de cada host permitido que reciba formularios.
 - **FR-016**: El archivo de ejemplo de variables de entorno DEBE documentar todas las variables nuevas, sin valores secretos reales.
-- **FR-016a**: El transporte seguro de producción (redirección de HTTP a HTTPS, política HSTS y confianza en la cabecera de protocolo del proxy) DEBE poder activarse desde el entorno y DEBE estar desactivado por defecto, de modo que el desarrollo por HTTP siga funcionando y cada entorno de producción lo active con sus variables. Las marcas de seguridad de las cookies de sesión y de verificación DEBEN controlarse también desde el entorno y estar activas por defecto.
-- **FR-017**: La clave secreta que hoy figura en el código versionado DEBE considerarse comprometida: DEBE retirarse del código y cada entorno DEBE usar una clave nueva.
+- **FR-016a**: El transporte seguro de producción (redirección de HTTP a HTTPS, política HSTS y confianza en la cabecera de protocolo del proxy) DEBE poder activarse desde el entorno y DEBE estar desactivado por defecto, de modo que el desarrollo por HTTP siga funcionando y cada entorno de producción lo active con sus variables. Las marcas de seguridad de las cookies de sesión y de verificación DEBEN controlarse también desde el entorno y estar activas por defecto. Si la redirección a HTTPS se activa detrás de un proxy, DEBE activarse también la confianza en la cabecera de protocolo del proxy; de lo contrario cada solicitud se redirige indefinidamente. Esta dependencia DEBE documentarse junto a las variables.
+- **FR-017**: La clave secreta que hoy figura en el código versionado DEBE considerarse comprometida: DEBE retirarse del código y cada entorno DEBE usar una clave nueva. Al rotarla se cierran todas las sesiones abiertas y dejan de valer los enlaces pendientes de activación de cuenta y de recuperación de contraseña; el despliegue DEBE comunicarlo a los usuarios afectados, que deberán iniciar sesión de nuevo o solicitar un enlace nuevo.
 
 **Registro de gobernanza**
 
-- **FR-018**: El registro de brechas de la feature 001 DEBE actualizarse: la brecha II.4 (operaciones sin protección) se marca como cerrada por esta feature, y la brecha III.2b (denegaciones sin auditar) se amplía a las nuevas denegaciones, conforme a la constitución §Gobernanza › Brechas preexistentes.
+- **FR-018**: El registro de brechas de la feature 001 DEBE actualizarse: la brecha II.4 (operaciones sin protección) se marca como cerrada por esta feature, y la brecha III.2b (denegaciones sin auditar) se amplía a las nuevas denegaciones, conforme a la constitución §Gobernanza › Brechas preexistentes. El registro DEBE incluir la tabla de cumplimiento de las 5 condiciones (origen, no ampliación, punto de enganche, registro y vigencia) para la ampliación de III.2b, y la fecha y la feature de cierre de II.4.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -156,9 +162,10 @@ No se crean modelos de datos ni permisos nuevos: se usan los permisos nativos ex
 - **SC-004**: 0 operaciones denegadas producen cambios de datos, archivos o cambios de estado.
 - **SC-005**: El 100 % de las denegaciones en ventanas muestran la advertencia de ventana con el botón "Cerrar", y el 100 % de las denegaciones en actualizaciones de tabla muestran la notificación flotante sin alterar la tabla; ninguna incrusta páginas completas.
 - **SC-006**: El código versionado contiene 0 claves secretas y 0 valores de hosts u orígenes propios de un entorno.
-- **SC-006a**: Sin variables de transporte seguro definidas, el sistema responde por HTTP (desarrollo); con ellas activas, el 100 % de las solicitudes HTTP se redirigen a HTTPS y las respuestas incluyen la política HSTS.
+- **SC-006a**: Sin variables de transporte seguro definidas, el sistema responde por HTTP (desarrollo); con ellas activas, el 100 % de las solicitudes HTTP se redirigen a HTTPS y las respuestas HTTPS incluyen la política HSTS. Se verifica de forma automatizada simulando solicitudes HTTP y HTTPS (sin servidor HTTPS real) y, antes del primer despliegue, en el servidor de producción.
 - **SC-007**: Sin clave secreta definida, el sistema no arranca en el 100 % de los intentos; sin modo de depuración definido, arranca con la depuración desactivada.
 - **SC-007a**: Un usuario sin permisos ve el aviso de FR-003a en Inicio en el 100 % de los casos, y un usuario con al menos un permiso o superusuario no lo ve.
+- **SC-007b**: La exigencia de sesión no añade consultas a la base de datos, y el aviso de FR-003a no añade consultas a Inicio (reutiliza los permisos ya cargados para el menú lateral); se verifica contando consultas en pruebas automáticas.
 - **SC-008**: Las opciones del menú lateral visibles para cada perfil conducen solo a páginas a las que ese perfil tiene acceso (0 opciones que terminen en denegación).
 
 ## Clarifications
@@ -171,6 +178,8 @@ No se crean modelos de datos ni permisos nuevos: se usan los permisos nativos ex
 - Q: ¿Debe esta feature incluir la configuración de transporte seguro para producción (HTTPS, HSTS, cabecera del proxy)? → A: Sí, controlada desde el entorno y desactivada por defecto; producción la activa con variables.
 - Q: ¿Cómo se muestra el aviso de acceso denegado en ventanas y actualizaciones de tabla? → A: En ventanas, con la advertencia transversal de ventana y un botón "Cerrar"; en actualizaciones de tabla, con una notificación flotante de error, sin cambiar la tabla.
 - Q: ¿Qué ve un usuario autorregistrado que aún no tiene grupos ni permisos? → A: Inicio muestra un aviso de que la cuenta aún no tiene permisos asignados y debe solicitarlos al administrador; el aviso desaparece al tener al menos un permiso.
+- Q (revisión CHK003): En rutas anidadas, ¿qué permiso se exige y qué pasa si el registro padre no existe? → A: Solo el permiso de la entidad de la ruta; el permiso se comprueba primero y un padre inexistente responde "página no encontrada".
+- Q (revisión CHK025): ¿Qué ve el usuario si una solicitud de fragmento falla la verificación anti-falsificación? → A: La página completa se recarga (o va al inicio de sesión si no hay sesión); no se incrusta la página de error en la ventana.
 
 ## Assumptions
 
@@ -181,6 +190,7 @@ No se crean modelos de datos ni permisos nuevos: se usan los permisos nativos ex
 - Las listas de hosts permitidos y orígenes de confianza se definen en el entorno como valores separados por comas. Con la depuración activa y la lista vacía, se admiten solo `localhost` y `127.0.0.1`; con la depuración desactivada y la lista de hosts vacía, el sistema no arranca e indica la variable faltante.
 - La verificación automática de FR-001 recorre todas las direcciones enrutadas; las que tienen parámetros (identificadores, tokens) se prueban con valores de prueba, porque la exigencia de sesión se evalúa antes de buscar el registro. El panel de administración, los recursos estáticos y las páginas públicas declaradas quedan fuera del recorrido de "debe exigir sesión" y se verifican por separado.
 - La asignación de permisos a usuarios y grupos se realiza desde el panel de administración; no se construyen interfaces para ello.
+- **Preparación del despliegue**: hoy las operaciones se usan sin control, así que tras esta feature los usuarios sin permisos perderán acceso a ellas. Antes de desplegar, el Responsable Técnico DEBE aprobar la lista de grupos existentes con los permisos de consulta, alta y cambio de cada entidad que corresponden a cada grupo, y esa asignación DEBE aplicarse en el entorno antes de habilitar el acceso a los usuarios.
 - Las páginas del módulo de configuración y las vistas heredadas no enrutadas (archivos de respaldo y aplicaciones con sufijos `_`/`__`/`___`) no están activas y quedan fuera de alcance; la verificación automática de FR-001 cubre todas las direcciones realmente enrutadas.
 - No existe aún el módulo de auditoría; las denegaciones se producen con el mecanismo nativo para que pueda engancharse después (FR-008, FR-018).
 - Los usuarios de prueba y de operación deben estar activos; la creación de usuarios mantiene su comportamiento actual (inactivos hasta su activación).
