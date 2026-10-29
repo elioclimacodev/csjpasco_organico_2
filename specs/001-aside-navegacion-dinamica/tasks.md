@@ -52,12 +52,12 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Corrección de ruta
 
-- [ ] T004 Corregir el `name` de la ruta de lista de Órganos jurisdiccionales en `apps/organizacion/urls.py`: `path('organos-jurisdiccionales/', oj.organos_jurisdiccionales_list, name='organo_jurisdiccional_toggle')` → `name='organos_jurisdiccionales_list'`. Los usos actuales de `organizacion:organo_jurisdiccional_toggle` (`apps/organizacion/templates/organizacion/organo_jurisdiccional/partials/_table.html:36` y `apps/organizacion/views/organo_jurisdiccional.py:263`) pasan `pk` y apuntan a la ruta de cambio de estado: NO modificarlos. Volver a buscar con `grep -rn "organo_jurisdiccional_toggle"` antes de cerrar la tarea (spec §Assumptions; research R12)
+- [X] T004 Corregir el `name` de la ruta de lista de Órganos jurisdiccionales en `apps/organizacion/urls.py`: `path('organos-jurisdiccionales/', oj.organos_jurisdiccionales_list, name='organo_jurisdiccional_toggle')` → `name='organos_jurisdiccionales_list'`. Los usos actuales de `organizacion:organo_jurisdiccional_toggle` (`apps/organizacion/templates/organizacion/organo_jurisdiccional/partials/_table.html:36` y `apps/organizacion/views/organo_jurisdiccional.py:263`) pasan `pk` y apuntan a la ruta de cambio de estado: NO modificarlos. Volver a buscar con `grep -rn "organo_jurisdiccional_toggle"` antes de cerrar la tarea (spec §Assumptions; research R12)
 
 ### Tests de fundamentos (escribir primero; deben fallar)
 
-- [ ] T005 [P] Tests del registro en `apps/common/tests/test_menu_registry.py`: el registro es idempotente ante el mismo objeto; un `id` duplicado con distinto contenido lanza `ImproperlyConfigured`; dos "apps" registran ítems en la misma sección; `isolated()` sustituye y restaura el contenido; `sections()`, `items()` y `user_items()` son de solo lectura (data-model §1 MenuRegistry; spec FR-003, US5-2)
-- [ ] T006 [P] Tests de construcción del árbol en `apps/common/tests/test_menu_builder.py`, con `registry.isolated()` y usuarios con permisos asignados en `setUp`:
+- [X] T005 [P] Tests del registro en `apps/common/tests/test_menu_registry.py`: el registro es idempotente ante el mismo objeto; un `id` duplicado con distinto contenido lanza `ImproperlyConfigured`; dos "apps" registran ítems en la misma sección; `isolated()` sustituye y restaura el contenido; `sections()`, `items()` y `user_items()` son de solo lectura (data-model §1 MenuRegistry; spec FR-003, US5-2)
+- [X] T006 [P] Tests de construcción del árbol en `apps/common/tests/test_menu_builder.py`, con `registry.isolated()` y usuarios con permisos asignados en `setUp`:
   - filtrado con 1 permiso y con varios permisos (se exigen todos, `has_perms`);
   - denegación por defecto (hoja sin permisos y sin `visible_to_authenticated` → oculta);
   - `visible_to_authenticated=True` → visible para todo autenticado;
@@ -71,7 +71,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   - usuario anónimo → `build_sidebar` devuelve `None`.
 
   (data-model §2–§3 reglas 1–5 y 7; spec FR-005, FR-006, FR-007, FR-009, FR-015, Edge Cases)
-- [ ] T007 [P] Tests del system check en `apps/common/tests/test_menu_checks.py`:
+- [X] T007 [P] Tests del system check en `apps/common/tests/test_menu_checks.py`:
   - un caso por código con un registro aislado: `common.E101` id duplicado, `E102` url_name no resoluble o con argumentos obligatorios, `E103` url_name y url a la vez u hoja sin destino, `E104` contenedor con destino o permisos, `E105` hoja sin permisos y `visible_to_authenticated=False`, `E106` sección inexistente / etiquetas u orden distintos / hijo con `section`, `E107` profundidad > 3, `E108` plantilla de ícono inexistente, `E109` variante de Badge fuera de `{'light','warning','info'}`, `E110` `columns < 1` o `columns > 1` en hoja, `E111` url externa sin `https://`;
   - el registro real del proyecto pasa sin errores;
   - test con BD: cada permiso declarado en el registro real existe en `django.contrib.auth.models.Permission` (`app_label` + `codename`).
@@ -80,29 +80,29 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementación de fundamentos
 
-- [ ] T008 Crear `apps/common/components/menu.py` con las estructuras declarativas `@dataclass(frozen=True)`, siguiendo literalmente data-model §1 (docstrings en español):
+- [X] T008 Crear `apps/common/components/menu.py` con las estructuras declarativas `@dataclass(frozen=True)`, siguiendo literalmente data-model §1 (docstrings en español):
   - **`Badge`**: `text: str` (obligatorio, "Texto en español, no vacío") y `variant: str = 'light'`, uno de `'light'`, `'warning'`, `'info'`.
   - **`MenuSection`**: `id: str` ("Slug único global entre secciones"), `label: str` y `order: int = 100`.
   - **`MenuItem`**: `id`, `label`, `section: str | None = None` ("Solo en primer nivel"), `url_name: str | None` ("`namespace:name`, resoluble con `reverse()` sin argumentos"), `url: str | None` ("URL externa absoluta `https://…`"), `icon: str | None`, `badge: Badge | None`, `permissions: tuple[str, ...] = ()` ("se exigen todos"), `visible_to_authenticated: bool = False`, `order: int = 100`, `children: tuple[MenuItem, ...] = ()`, `columns: int = 1` ("≥ 1. Solo en ítems con hijos") y `active_patterns: tuple[str, ...] = ()` (si está vacío, equivale a `(url_name,)`).
   - **`UserMenuItem`**: `id`, `label`, `kind: Literal['link','post']`, `url_name: str`, `icon`, `permissions`, `visible_to_authenticated = False`, `order = 100` y `divider_before = False`.
 
   (data-model §1; spec FR-004, FR-017)
-- [ ] T009 Implementar `MenuRegistry` y la instancia de módulo `registry` en `apps/common/components/menu.py`:
+- [X] T009 Implementar `MenuRegistry` y la instancia de módulo `registry` en `apps/common/components/menu.py`:
   - `register_section`, `register_item` (solo primer nivel) y `register_user_item`, idempotentes; un `id` duplicado con contenido distinto → `ImproperlyConfigured`;
   - `sections()`, `items()` y `user_items()` de solo lectura;
   - el context manager `isolated()` para tests.
 
   (data-model §1 MenuRegistry; contracts/menu-declaration.md §API pública)
-- [ ] T010 Implementar en `apps/common/components/menu.py`:
+- [X] T010 Implementar en `apps/common/components/menu.py`:
   - las estructuras resueltas `ResolvedItem`, `ResolvedSection` y `Sidebar` (data-model §2);
   - `build_sidebar(user, request) -> Sidebar | None` con las reglas 1–5 y 7 de data-model §3: visibilidad (`visible_to_authenticated` o `permissions` no vacíos y `user.has_perms`), `reverse` con `NoReverseMatch` → omitir y `logger.warning('Menú: no se pudo resolver %s', url_name)`, visibilidad de contenedores y secciones, orden `(order, label)` y columnas con k = ⌈n/c⌉;
   - devolver `None` si `not user.is_authenticated`. Dejar en `is_active`/`is_active_parent` el valor `False` y el `UserPanel` vacío (se completan en US2 y US3). Sin HTML en Python.
 
   (spec FR-005–FR-009, FR-015; data-model §2–§3)
-- [ ] T011 Crear `apps/common/checks.py` con una función de system check (`django.core.checks.register`, tag `Tags.urls`) que valide el registro real con los códigos `common.E101`–`common.E111` y los mensajes en español del contrato; usar `django.template.loader.get_template` para E108 (contracts/menu-declaration.md §Reglas; research R5)
-- [ ] T012 Modificar `apps/common/apps.py`: en `CommonConfig.ready()`, `autodiscover_modules('menu')` (`django.utils.module_loading`) e importar `apps.common.checks` para registrar el check. No importar ningún módulo de negocio por nombre (research R2; constitución Principio IV)
-- [ ] T013 Crear `apps/common/templatetags/navigation_tags.py` con `@register.simple_tag(takes_context=True) def get_sidebar(context)`, que lee `context.get('request')` y devuelve `build_sidebar(request.user, request)` o `None` si no hay `request` o el usuario no está autenticado; docstring en español (contracts/sidebar-template.md §2; research R3)
-- [ ] T014 Ejecutar `python manage.py check` y `python manage.py test apps.common`: T005–T007 en verde. Con el registro todavía vacío, los casos "el registro real pasa sin errores" y "cada permiso declarado existe en `Permission`" de T007 pasan de forma trivial; se revalidan con las declaraciones reales en T037
+- [X] T011 Crear `apps/common/checks.py` con una función de system check (`django.core.checks.register`, tag `Tags.urls`) que valide el registro real con los códigos `common.E101`–`common.E111` y los mensajes en español del contrato; usar `django.template.loader.get_template` para E108 (contracts/menu-declaration.md §Reglas; research R5)
+- [X] T012 Modificar `apps/common/apps.py`: en `CommonConfig.ready()`, `autodiscover_modules('menu')` (`django.utils.module_loading`) e importar `apps.common.checks` para registrar el check. No importar ningún módulo de negocio por nombre (research R2; constitución Principio IV)
+- [X] T013 Crear `apps/common/templatetags/navigation_tags.py` con `@register.simple_tag(takes_context=True) def get_sidebar(context)`, que lee `context.get('request')` y devuelve `build_sidebar(request.user, request)` o `None` si no hay `request` o el usuario no está autenticado; docstring en español (contracts/sidebar-template.md §2; research R3)
+- [X] T014 Ejecutar `python manage.py check` y `python manage.py test apps.common`: T005–T007 en verde. Con el registro todavía vacío, los casos "el registro real pasa sin errores" y "cada permiso declarado existe en `Permission`" de T007 pasan de forma trivial; se revalidan con las declaraciones reales en T037
 
 **Checkpoint**: Registro, constructor, check y template tag listos. Las historias pueden comenzar.
 

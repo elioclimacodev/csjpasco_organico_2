@@ -42,7 +42,7 @@ urlpatterns += [
     path('organo-jurisdiccional/<int:pk>/detalles/', oj.organo_jurisdiccional_details, name='organo_jurisdiccional_details'),
     path('organo-jurisdiccional/<int:pk>/estado/', oj.organo_jurisdiccional_toggle, name='organo_jurisdiccional_toggle'),
     
-    path('organos-jurisdiccionales/', oj.organos_jurisdiccionales_list, name='organo_jurisdiccional_toggle'),
+    path('organos-jurisdiccionales/', oj.organos_jurisdiccionales_list, name='organos_jurisdiccionales_list'),
     path('organos-jurisdiccionales/exportar/xlsx/', oj.organos_jurisdiccionales_export, name='organos_jurisdiccionales_export'),    
 ]
 
