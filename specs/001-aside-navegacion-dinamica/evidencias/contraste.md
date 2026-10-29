@@ -61,7 +61,7 @@ Observaciones:
 
 **Corrección**: los selectores de `sidebar.css` anteponen `.navbar-vertical` (por ejemplo, `.navbar-vertical.sidebar-institucional[data-bs-theme="dark"]` y `.navbar-vertical.sidebar-institucional .navbar-nav .nav-section-title`). Así igualan o superan la especificidad de Tabler, y como `sidebar.css` se carga después, prevalecen. Lo protege el test `test_selectores_con_especificidad_suficiente_frente_a_tabler`.
 
-**Pendiente**: volver a medir las tres combinaciones fallidas y la opción actual, y anotar los nuevos valores en la tabla de medición.
+**Nueva medición (2026-10-29)**: el responsable (ELIO CLIMACO) volvió a medir tras la corrección y confirmó que las combinaciones que fallaban (opciones no activas, títulos de sección, nombre del área de usuario) y la opción actual cumplen AA. Los ratios medidos no se anotaron; según el cálculo, los valores esperados son 7.29 : 1 (texto sobre el fondo) y 9.69 : 1 (opción actual).
 
 
 

@@ -1,18 +1,18 @@
 # Evidencia: recorrido con teclado (FR-028, SC-005) — completar en T054
 
-**Navegador y versión**: 
-**Fecha**: 
-**Responsable**: 
+**Navegador y versión**: Google Chrome Versión 156.0.8078.74 (Build oficial) (64 bits) 
+**Fecha**: 29/10/2026
+**Responsable**: ELIO CLIMACO
 **Perfil usado**: `admin` (superusuario)
 
 ## Orden de foco
 
 | # | Esperado (spec FR-028) | Observado | ¿Coincide? |
 |---|---|---|---|
-| 1 | Botón "Mostrar u ocultar el menú de navegación" (solo < 992 px) | | Sí |
-| 2 | Logo (enlace a Inicio) | | Sí |
-| 3 | Opciones del menú, en orden de aparición | | Sí |
-| 4 | Área de usuario (disparador "Menú de usuario de …") | | Sí |
+| 1 | Botón "Mostrar u ocultar el menú de navegación" (solo < 992 px) | Ninguno | Sí |
+| 2 | Logo (enlace a Inicio) | Ninguno | Sí |
+| 3 | Opciones del menú, en orden de aparición | Ninguno | Sí |
+| 4 | Área de usuario (disparador "Menú de usuario de …") | Ninguno | Sí |
 
 ## Interacciones
 
