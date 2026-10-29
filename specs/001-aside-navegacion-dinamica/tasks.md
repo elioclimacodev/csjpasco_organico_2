@@ -293,7 +293,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T051 [P] [US4] Test en `apps/common/tests/test_sidebar_render.py` (bloque US4):
+- [X] T051 [P] [US4] Test en `apps/common/tests/test_sidebar_render.py` (bloque US4):
   - `static/project/css/sidebar.css` no contiene ningún valor hex de la paleta (`#A42622`, `#EAE4D2`, `#7A7562`, sin distinguir mayúsculas);
   - el `<aside>` tiene `navbar-expand-lg` y `data-bs-theme="dark"` y no tiene `bg-primary` ni `sidebar-custom`;
   - los SVG de `templates/components/icons/` tienen `aria-hidden="true"`.
@@ -302,7 +302,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementation for User Story 4
 
-- [ ] T052 [US4] Escribir en `static/project/css/sidebar.css` las reglas de `.sidebar-institucional`:
+- [X] T052 [US4] Escribir en `static/project/css/sidebar.css` las reglas de `.sidebar-institucional`:
   - fondo con `var(--institutional-primary)`;
   - `--tblr-navbar-color` y el texto de ítems, títulos de sección, submenús, íconos y área de usuario en blanco 100 % (nunca la opacidad por defecto de Tabler: 4.30:1 falla AA);
   - ítem activo con `background-color: rgba(0,0,0,.2)`, marca lateral blanca de 3 px y `font-weight: 600`;

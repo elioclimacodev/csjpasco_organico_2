@@ -219,3 +219,34 @@ class SidebarRenderUS3Tests(TestCase):
         area = self.area_de_usuario(self.aside(crear_usuario(first_name='Ana', last_name='Pérez')))
 
         self.assertNotIn('class="small', area)
+
+
+SIDEBAR_CSS = Path(settings.BASE_DIR) / 'static' / 'project' / 'css' / 'sidebar.css'
+PALETA = ['#a42622', '#eae4d2', '#7a7562']
+
+
+class SidebarRenderUS4Tests(TestCase):
+    """Restricciones de presentación (spec FR-029, FR-030; constitución §Identidad visual)."""
+
+    def test_sidebar_css_no_repite_valores_de_la_paleta(self):
+        css = SIDEBAR_CSS.read_text(encoding='utf-8').lower()
+
+        for color in PALETA:
+            with self.subTest(color=color):
+                self.assertNotIn(color, css)
+
+    def test_aside_responsive_con_esquema_local_y_sin_fondos_en_conflicto(self):
+        self.client.force_login(crear_usuario())
+
+        aside = aside_html(self.client.get(reverse('main:index')))
+        apertura = aside[:aside.index('>') + 1]
+
+        self.assertIn('navbar-expand-lg', apertura)
+        self.assertIn('data-bs-theme="dark"', apertura)
+        self.assertNotIn('bg-primary', aside)
+        self.assertNotIn('sidebar-custom', aside)
+
+    def test_iconos_decorativos(self):
+        for archivo in ICONS_DIR.glob('*.html'):
+            with self.subTest(archivo=archivo.name):
+                self.assertIn('aria-hidden="true"', archivo.read_text(encoding='utf-8'))
