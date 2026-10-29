@@ -238,20 +238,20 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Tests for User Story 3 (escribir primero; deben fallar) ⚠️
 
-- [ ] T043 [P] [US3] Tests de `UserPanel` en `apps/common/tests/test_menu_builder.py` (bloque US3):
+- [X] T043 [P] [US3] Tests de `UserPanel` en `apps/common/tests/test_menu_builder.py` (bloque US3):
   - `full_name` = `get_full_name()` o, si está vacío, `get_username()`;
   - iniciales: "Ángel Núñez" → "ÁN"; "Ñuflo" → "ÑU"; se ignoran los caracteres no alfanuméricos iniciales; un username numérico sin nombre → sus 2 primeros dígitos;
   - `secondary` = el primer grupo en orden alfabético, o `None` sin grupos, y nunca el username;
   - las opciones de usuario se filtran y ordenan como los ítems.
 
   (spec FR-021, FR-025, Edge Cases; research R10; data-model §2 UserPanel)
-- [ ] T044 [P] [US3] Tests de cierre de sesión en `apps/usuarios/tests.py`:
+- [X] T044 [P] [US3] Tests de cierre de sesión en `apps/usuarios/tests.py`:
   - POST a `usuarios:cerrar_sesion` → sesión cerrada y redirección a `usuarios:iniciar_sesion`;
   - GET → 405 y la sesión sigue activa;
   - POST como anónimo (sesión expirada) → redirección al inicio de sesión sin error.
 
   (spec FR-024, FR-024a, SC-004, Edge Cases; research R14)
-- [ ] T045 [P] [US3] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US3):
+- [X] T045 [P] [US3] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US3):
   - `class="navbar-footer"` aparece DESPUÉS de `</nav>` en el HTML;
   - existe `<form method="post" action="<reverse('usuarios:cerrar_sesion')>">` con `csrfmiddlewaretoken` y un botón "Cerrar sesión";
   - el menú de usuario tiene una sola opción;
@@ -263,23 +263,23 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementation for User Story 3
 
-- [ ] T046 [US3] Completar en `apps/common/components/menu.py` el `UserPanel` y `ResolvedUserItem`:
+- [X] T046 [US3] Completar en `apps/common/components/menu.py` el `UserPanel` y `ResolvedUserItem`:
   - `full_name` con fallback;
   - `secondary = user.groups.order_by('name').values_list('name', flat=True).first()`;
   - `initials` según research R10: `str.upper()`, conservando tildes y Ñ, ignorando los caracteres no alfanuméricos iniciales, y con los 2 primeros dígitos si el username es numérico;
   - resolución, filtrado y orden de `UserMenuItem` con las mismas reglas que los ítems.
 
   (data-model §2; spec FR-021, FR-025)
-- [ ] T047 [US3] Añadir en `apps/usuarios/menu.py` la opción `UserMenuItem(id='cerrar_sesion', label='Cerrar sesión', kind='post', url_name='usuarios:cerrar_sesion', icon='logout', visible_to_authenticated=True, order=1000)` (contracts/menu-declaration.md; spec FR-023)
-- [ ] T048 [US3] Crear `templates/components/navigation/aside/_user.html` según el contrato:
+- [X] T047 [US3] Añadir en `apps/usuarios/menu.py` la opción `UserMenuItem(id='cerrar_sesion', label='Cerrar sesión', kind='post', url_name='usuarios:cerrar_sesion', icon='logout', visible_to_authenticated=True, order=1000)` (contracts/menu-declaration.md; spec FR-023)
+- [X] T048 [US3] Crear `templates/components/navigation/aside/_user.html` según el contrato:
   - `navbar-footer` > `navbar-nav` > `nav-item dropup`;
   - el disparador `nav-link` con `data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de usuario de {{ sidebar.user.full_name }}"`;
   - `<span class="avatar avatar-sm" aria-hidden="true">{{ sidebar.user.initials }}</span>`, el nombre y `{% if sidebar.user.secondary %}`;
   - por cada opción: `kind == 'post'` → `<form method="post" action="{{ item.href }}">{% csrf_token %}<button type="submit" class="dropdown-item">`; `kind == 'link'` → `<a class="dropdown-item">`; `divider_before` → `dropdown-divider`.
 
   Sin `style=` (spec FR-021, FR-024; research R10)
-- [ ] T049 [US3] En `templates/components/navigation/aside/base.html`, incluir `_user.html` DESPUÉS del include de `_menu.html`, para que el orden del documento sea menú → área de usuario (spec FR-028; contracts/sidebar-template.md §3 "Orden en el documento")
-- [ ] T050 [US3] Ejecutar `python manage.py test apps.common apps.usuarios`: T043–T045 en verde
+- [X] T049 [US3] En `templates/components/navigation/aside/base.html`, incluir `_user.html` DESPUÉS del include de `_menu.html`, para que el orden del documento sea menú → área de usuario (spec FR-028; contracts/sidebar-template.md §3 "Orden en el documento")
+- [X] T050 [US3] Ejecutar `python manage.py test apps.common apps.usuarios`: T043–T045 en verde
 
 **Checkpoint**: US1–US3 funcionan. Valida los escenarios US3-1 a US3-5 y los escenarios 6–8 de quickstart.md.
 

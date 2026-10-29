@@ -167,3 +167,55 @@ class SidebarRenderUS2Tests(TestCase):
         self.assertRegex(aside, r'class="nav-link dropdown-toggle show"[^>]*aria-expanded="true"')
         self.assertIn('class="dropdown-menu show"', aside)
         self.assertRegex(aside, r'class="dropdown-item active"\s*href="/"\s*aria-current="page"')
+
+
+class SidebarRenderUS3Tests(TestCase):
+    """
+    Área de usuario y cierre de sesión en el marcado (spec FR-021, FR-023,
+    FR-024, FR-028; contracts/sidebar-template.md §3–§4).
+    """
+
+    def aside(self, usuario):
+        self.client.force_login(usuario)
+        return aside_html(self.client.get(reverse('main:index')))
+
+    def area_de_usuario(self, aside):
+        return aside[aside.index('class="navbar-footer"'):]
+
+    def test_area_de_usuario_despues_de_la_navegacion(self):
+        aside = self.aside(crear_usuario())
+
+        self.assertIn('class="navbar-footer"', aside)
+        self.assertGreater(aside.index('class="navbar-footer"'), aside.index('</nav>'))
+
+    def test_cerrar_sesion_es_un_formulario_post_con_csrf(self):
+        area = self.area_de_usuario(self.aside(crear_usuario()))
+
+        self.assertRegex(area, r'<form method="post" action="' + reverse('usuarios:cerrar_sesion') + '">')
+        self.assertIn('name="csrfmiddlewaretoken"', area)
+        self.assertRegex(area, r'<button type="submit" class="dropdown-item">[\s\S]*Cerrar sesión')
+
+    def test_menu_de_usuario_con_una_sola_opcion(self):
+        area = self.area_de_usuario(self.aside(crear_usuario()))
+
+        self.assertEqual(area.count('class="dropdown-item"'), 1)
+
+    def test_disparador_con_nombre_accesible(self):
+        aside = self.aside(crear_usuario(first_name='Ana', last_name='Pérez'))
+
+        self.assertIn('aria-label="Menú de usuario de Ana Pérez"', aside)
+
+    def test_dato_secundario_es_el_grupo_y_no_el_documento(self):
+        usuario = crear_usuario(
+            numero_documento='45678912', first_name='Ana', last_name='Pérez', grupos=['Administradores'],
+        )
+
+        area = self.area_de_usuario(self.aside(usuario))
+
+        self.assertIn('Administradores', area)
+        self.assertNotIn('45678912', area)
+
+    def test_sin_grupos_no_hay_dato_secundario(self):
+        area = self.area_de_usuario(self.aside(crear_usuario(first_name='Ana', last_name='Pérez')))
+
+        self.assertNotIn('class="small', area)

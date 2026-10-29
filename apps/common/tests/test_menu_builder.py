@@ -2,8 +2,9 @@ from types import SimpleNamespace
 
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 
-from apps.common.components.menu import Badge, MenuItem, MenuSection, build_sidebar, registry
+from apps.common.components.menu import Badge, MenuItem, MenuSection, UserMenuItem, build_sidebar, registry
 from apps.common.tests.helpers import crear_usuario
 
 
@@ -330,3 +331,82 @@ class BuildSidebarActivoTests(TestCase):
             )
 
             self.assertEqual(self.activos(self.construir('main:index')), (['visible'], []))
+
+
+class BuildSidebarUserPanelTests(TestCase):
+    """
+    Área de usuario (spec FR-021, FR-025, Edge Cases; research R10;
+    data-model §2 UserPanel).
+    """
+
+    def panel(self, usuario):
+        return build_sidebar(usuario, RequestFactory().get('/')).user
+
+    def test_nombre_completo(self):
+        usuario = crear_usuario(first_name='Ana María', last_name='Pérez García')
+
+        self.assertEqual(self.panel(usuario).full_name, 'Ana María Pérez García')
+
+    def test_sin_nombre_usa_el_nombre_de_usuario(self):
+        usuario = crear_usuario(numero_documento='45678912')
+
+        self.assertEqual(self.panel(usuario).full_name, '45678912')
+
+    def test_iniciales_de_nombre_y_apellido_paterno(self):
+        usuario = crear_usuario(first_name='Ana María', last_name='Pérez García')
+
+        self.assertEqual(self.panel(usuario).initials, 'AP')
+
+    def test_iniciales_conservan_tildes_y_enie(self):
+        usuario = crear_usuario(first_name='ángel', last_name='núñez')
+
+        self.assertEqual(self.panel(usuario).initials, 'ÁN')
+
+    def test_iniciales_con_un_solo_termino(self):
+        usuario = crear_usuario(first_name='Ñuflo')
+
+        self.assertEqual(self.panel(usuario).initials, 'ÑU')
+
+    def test_iniciales_ignoran_caracteres_no_alfanumericos_iniciales(self):
+        usuario = crear_usuario(first_name='(Luis)', last_name='-Rojas')
+
+        self.assertEqual(self.panel(usuario).initials, 'LR')
+
+    def test_iniciales_de_nombre_de_usuario_numerico(self):
+        usuario = crear_usuario(numero_documento='45678912')
+
+        self.assertEqual(self.panel(usuario).initials, '45')
+
+    def test_dato_secundario_es_el_primer_grupo_alfabetico(self):
+        usuario = crear_usuario(grupos=['Mesa de partes', 'Administradores'])
+
+        self.assertEqual(self.panel(usuario).secondary, 'Administradores')
+
+    def test_sin_grupos_no_hay_dato_secundario(self):
+        usuario = crear_usuario(numero_documento='45678912')
+
+        self.assertIsNone(self.panel(usuario).secondary)
+
+    def test_opciones_de_usuario_filtradas_y_ordenadas(self):
+        usuario = crear_usuario()
+
+        with registry.isolated():
+            registry.register_user_item(UserMenuItem(
+                id='salir', label='Cerrar sesión', kind='post', url_name='usuarios:cerrar_sesion',
+                visible_to_authenticated=True, order=1000,
+            ))
+            registry.register_user_item(UserMenuItem(
+                id='perfil', label='Perfil', kind='link', url_name='main:index',
+                visible_to_authenticated=True, order=10, divider_before=True,
+            ))
+            registry.register_user_item(UserMenuItem(
+                id='restringida', label='Restringida', kind='link', url_name='main:index',
+                permissions=('personas.view_persona',),
+            ))
+
+            opciones = self.panel(usuario).items
+
+        self.assertEqual([opcion.id for opcion in opciones], ['perfil', 'salir'])
+        self.assertEqual(opciones[1].kind, 'post')
+        self.assertEqual(opciones[1].href, reverse('usuarios:cerrar_sesion'))
+        self.assertTrue(opciones[0].divider_before)

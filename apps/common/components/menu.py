@@ -196,9 +196,33 @@ class ResolvedSection:
 
 
 @dataclass
+class ResolvedUserItem:
+    id: str
+    label: str
+    icon: Optional[str]
+    kind: str
+    href: str
+    divider_before: bool
+
+
+@dataclass
+class UserPanel:
+    """
+    Área de usuario del aside.
+
+    `secondary` es el grupo principal del usuario; nunca el nombre de
+    usuario, que es su número de documento (spec FR-021).
+    """
+    full_name: str
+    secondary: Optional[str]
+    initials: str
+    items: list[ResolvedUserItem]
+
+
+@dataclass
 class Sidebar:
     sections: list[ResolvedSection]
-    user: Optional[object] = None
+    user: Optional[UserPanel] = None
 
 
 # ── Construcción del árbol ───────────────────────────────────────────────
@@ -317,6 +341,59 @@ def _marcar_activo(sections, request):
             ancestro.is_active_parent = True
 
 
+def _inicial(termino):
+    """Primer carácter alfanumérico de un término, o '' si no tiene."""
+    return next((caracter for caracter in termino if caracter.isalnum()), '')
+
+
+def _iniciales(user):
+    """
+    Iniciales del avatar (research R10): primera letra del primer nombre y
+    del apellido paterno; con un solo término, sus dos primeros caracteres
+    alfanuméricos. Se conservan tildes y Ñ.
+    """
+    nombres = user.first_name.split()
+    apellidos = user.last_name.split()
+
+    if nombres and apellidos:
+        iniciales = _inicial(nombres[0]) + _inicial(apellidos[0])
+    else:
+        # Un solo término: el nombre, el apellido o, en último caso, el
+        # nombre de usuario (p. ej., un número de documento).
+        termino = (nombres or apellidos or [user.get_username()])[0]
+        iniciales = ''.join(caracter for caracter in termino if caracter.isalnum())[:2]
+
+    return iniciales.upper()
+
+
+def _resolver_opcion_de_usuario(opcion, user):
+    """Devuelve la opción de usuario resuelta, o None si no debe mostrarse."""
+    if not _es_visible(opcion, user):
+        return None
+    try:
+        href = reverse(opcion.url_name)
+    except NoReverseMatch:
+        logger.warning('Menú: no se pudo resolver %s', opcion.url_name)
+        return None
+    return ResolvedUserItem(
+        id=opcion.id, label=opcion.label, icon=opcion.icon, kind=opcion.kind,
+        href=href, divider_before=opcion.divider_before,
+    )
+
+
+def _panel_de_usuario(user):
+    return UserPanel(
+        full_name=user.get_full_name() or user.get_username(),
+        secondary=user.groups.order_by('name').values_list('name', flat=True).first(),
+        initials=_iniciales(user),
+        items=[
+            resuelta
+            for opcion in _ordenar(registry.user_items())
+            if (resuelta := _resolver_opcion_de_usuario(opcion, user)) is not None
+        ],
+    )
+
+
 def build_sidebar(user, request):
     """
     Construye el menú lateral filtrado para el usuario de la request.
@@ -352,4 +429,4 @@ def build_sidebar(user, request):
 
     _marcar_activo(sections, request)
 
-    return Sidebar(sections=sections)
+    return Sidebar(sections=sections, user=_panel_de_usuario(user))
