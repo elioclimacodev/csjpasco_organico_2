@@ -26,5 +26,5 @@
 
 ## Desviaciones encontradas y corrección aplicada
 
-- **2026-10-29 (recorrido de T071, < 992 px)**: Esc no cerraba el menú desplegado. Se corrigió con un manejador Alpine.js en el `<aside>` que lo colapsa y devuelve el foco al botón, sin interferir con el Esc de los desplegables abiertos (research R15). Pendiente de nueva verificación por el responsable.
-
+- **2026-10-29 (recorrido de T071, < 992 px)**: Esc no cerraba el menú desplegado. Se corrigió con un manejador Alpine.js en el `<aside>` que lo colapsa y devuelve el foco al botón, sin interferir con el Esc de los desplegables abiertos (research R15). Verificado por el responsable el 2026-10-29.
+- **2026-10-29 (recorrido de T071, < 992 px)**: el menú de usuario se veía recortado, primero dentro de la barra y luego, con el aside desplegado, fuera del borde izquierdo (captura en `hallazgos/`). Se corrigió en `sidebar.css` (research R15) y el responsable lo verificó el 2026-10-29 con el menú colapsado y desplegado.

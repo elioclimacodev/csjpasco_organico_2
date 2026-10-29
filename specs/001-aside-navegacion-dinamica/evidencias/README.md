@@ -10,3 +10,4 @@ Evidencias de los escenarios de `quickstart.md` que no cubren las pruebas autom√
 | T057 (extensibilidad) | `extensibilidad.md` | Completada (2026-10-29) |
 | T068 (rendimiento) | `rendimiento.md` | Completada (2026-10-29) |
 | T070 (PostgreSQL) | `postgresql.md` | Completada (2026-10-29): 102/102 en PostgreSQL 18.6 |
+| T071 (recorrido completo de quickstart) | `teclado.md`, `hallazgos/` | Completada (2026-10-29): dos hallazgos por debajo de 992 px (Esc y men√∫ de usuario), corregidos y verificados por el responsable |
