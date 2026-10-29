@@ -19,9 +19,9 @@ La feature incluye además:
 
 **Language/Version**: Python 3.13 (requisito constitucional ≥ 3.12)
 
-**Primary Dependencies**: Django 6.0; Tabler.io 1.7.1 (CSS/JS en `static/tabler/dist/`); HTMX y Alpine.js presentes en el stack pero no usados por el componente. Sin dependencias nuevas.
+**Primary Dependencies**: Django 6.0; Tabler.io 1.7.1 (CSS/JS en `static/tabler/dist/`); HTMX presente en el stack y no usado por el componente; Alpine.js usado solo para cerrar con Esc el menú desplegado en pantallas pequeñas (research R15). No hay dependencias de UI nuevas. **Cambio de dependencia**: `psycopg==3` (versión 3.0, incompatible con Django 6.0, que exige ≥ 3.1.12, y sin `libpq` en Windows) se reemplaza por `psycopg[binary]==3.3.6`, que trae su propia `libpq`. Fue necesario para ejecutar la suite contra PostgreSQL (T070; research R17).
 
-**Storage**: N/A para la feature: sin modelos ni migraciones. El proyecto usa SQLite en desarrollo y PostgreSQL en producción.
+**Storage**: N/A para la feature: sin modelos ni migraciones. El motor se elige con la variable de entorno `DB_ENGINE`: `sqlite` (por defecto, solo desarrollo local) o `postgresql` (producción y validación previa al despliegue), con `DB_NAME`, `DB_USER` y `DB_PASSWORD` obligatorias (research R17).
 
 **Testing**: `django.test.TestCase` vía `python manage.py test`. Suite obligatoria contra PostgreSQL antes de desplegar.
 
@@ -115,10 +115,16 @@ specs/001-aside-navegacion-dinamica/
 ### Source Code (repository root)
 
 ```text
+config/
+└── settings.py                       # MODIFICAR: DATABASES según DB_ENGINE + env_requerida() (research R17)
+.env.example                          # NUEVO: nombres de las variables de entorno, sin secretos
+requirements.txt                      # MODIFICAR: psycopg[binary]==3.3.6
+
 apps/
+├── __init__.py                         # NUEVO: apps/ como paquete regular (descubrimiento de tests; research R16)
 ├── common/
 │   ├── apps.py                         # MODIFICAR: ready() → autodiscover_modules('menu') + registrar checks
-│   ├── checks.py                       # NUEVO: system check common.E101–E111
+│   ├── checks.py                       # NUEVO: system check common.E101–E113
 │   ├── components/
 │   │   ├── breadcrumb.py               # (precedente, sin cambios)
 │   │   └── menu.py                     # NUEVO: Badge, MenuSection, MenuItem, UserMenuItem,
@@ -127,6 +133,7 @@ apps/
 │   │   └── navigation_tags.py          # NUEVO: {% get_sidebar as sidebar %}
 │   └── tests/                          # NUEVO paquete
 │       ├── __init__.py
+│       ├── helpers.py                  # NUEVO: crear_usuario() con usuarios activos (research R16)
 │       ├── test_menu_registry.py
 │       ├── test_menu_builder.py
 │       ├── test_menu_checks.py
@@ -167,7 +174,9 @@ templates/
 │       ├── _menu.html                  # REESCRIBIR: <nav> + secciones
 │       ├── _menu_item.html             # NUEVO: nivel 1
 │       ├── _dropdown_item.html         # NUEVO: niveles 2–3
-│       └── _user_options.html          # ELIMINAR
+│       ├── _badge.html                 # NUEVO: insignia compartida por niveles (research R16)
+│       ├── _external.html              # NUEVO: aviso de enlace externo compartido (research R16)
+│       └── _user_options.html          # ELIMINADO en US1 (T063 adelantada; research R16)
 └── layouts/
     ├── base_page.html                  # MODIFICAR: quitar include de navbar/base.html
     ├── base_list.html                  # MODIFICAR: idem
@@ -198,7 +207,7 @@ static/project/
 |---|---|---|
 | `apps/common/tests/test_menu_registry.py` | Registro idempotente; `id` duplicado → `ImproperlyConfigured`; secciones compartidas por dos apps; `isolated()` | FR-003, US5 |
 | `apps/common/tests/test_menu_builder.py` | Filtrado con 1 y con varios permisos (todos exigidos); denegación por defecto; `visible_to_authenticated`; poda de contenedores y secciones vacíos; orden `(order, label)`; `NoReverseMatch` → ítem omitido + warning (`assertLogs`); activo exacto, con comodín y más específico; un solo activo; padre abierto; sin coincidencia → nada activo; columnas; iniciales y `full_name` con fallback; anónimo → `None` | FR-005–FR-009, FR-020, FR-021, SC-002, SC-003 |
-| `apps/common/tests/test_menu_checks.py` | Cada código `common.E101`–`E111` con un registro aislado; el registro real del proyecto pasa sin errores; cada permiso declarado existe en `Permission` | FR-009, SC-008 |
+| `apps/common/tests/test_menu_checks.py` | Cada código `common.E101`–`E113` con un registro aislado; el registro real del proyecto pasa sin errores; cada permiso declarado existe en `Permission` | FR-009, SC-008 |
 | `apps/common/tests/test_sidebar_render.py` | Anónimo sin `<aside`; autenticado con `<nav … aria-label="Menú principal">`; un único `aria-current="page"`; formulario de logout POST con CSRF; enlace externo con `rel="noopener"` y texto oculto; sin `style=` en los archivos de `aside/` e `icons/`; las páginas de los 6 layouts sin `<header class="navbar`; petición con `HX-Request` a una lista sin `<aside` | FR-001, FR-019, FR-024, FR-026, FR-028, FR-031, SC-007 |
 | `apps/usuarios/tests.py` | POST a `cerrar_sesion` cierra la sesión y redirige a iniciar sesión; GET responde 405 y la sesión sigue; POST anónimo (sesión expirada) redirige al inicio de sesión sin error; POST sin token CSRF (`Client(enforce_csrf_checks=True)`) responde 403 con la plantilla `403_csrf.html` y la sesión sigue | FR-024, SC-004, Edge Cases |
 | `apps/common/tests/test_error_pages.py` | 403 de una lista sin permiso: plantilla `403.html`, texto en español, sin nombre de permiso y con aside; 404 autenticado con aside y anónimo sin aside; `500.html` se renderiza sin contexto ni aside | FR-008b, Edge Cases |

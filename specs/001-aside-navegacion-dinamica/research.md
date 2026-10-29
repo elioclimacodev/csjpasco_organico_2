@@ -185,6 +185,30 @@ Fondo: color institucional principal `#A42622`, con luminancia relativa L ≈ 0.
   - **Decisión**: en `sidebar.css`, por debajo de 992 px, el menú del pie pasa a `position: absolute` con el `z-index` de los desplegables.
   - **Segundo hallazgo (captura en `hallazgos/`)**: con el menú lateral desplegado, el área de usuario queda al final de la lista y a la izquierda. El menú, alineado a la derecha por Tabler (`inset-inline-end: 0`), se salía por el borde izquierdo y solo se veía "…ón". **Decisión**: cuando `#sidebar-menu` tiene `show`, el menú del pie se alinea a la izquierda (`.navbar-collapse.show ~ .navbar-footer .dropup .dropdown-menu`). Con el menú colapsado se conserva la alineación a la derecha, porque allí el avatar está en el extremo derecho de la barra.
 
+## R16. Desviaciones de implementación
+
+Decisiones tomadas durante `/speckit-implement` que no estaban en el plan original. Ninguna cambia el comportamiento especificado.
+
+| Desviación | Justificación | Commit |
+|---|---|---|
+| Parciales `aside/_badge.html` y `aside/_external.html` | Evitan duplicar el marcado de insignias y del aviso de enlace externo entre `_menu_item.html` (nivel 1) y `_dropdown_item.html` (niveles 2–3). | `be69e44` |
+| Parámetro `clase_extra` en `templates/components/icons/*.html` | Tabler necesita clases distintas según dónde va el ícono (`dropdown-item-icon`, `icon-inline`); se evita duplicar los SVG. | `be69e44` |
+| `_user_options.html` eliminado en US1 (T063 adelantada) | Tras T031 era código muerto (su único `include` era el de `aside/base.html`) y su `style=` hacía fallar el test de US1 "sin estilos inline". | `be69e44` |
+| `apps/__init__.py` | Desde Python 3.11, `unittest` no recorre paquetes de espacio de nombres y `python manage.py test` no encontraba ningún test. Las etiquetas de `INSTALLED_APPS` no cambian. | `d3001a4` |
+| `apps/common/tests/helpers.py` (`crear_usuario`) | `CustomUserManager.create_user` crea usuarios inactivos por defecto, y Django no concede permisos a usuarios inactivos; el helper fuerza `is_active=True`. | `db2e493` |
+| T039: página secundaria verificada renderizando el aside con el `resolver_match` del detalle | Las vistas de detalle, creación y edición de Organización son fragmentos de modal y no renderizan el aside. El test aplica la regla de páginas secundarias (FR-020) sobre el componente real con la URL real del detalle. | `c551729` |
+
+## R17. Base de datos por variables de entorno
+
+- **Decisión**: `config/settings.py` elige el motor con `DB_ENGINE`:
+  - `sqlite` (por defecto): solo desarrollo local;
+  - `postgresql`: `DB_NAME`, `DB_USER` y `DB_PASSWORD` son obligatorias y se leen con `env_requerida()`, que lanza `ImproperlyConfigured` con un mensaje en español si falta alguna; `DB_HOST` (`localhost`), `DB_PORT` (`5432`) y `DB_TEST_NAME` (base de `manage.py test`) son opcionales.
+
+  Un `DB_ENGINE` distinto se rechaza. `.env.example` documenta los nombres sin secretos. El driver pasa a `psycopg[binary]==3.3.6`.
+- **Justificación**: la constitución exige ejecutar la suite contra PostgreSQL antes de desplegar (§Requisitos de testing), obtener la configuración y los secretos del entorno y fallar explícitamente ante variables requeridas ausentes (§Configuración de entorno y dependencias). `psycopg==3` instalaba la versión 3.0, incompatible con Django 6.0, y sin `libpq` en Windows.
+- **Alternativas descartadas**: un archivo de settings separado para PostgreSQL, que duplica configuración; `dj-database-url`, que es una dependencia nueva cuando bastan las variables individuales.
+- **Origen**: pedido del Responsable Técnico durante la implementación. Commits `5272806` (configuración) y `583a8cf` (suite en PostgreSQL 18.6: 102/102).
+
 ## Hallazgos fuera de alcance (registrados para features futuras)
 
 - `apps/common/context_procesors.py:htmx_base_template` no está registrado en `TEMPLATES` y usa `request.htmx` sin `django-htmx`, pero `apps/personas/templates/personas/create.html` extiende `base_template`. Es un riesgo de error en esa vista.

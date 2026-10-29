@@ -17,7 +17,13 @@ python manage.py check                 # sin errores common.E1xx
 python manage.py test apps.common apps.main apps.organizacion apps.personas apps.usuarios
 ```
 
-Antes de desplegar, repetir la suite contra PostgreSQL (constitución, sección Testing).
+La suite usa la base que fija `DB_ENGINE` en `.env` (research R17). Para forzar SQLite sin editar `.env`:
+
+```bash
+DB_ENGINE=sqlite python manage.py test --noinput
+```
+
+Antes de desplegar, repetir la suite con `DB_ENGINE=postgresql` (constitución, sección Testing; procedimiento en `evidencias/postgresql.md`).
 
 **Resultado esperado**: `System check identified no issues` y todos los tests en verde.
 

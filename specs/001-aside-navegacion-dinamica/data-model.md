@@ -25,7 +25,7 @@ Ubicación: `apps/common/components/menu.py`.
 | `label` | `str` | Sí | Título visible en español. |
 | `order` | `int` | No (def. `100`) | Orden de la sección. |
 
-- Una misma sección puede recibir ítems de varias apps (US5-2). Si dos apps declaran el mismo `id` de sección, deben usar el mismo `label` y el mismo `order`; si no, es error del check.
+- Una misma sección puede recibir ítems de varias apps (US5-2). Si dos apps declaran el mismo `id` de sección, deben usar el mismo `label` y el mismo `order`; si no, el registro falla al arrancar (`ImproperlyConfigured`, ver §MenuRegistry).
 - Los ítems sin sección (`section=None`) forman el grupo inicial **sin título** (p. ej., "Inicio"), que se renderiza antes de cualquier sección.
 
 ### MenuItem (Opción de menú)

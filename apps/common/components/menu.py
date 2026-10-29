@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 # informativa. Cada una tiene su estilo en static/project/css/sidebar.css.
 BADGE_VARIANTS = ('light', 'warning', 'info')
 
+# Tipos de opción del menú de usuario: enlace o formulario POST con CSRF.
+USER_ITEM_KINDS = ('link', 'post')
+
 
 # ── Estructuras declarativas ─────────────────────────────────────────────
 #

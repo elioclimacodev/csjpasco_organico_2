@@ -93,19 +93,23 @@ registry.register_user_item(UserMenuItem(
 
 | Código | Regla |
 |---|---|
-| `common.E101` | `id` duplicado (ítems, a cualquier profundidad) o `id` de opción de usuario duplicado. |
+| `common.E101` | `id` duplicado entre hijos, o de un hijo frente a un ítem de primer nivel. |
 | `common.E102` | `url_name` no resoluble sin argumentos. |
 | `common.E103` | Ítem con `url_name` y `url` a la vez, o hoja sin destino. |
 | `common.E104` | Contenedor con destino propio o con `permissions`. |
 | `common.E105` | Hoja sin `permissions` y con `visible_to_authenticated=False` (nunca sería visible). |
-| `common.E106` | `section` inexistente, sección declarada con etiquetas u orden distintos, o hijo que declara `section`. |
+| `common.E106` | `section` inexistente, o hijo que declara `section`. |
 | `common.E107` | Profundidad mayor que 3. |
 | `common.E108` | Plantilla de ícono inexistente. |
 | `common.E109` | Variante de `Badge` fuera del conjunto permitido. |
 | `common.E110` | `columns < 1`, o `columns > 1` en una hoja. |
 | `common.E111` | `url` externa sin esquema `https://`. |
+| `common.E112` | Insignia sin texto (vacío o solo espacios): el color no puede ser el único significado (FR-017). |
+| `common.E113` | Opción de usuario con `kind` fuera de `link` / `post`. |
 
 Además, un test con BD verifica que cada `permissions` exista como `Permission`.
+
+**Fallo al registrarse (antes del check)**: si un ítem de primer nivel, una sección o una opción de usuario se registran con un `id` ya usado y distinto contenido (por ejemplo, la misma sección con otro `label` u `order`), `MenuRegistry` lanza `ImproperlyConfigured` al importar los `menu.py`. La aplicación no llega a arrancar, por lo que esos casos no aparecen como errores `common.E1xx` del check.
 
 ## Obligaciones del consumidor (no verificables automáticamente)
 

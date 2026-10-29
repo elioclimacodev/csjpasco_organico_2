@@ -4,7 +4,7 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.urls import NoReverseMatch, reverse
 
-from apps.common.components.menu import BADGE_VARIANTS, registry
+from apps.common.components.menu import BADGE_VARIANTS, USER_ITEM_KINDS, registry
 
 
 # Profundidad máxima del menú: primer nivel, desplegable y dropend.
@@ -85,6 +85,12 @@ def _validar_item(item, nivel, secciones, ids_vistos, errores):
     if item.icon and (error := _error_icono(item.icon, item.id)):
         errores.append(error)
 
+    if item.badge and not item.badge.text.strip():
+        errores.append(Error(
+            f'Menú: la insignia de "{item.id}" no tiene texto; el color no puede ser el único significado.',
+            id='common.E112',
+        ))
+
     if item.badge and item.badge.variant not in BADGE_VARIANTS:
         errores.append(Error(
             f'Menú: la variante de insignia "{item.badge.variant}" de "{item.id}" no está permitida.',
@@ -110,6 +116,12 @@ def check_menu(app_configs, **kwargs):
         _validar_item(item, 1, secciones, ids_vistos, errores)
 
     for opcion in registry.user_items():
+        if opcion.kind not in USER_ITEM_KINDS:
+            errores.append(Error(
+                f'Menú: el tipo "{opcion.kind}" de la opción de usuario "{opcion.id}" no está permitido.',
+                hint=f'Use uno de: {", ".join(USER_ITEM_KINDS)}.',
+                id='common.E113',
+            ))
         if error := _error_ruta(opcion.url_name, opcion.id):
             errores.append(error)
         if opcion.icon and (error := _error_icono(opcion.icon, opcion.id)):

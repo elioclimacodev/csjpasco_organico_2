@@ -105,6 +105,28 @@ class CheckMenuTests(SimpleTestCase):
     def test_e111_url_externa_sin_https(self):
         self.assertIn('common.E111', codigos(hoja(url_name=None, url='http://www.pj.gob.pe/')))
 
+    def test_e112_texto_de_insignia_vacio(self):
+        for texto in ['', '   ']:
+            with self.subTest(texto=repr(texto)):
+                self.assertIn('common.E112', codigos(hoja(badge=Badge(text=texto))))
+
+    def test_e112_texto_de_insignia_vacio_en_un_hijo(self):
+        contenedor = MenuItem(id='contenedor', label='Contenedor', children=(hoja(badge=Badge(text='')),))
+        self.assertIn('common.E112', codigos(contenedor))
+
+    def test_e113_tipo_de_opcion_de_usuario_no_permitido(self):
+        opcion = UserMenuItem(
+            id='rara', label='Rara', kind='boton', url_name='main:index', visible_to_authenticated=True,
+        )
+        self.assertIn('common.E113', codigos(opciones_usuario=[opcion]))
+
+    def test_tipos_de_opcion_de_usuario_permitidos(self):
+        opciones = [
+            UserMenuItem(id=kind, label=kind, kind=kind, url_name='main:index', visible_to_authenticated=True)
+            for kind in ('link', 'post')
+        ]
+        self.assertNotIn('common.E113', codigos(opciones_usuario=opciones))
+
     def test_el_registro_real_del_proyecto_no_tiene_errores(self):
         self.assertEqual(check_menu(None), [])
 
