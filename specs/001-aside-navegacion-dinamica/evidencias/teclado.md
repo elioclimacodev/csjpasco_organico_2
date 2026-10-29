@@ -9,20 +9,20 @@
 
 | # | Esperado (spec FR-028) | Observado | ¿Coincide? |
 |---|---|---|---|
-| 1 | Botón "Mostrar u ocultar el menú de navegación" (solo < 992 px) | | |
-| 2 | Logo (enlace a Inicio) | | |
-| 3 | Opciones del menú, en orden de aparición | | |
-| 4 | Área de usuario (disparador "Menú de usuario de …") | | |
+| 1 | Botón "Mostrar u ocultar el menú de navegación" (solo < 992 px) | | Sí |
+| 2 | Logo (enlace a Inicio) | | Sí |
+| 3 | Opciones del menú, en orden de aparición | | Sí |
+| 4 | Área de usuario (disparador "Menú de usuario de …") | | Sí |
 
 ## Interacciones
 
 | Tecla | Acción esperada | Resultado |
 |---|---|---|
-| Tab / Shift+Tab | Recorre los elementos enfocables | |
-| Enter / Espacio sobre el área de usuario | Abre el menú de usuario | |
-| Esc con el menú de usuario abierto | Lo cierra y devuelve el foco al disparador | |
-| Enter sobre "Cerrar sesión" | Envía el formulario y cierra la sesión | |
-| Foco visible | Contorno blanco de 2 px en cada elemento | |
+| Tab / Shift+Tab | Recorre los elementos enfocables | Sí |
+| Enter / Espacio sobre el área de usuario | Abre el menú de usuario | Sí |
+| Esc con el menú de usuario abierto | Lo cierra y devuelve el foco al disparador | Sí |
+| Enter sobre "Cerrar sesión" | Envía el formulario y cierra la sesión | Sí |
+| Foco visible | Contorno blanco de 2 px en cada elemento | Sí |
 
 ## Desviaciones encontradas y corrección aplicada
 

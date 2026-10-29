@@ -235,6 +235,20 @@ class SidebarRenderUS4Tests(TestCase):
             with self.subTest(color=color):
                 self.assertNotIn(color, css)
 
+    def test_selectores_con_especificidad_suficiente_frente_a_tabler(self):
+        """
+        Regresión de T055: con `.sidebar-institucional` (0,1,0) ganaban las
+        reglas de Tabler `.navbar[data-bs-theme=dark]` (0,2,0) y
+        `.navbar-vertical[class*=navbar-expand] .navbar-nav .nav-section-title`
+        (0,4,0), y el texto quedaba al 70 % o al 49 % de blanco (4.28:1 y
+        2.81:1).
+        """
+        css = SIDEBAR_CSS.read_text(encoding='utf-8')
+
+        self.assertIn('.navbar-vertical.sidebar-institucional[data-bs-theme="dark"] {', css)
+        self.assertIn('.navbar-vertical.sidebar-institucional .navbar-nav .nav-section-title {', css)
+        self.assertIn('.navbar-vertical.sidebar-institucional .navbar-nav .nav-link-title,', css)
+
     def test_aside_responsive_con_esquema_local_y_sin_fondos_en_conflicto(self):
         self.client.force_login(crear_usuario())
 

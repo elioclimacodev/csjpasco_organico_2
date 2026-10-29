@@ -30,6 +30,38 @@ Mínimos: 4.5:1 para texto normal (WCAG 1.4.3); 3:1 para componentes de interfaz
 
 ## Medición en navegador (completar en T055)
 
+Navegador: Chrome · Tema: claro
+
 | Combinación | Herramienta | Ratio medido | AA | Fecha | Responsable |
 |---|---|---|---|---|---|
-| | | | | | |
+| Texto e íconos de opciones (no activas) | DevTools (script de consola, valores computados) | 4.28 : 1 | No | 29/10/2026 | ___ |
+| Títulos de sección | DevTools (script de consola, valores computados) | 2.81 : 1 | No | 29/10/2026 | ___ |
+| Opción al pasar el cursor | Muestreo de píxeles de captura (blanco sobre 173,60,57) | 6.03 : 1 | Sí | 29/10/2026 | ___ |
+| Opción actual (texto) | DevTools (script de consola, valores computados) | 7.27 : 1 | Sí | 29/10/2026 | ___ |
+| Marca lateral de la opción actual | Muestreo de píxeles de captura (blanco sobre 164,38,34) | 7.29 : 1 (*) | Sí | 29/10/2026 | ___ |
+| Foco visible (contorno) | Muestreo de píxeles de captura (blanco sobre 164,38,34) | 7.29 : 1 | Sí | 29/10/2026 | ___ |
+| Avatar (iniciales) | DevTools (script de consola, valores computados) | 7.29 : 1 | Sí | 29/10/2026 | ___ |
+| Área de usuario: nombre y grupo | DevTools (script de consola, valores computados) | 4.28 : 1 | No | 29/10/2026 | ___ |
+| Menú de usuario desplegable (texto y fondo) | DevTools (script de consola, valores computados) | 12.01 : 1 | Sí | 29/10/2026 | ___ |
+| Logo: trazos grises (referencia, exento de 1.4.3) | Muestreo de píxeles de captura (208,208,208 sobre 164,38,34) | 4.72 : 1 | Sí | 29/10/2026 | ___ |
+| Logo: texto dorado (referencia, exento de 1.4.3) | Muestreo de píxeles de captura (232,178,15 sobre 164,38,34) | 3.75 : 1 | Sí | 29/10/2026 | ___ |
+
+Observaciones:
+- Fallan las opciones no activas, los títulos de sección y el nombre de usuario: Tabler los atenúa pese a `color: #fff` en `sidebar.css` (≈ blanco al 70 % y al 50 %). 
+
+## Corrección aplicada (2026-10-29)
+
+**Causa**: especificidad CSS. Las reglas de `sidebar.css` usaban `.sidebar-institucional` (0,1,0) y perdían frente a las de Tabler:
+
+| Fallo medido | Regla de Tabler que prevalecía | Efecto |
+|---|---|---|
+| Opciones no activas y área de usuario (4.28 : 1) | `.navbar[data-bs-theme=dark]` (0,2,0) redefine `--tblr-navbar-color` como blanco al 70 % | Texto al 70 % |
+| Títulos de sección (2.81 : 1) | `.navbar-vertical[class*=navbar-expand] .navbar-nav .nav-section-title` (0,4,0): `color-mix(… var(--tblr-navbar-color) 70%)` | 70 % de un 70 % ≈ 49 % |
+| Opción actual (7.27 : 1 en lugar de 9.69 : 1) | La misma regla de variables impone su `--tblr-navbar-active-bg` | Sin fondo oscurecido |
+
+**Corrección**: los selectores de `sidebar.css` anteponen `.navbar-vertical` (por ejemplo, `.navbar-vertical.sidebar-institucional[data-bs-theme="dark"]` y `.navbar-vertical.sidebar-institucional .navbar-nav .nav-section-title`). Así igualan o superan la especificidad de Tabler, y como `sidebar.css` se carga después, prevalecen. Lo protege el test `test_selectores_con_especificidad_suficiente_frente_a_tabler`.
+
+**Pendiente**: volver a medir las tres combinaciones fallidas y la opción actual, y anotar los nuevos valores en la tabla de medición.
+
+
+

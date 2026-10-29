@@ -8,6 +8,13 @@
  * Este archivo consume los tokens definidos en custom_color.css; no define
  * valores de la paleta institucional.
  *
+ * Especificidad: Tabler fija los colores del navbar con selectores como
+ * `.navbar[data-bs-theme=dark]` (0,2,0) y
+ * `.navbar-vertical[class*=navbar-expand] .navbar-nav …` (0,4,0). Los
+ * selectores de este archivo anteponen `.navbar-vertical` para igualarlos o
+ * superarlos; como el archivo se carga después de tabler.min.css, a igual
+ * especificidad prevalece.
+ *
  * Contraste (research R9, fondo = color institucional principal):
  * - Texto e íconos en blanco 100 %: 7.30:1. La opacidad por defecto de
  *   Tabler para navbars oscuros (blanco 70 %) da 4.30:1 y NO cumple AA,
@@ -21,7 +28,7 @@
    ASIDE - FONDO Y COLORES BASE
    ============================================================ */
 
-.sidebar-institucional {
+.navbar-vertical.sidebar-institucional[data-bs-theme="dark"] {
     --tblr-navbar-bg: var(--institutional-primary);
     --tblr-navbar-color: #fff;
     --tblr-navbar-hover-color: #fff;
@@ -51,7 +58,7 @@
  * Títulos de sección: Tabler los atenúa al 70 % del color del navbar
  * (≈ 4.3:1 sobre el fondo); se usan en blanco para cumplir AA.
  */
-.sidebar-institucional .nav-section-title {
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-section-title {
     color: #fff;
 }
 
@@ -60,8 +67,8 @@
  * Etiquetas largas: se ajustan en varias líneas en lugar de cortarse con
  * puntos suspensivos (spec, Edge Cases).
  */
-.sidebar-institucional .navbar-nav .nav-link-title,
-.sidebar-institucional .dropdown-menu .dropdown-item {
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link-title,
+.navbar-vertical.sidebar-institucional .dropdown-menu .dropdown-item {
     overflow: visible;
     text-overflow: clip;
     white-space: normal;
@@ -72,8 +79,8 @@
    ASIDE - HOVER
    ============================================================ */
 
-.sidebar-institucional .navbar-nav .nav-link:hover,
-.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item:hover {
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link:hover,
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item:hover {
     color: #fff;
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -88,8 +95,8 @@
  * lateral blanca y negrita (spec FR-030). El texto sigue en blanco
  * (≈ 10:1 sobre el fondo oscurecido).
  */
-.sidebar-institucional .navbar-nav .nav-link[aria-current="page"],
-.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item[aria-current="page"] {
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link[aria-current="page"],
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item[aria-current="page"] {
     color: #fff;
     background-color: var(--tblr-navbar-active-bg);
     box-shadow: inset 3px 0 0 #fff;
@@ -101,8 +108,8 @@
  * El contenedor del ítem actual (desplegable abierto) se marca en negrita,
  * sin fondo, para no competir con el ítem actual.
  */
-.sidebar-institucional .navbar-nav .nav-item.active > .nav-link.dropdown-toggle,
-.sidebar-institucional .dropend > .dropdown-item.dropdown-toggle.active {
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-item.active > .nav-link.dropdown-toggle,
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropend > .dropdown-item.dropdown-toggle.active {
     color: #fff;
     background: transparent;
     font-weight: 600;
@@ -165,7 +172,7 @@
 }
 
 
-.sidebar-institucional .navbar-footer .nav-link .small {
+.navbar-vertical.sidebar-institucional .navbar-footer .nav-link .small {
     color: #fff;
 }
 
