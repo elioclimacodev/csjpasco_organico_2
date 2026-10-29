@@ -1,11 +1,17 @@
 {% load static navigation_tags %}
 {% get_sidebar as sidebar %}
 {% if sidebar %}
-<aside class="navbar navbar-vertical navbar-expand-lg sidebar-institucional" data-bs-theme="dark">
+{# Esc cierra el menú desplegado en pantallas pequeñas y devuelve el foco al botón (spec FR-028). Si un desplegable abierto ya consumió la tecla (Bootstrap llama a preventDefault), no actúa. #}
+<aside
+    class="navbar navbar-vertical navbar-expand-lg sidebar-institucional"
+    data-bs-theme="dark"
+    x-data
+    @keydown.escape.window="if (!$event.defaultPrevented && $refs.menu.classList.contains('show')) { $refs.toggler.click(); $refs.toggler.focus(); }">
     <div class="container-fluid">
         <!-- Inicio Botón de menú (pantallas pequeñas) -->
         <button
             class="navbar-toggler"
+            x-ref="toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#sidebar-menu"

@@ -177,6 +177,21 @@
 }
 
 
+/*
+ * Pantallas pequeñas: Bootstrap deja los menús de .navbar-nav en
+ * `position: static` por debajo de 992 px, y el menú de usuario quedaba
+ * recortado dentro de la barra. Aquí flota bajo el avatar (Tabler ya fija
+ * top: 100% y la alineación a la derecha).
+ */
+@media (max-width: 991.98px) {
+
+    .navbar-vertical.sidebar-institucional .navbar-footer .dropdown-menu {
+        position: absolute;
+        z-index: var(--tblr-dropdown-zindex, 1000);
+    }
+}
+
+
 /* ============================================================
    ASIDE - DESPLAZAMIENTO
    ============================================================ */

@@ -32,6 +32,8 @@ Se renderiza solo `{% if sidebar %}`. Esqueleto normativo (atributos clave; clas
 
 **Esquema `data-bs-theme="dark"`**: es local al componente y no activa el tema oscuro de la aplicación (ver research R9).
 
+**Esc en pantallas pequeñas (FR-028)**: el `<aside>` lleva `x-data` y `@keydown.escape.window` (Alpine.js). Si el menú `#sidebar-menu` (`x-ref="menu"`) está desplegado y la tecla no fue consumida por un desplegable abierto (`$event.defaultPrevented`), pulsa el botón (`x-ref="toggler"`) y le devuelve el foco. No es JavaScript del proyecto: es una interacción local con Alpine, como prevé el Principio I.
+
 ```html
 <aside class="navbar navbar-vertical navbar-expand-lg sidebar-institucional" data-bs-theme="dark">
   <div class="container-fluid">

@@ -176,6 +176,14 @@ Fondo: color institucional principal `#A42622`, con luminancia relativa L ≈ 0.
 - **Justificación**: Usa los mecanismos nativos de Django (Principio I) y cumple la regla constitucional de mensajes en español formal y orientados a la acción.
 - **Alternativas descartadas**: vistas de error personalizadas (`handler403 = ...`). No se necesitan: las plantillas con los nombres estándar bastan.
 
+## R15. Observaciones de T071 por debajo de 992 px
+
+- **Esc no cerraba el menú desplegado.** El colapso de Bootstrap no atiende Esc.
+  - **Decisión**: un manejador Alpine.js en el `<aside>` (`@keydown.escape.window`). Si el menú tiene `show` y el evento no fue consumido (`$event.defaultPrevented`, que Bootstrap marca al cerrar un desplegable con Esc), pulsa el botón del propio Bootstrap y le devuelve el foco.
+  - **Alternativas descartadas**: convertir el menú en `offcanvas`, que atiende Esc de forma nativa pero cambia todo el marcado del patrón de referencia; o un archivo en `static/project/js/`, que el Principio I reserva como último recurso cuando Alpine.js basta.
+- **El menú de usuario se veía recortado.** Bootstrap define `.navbar-nav .dropdown-menu { position: static }` para navbars colapsados, y por debajo de 992 px el menú se dibujaba dentro de la barra de altura fija. La regla de Tabler `.navbar-footer .dropup .dropdown-menu { top: 100%; … }` no surtía efecto.
+  - **Decisión**: en `sidebar.css`, por debajo de 992 px, el menú del pie pasa a `position: absolute` con el `z-index` de los desplegables.
+
 ## Hallazgos fuera de alcance (registrados para features futuras)
 
 - `apps/common/context_procesors.py:htmx_base_template` no está registrado en `TEMPLATES` y usa `request.htmx` sin `django-htmx`, pero `apps/personas/templates/personas/create.html` extiende `base_template`. Es un riesgo de error en esa vista.

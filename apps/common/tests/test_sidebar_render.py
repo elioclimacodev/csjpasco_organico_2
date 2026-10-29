@@ -377,3 +377,30 @@ class SidebarRenderPulidoTests(TestCase):
 
                 with self.assertNumQueries(3):
                     render_to_string('components/navigation/aside/base.html', request=request)
+
+
+class SidebarRenderMovilTests(TestCase):
+    """
+    Observaciones de T071 por debajo de 992 px: Esc no cerraba el menú y el
+    menú de usuario quedaba recortado (spec FR-028, FR-029).
+    """
+
+    def test_esc_cierra_el_menu_desplegado(self):
+        self.client.force_login(crear_usuario())
+
+        aside = aside_html(self.client.get(reverse('main:index')))
+        apertura = aside[:aside.index('>') + 1]
+
+        self.assertIn('x-data', apertura)
+        self.assertIn('@keydown.escape.window=', apertura)
+        # No actúa si un desplegable abierto ya consumió la tecla.
+        self.assertIn('$event.defaultPrevented', apertura)
+        self.assertRegex(aside, r'class="navbar-toggler"[^>]*x-ref="toggler"')
+        self.assertRegex(aside, r'id="sidebar-menu"[^>]*x-ref="menu"')
+
+    def test_menu_de_usuario_flota_en_pantallas_pequenas(self):
+        css = SIDEBAR_CSS.read_text(encoding='utf-8')
+        media = css[css.index('@media (max-width: 991.98px)'):]
+
+        self.assertIn('.navbar-vertical.sidebar-institucional .navbar-footer .dropdown-menu {', media)
+        self.assertIn('position: absolute;', media)
