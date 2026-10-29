@@ -1,0 +1,44 @@
+{# Opción de primer nivel: hoja (nav-link) o contenedor (dropdown). #}
+{% if item.children %}
+    <li class="nav-item dropdown">
+        <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="false"
+            role="button"
+            aria-expanded="false">
+            {% if item.icon %}
+                <span class="nav-link-icon">{% include 'components/icons/'|add:item.icon|add:'.html' %}</span>
+            {% endif %}
+            <span class="nav-link-title">{{ item.label }}</span>
+            {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
+        </a>
+
+        <div class="dropdown-menu">
+            <div class="dropdown-menu-columns">
+                {% for column in item.columns %}
+                    <div class="dropdown-menu-column">
+                        {% for child in column %}
+                            {% include 'components/navigation/aside/_dropdown_item.html' with item=child %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+{% else %}
+    <li class="nav-item">
+        <a
+            class="nav-link"
+            href="{{ item.href }}"
+            {% if item.is_external %}target="_blank" rel="noopener"{% endif %}>
+            {% if item.icon %}
+                <span class="nav-link-icon">{% include 'components/icons/'|add:item.icon|add:'.html' %}</span>
+            {% endif %}
+            <span class="nav-link-title">{{ item.label }}</span>
+            {% include 'components/navigation/aside/_external.html' %}
+            {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
+        </a>
+    </li>
+{% endif %}

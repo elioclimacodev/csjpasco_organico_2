@@ -1,0 +1,4 @@
+{% if item.is_external %}
+    {% include 'components/icons/external-link.html' with clase_extra='icon-inline ms-1' %}
+    <span class="visually-hidden">(se abre en una pestaña nueva)</span>
+{% endif %}

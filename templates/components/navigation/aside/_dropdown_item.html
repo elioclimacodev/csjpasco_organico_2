@@ -1,0 +1,36 @@
+{# Opción de niveles 2 y 3: hoja (dropdown-item) o contenedor de nivel 2 (dropend). #}
+{% if item.children %}
+    <div class="dropend">
+        <a
+            class="dropdown-item dropdown-toggle"
+            href="#"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="false"
+            role="button"
+            aria-expanded="false">
+            {% if item.icon %}
+                {% include 'components/icons/'|add:item.icon|add:'.html' with clase_extra='dropdown-item-icon' %}
+            {% endif %}
+            {{ item.label }}
+            {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
+        </a>
+
+        <div class="dropdown-menu">
+            {% for child in item.children %}
+                {% include 'components/navigation/aside/_dropdown_item.html' with item=child %}
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <a
+        class="dropdown-item"
+        href="{{ item.href }}"
+        {% if item.is_external %}target="_blank" rel="noopener"{% endif %}>
+        {% if item.icon %}
+            {% include 'components/icons/'|add:item.icon|add:'.html' with clase_extra='dropdown-item-icon' %}
+        {% endif %}
+        {{ item.label }}
+        {% include 'components/navigation/aside/_external.html' %}
+        {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
+    </a>
+{% endif %}

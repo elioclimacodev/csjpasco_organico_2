@@ -116,10 +116,10 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Tests for User Story 1 (escribir primero; deben fallar) ⚠️
 
-- [ ] T015 [P] [US1] Tests de protección de Inicio en `apps/main/tests.py`: anónimo → 302 a `settings.LOGIN_URL` (`usuarios:iniciar_sesion`); autenticado → 200 (spec FR-008a, US1-6)
-- [ ] T016 [P] [US1] Tests de protección en `apps/organizacion/tests.py` para `organizacion:distritos_judiciales_list`, `organizacion:materias_jurisdiccionales_list` y `organizacion:organos_jurisdiccionales_list`: anónimo → 302 a login; autenticado sin permiso → 403; con `organizacion.view_distritojudicial` / `view_materiajurisdiccional` / `view_organojurisdiccional` → 200 (spec FR-008a, US1-5)
-- [ ] T017 [P] [US1] Tests de protección en `apps/personas/tests.py` para `personas:list`: anónimo → 302; sin `personas.view_persona` → 403; con permiso → 200 (spec FR-008a)
-- [ ] T018 [P] [US1] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US1):
+- [X] T015 [P] [US1] Tests de protección de Inicio en `apps/main/tests.py`: anónimo → 302 a `settings.LOGIN_URL` (`usuarios:iniciar_sesion`); autenticado → 200 (spec FR-008a, US1-6)
+- [X] T016 [P] [US1] Tests de protección en `apps/organizacion/tests.py` para `organizacion:distritos_judiciales_list`, `organizacion:materias_jurisdiccionales_list` y `organizacion:organos_jurisdiccionales_list`: anónimo → 302 a login; autenticado sin permiso → 403; con `organizacion.view_distritojudicial` / `view_materiajurisdiccional` / `view_organojurisdiccional` → 200 (spec FR-008a, US1-5)
+- [X] T017 [P] [US1] Tests de protección en `apps/personas/tests.py` para `personas:list`: anónimo → 302; sin `personas.view_persona` → 403; con permiso → 200 (spec FR-008a)
+- [X] T018 [P] [US1] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US1):
   - anónimo en la página de login: la respuesta no contiene `<aside` ni `id="sidebar-menu"`;
   - autenticado: contiene `<nav` con `aria-label="Menú principal"` y el botón con `aria-label="Mostrar u ocultar el menú de navegación"`;
   - `sinpermisos`: solo "Inicio" y ningún `nav-section-title`;
@@ -129,7 +129,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   - el logo es `<img … alt="Corte Superior de Justicia de Pasco">`.
 
   (spec FR-001, FR-010, FR-011, FR-028, FR-031, SC-002, SC-007; contracts/sidebar-template.md §4)
-- [ ] T019 [P] [US1] Tests de páginas de error en `apps/common/tests/test_error_pages.py` (bloque US1) con `@override_settings(DEBUG=False)`:
+- [X] T019 [P] [US1] Tests de páginas de error en `apps/common/tests/test_error_pages.py` (bloque US1) con `@override_settings(DEBUG=False)`:
   - 403 de una lista sin permiso: usa `403.html`, contiene el texto en español, NO contiene `view_` ni el nombre del permiso, contiene el aside y el enlace a `main:index`;
   - 404 autenticado: con aside; 404 anónimo: sin aside;
   - ni el 403 ni el 404 contienen "Título de la página", "Pre título" ni "Nuevo registro" (valores por defecto y acciones de demostración de `base_page.html`).
@@ -138,23 +138,23 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementation for User Story 1
 
-- [ ] T020 [US1] Proteger `index` en `apps/main/views.py` con `@login_required` (`django.contrib.auth.decorators`). No modificar `signup` (spec FR-008a; research R12)
-- [ ] T021 [P] [US1] Proteger `distritos_judiciales_list` en `apps/organizacion/views/distrito_judicial.py` con `@login_required` + `@permission_required('organizacion.view_distritojudicial', raise_exception=True)`, igual que el precedente `apps/usuarios/views/cuentas.py:usuarios_list`. NO tocar crear, editar, detalle, cambio de estado ni exportar (spec FR-008a; docs/decisiones II.4)
-- [ ] T022 [P] [US1] Proteger `materias_jurisdiccionales_list` en `apps/organizacion/views/materia_jurisdiccional.py` con `@login_required` + `@permission_required('organizacion.view_materiajurisdiccional', raise_exception=True)` (spec FR-008a)
-- [ ] T023 [P] [US1] Proteger `organos_jurisdiccionales_list` en `apps/organizacion/views/organo_jurisdiccional.py` con `@login_required` + `@permission_required('organizacion.view_organojurisdiccional', raise_exception=True)` (spec FR-008a)
-- [ ] T024 [P] [US1] Proteger `personas_list` en `apps/personas/views.py` con `@login_required` + `@permission_required('personas.view_persona', raise_exception=True)`. No tocar `persona_create` (spec FR-008a)
-- [ ] T025 [P] [US1] Crear `apps/main/menu.py`: `MenuItem(id='inicio', label='Inicio', url_name='main:index', icon='home', visible_to_authenticated=True, order=0)` (contracts/menu-declaration.md §Ejemplo normativo; spec FR-035)
-- [ ] T026 [P] [US1] Crear `apps/organizacion/menu.py`: `MenuSection(id='organizacion', label='Organización', order=10)` y los ítems `distritos_judiciales` (`map-pin`, `organizacion.view_distritojudicial`, `active_patterns=('organizacion:distritos_judiciales_*','organizacion:distrito_judicial_*')`, order 10), `materias_jurisdiccionales` (`scale`, `organizacion.view_materiajurisdiccional`, `active_patterns=('organizacion:materias_jurisdiccionales_*','organizacion:materia_jurisdiccional_*')`, order 20) y `organos_jurisdiccionales` (`building-bank`, `organizacion.view_organojurisdiccional`, `active_patterns=('organizacion:organos_jurisdiccionales_*','organizacion:organo_jurisdiccional_*')`, order 30), exactamente como en el contrato. Los permisos DEBEN coincidir con los de T021–T023 (spec FR-005, FR-035)
-- [ ] T027 [P] [US1] Crear `apps/personas/menu.py`: `MenuSection(id='personas', label='Personas', order=20)` + `MenuItem(id='personas', url_name='personas:list', icon='users', permissions=('personas.view_persona',), active_patterns=('personas:*',), order=10)` (contrato; spec FR-035)
-- [ ] T028 [P] [US1] Crear `apps/usuarios/menu.py`: `MenuSection(id='administracion', label='Administración', order=90)` + `MenuItem(id='usuarios', label='Usuarios', url_name='usuarios:list', icon='settings', permissions=('usuarios.view_usuario',), order=10)`. La opción de usuario "Cerrar sesión" se añade en US3 (contrato; spec FR-035)
-- [ ] T029 [P] [US1] Crear los parciales de íconos en `templates/components/icons/`: `home.html` y `settings.html` (de `static/tabler/accordion.html`), `map-pin.html`, `scale.html`, `building-bank.html` y `external-link.html` (de `static/tabler/icons.html`), `users.html` (de `static/tabler/avatars.html`) y `logout.html` (de `static/tabler/dropdowns.html`). Cada uno:
+- [X] T020 [US1] Proteger `index` en `apps/main/views.py` con `@login_required` (`django.contrib.auth.decorators`). No modificar `signup` (spec FR-008a; research R12)
+- [X] T021 [P] [US1] Proteger `distritos_judiciales_list` en `apps/organizacion/views/distrito_judicial.py` con `@login_required` + `@permission_required('organizacion.view_distritojudicial', raise_exception=True)`, igual que el precedente `apps/usuarios/views/cuentas.py:usuarios_list`. NO tocar crear, editar, detalle, cambio de estado ni exportar (spec FR-008a; docs/decisiones II.4)
+- [X] T022 [P] [US1] Proteger `materias_jurisdiccionales_list` en `apps/organizacion/views/materia_jurisdiccional.py` con `@login_required` + `@permission_required('organizacion.view_materiajurisdiccional', raise_exception=True)` (spec FR-008a)
+- [X] T023 [P] [US1] Proteger `organos_jurisdiccionales_list` en `apps/organizacion/views/organo_jurisdiccional.py` con `@login_required` + `@permission_required('organizacion.view_organojurisdiccional', raise_exception=True)` (spec FR-008a)
+- [X] T024 [P] [US1] Proteger `personas_list` en `apps/personas/views.py` con `@login_required` + `@permission_required('personas.view_persona', raise_exception=True)`. No tocar `persona_create` (spec FR-008a)
+- [X] T025 [P] [US1] Crear `apps/main/menu.py`: `MenuItem(id='inicio', label='Inicio', url_name='main:index', icon='home', visible_to_authenticated=True, order=0)` (contracts/menu-declaration.md §Ejemplo normativo; spec FR-035)
+- [X] T026 [P] [US1] Crear `apps/organizacion/menu.py`: `MenuSection(id='organizacion', label='Organización', order=10)` y los ítems `distritos_judiciales` (`map-pin`, `organizacion.view_distritojudicial`, `active_patterns=('organizacion:distritos_judiciales_*','organizacion:distrito_judicial_*')`, order 10), `materias_jurisdiccionales` (`scale`, `organizacion.view_materiajurisdiccional`, `active_patterns=('organizacion:materias_jurisdiccionales_*','organizacion:materia_jurisdiccional_*')`, order 20) y `organos_jurisdiccionales` (`building-bank`, `organizacion.view_organojurisdiccional`, `active_patterns=('organizacion:organos_jurisdiccionales_*','organizacion:organo_jurisdiccional_*')`, order 30), exactamente como en el contrato. Los permisos DEBEN coincidir con los de T021–T023 (spec FR-005, FR-035)
+- [X] T027 [P] [US1] Crear `apps/personas/menu.py`: `MenuSection(id='personas', label='Personas', order=20)` + `MenuItem(id='personas', url_name='personas:list', icon='users', permissions=('personas.view_persona',), active_patterns=('personas:*',), order=10)` (contrato; spec FR-035)
+- [X] T028 [P] [US1] Crear `apps/usuarios/menu.py`: `MenuSection(id='administracion', label='Administración', order=90)` + `MenuItem(id='usuarios', label='Usuarios', url_name='usuarios:list', icon='settings', permissions=('usuarios.view_usuario',), order=10)`. La opción de usuario "Cerrar sesión" se añade en US3 (contrato; spec FR-035)
+- [X] T029 [P] [US1] Crear los parciales de íconos en `templates/components/icons/`: `home.html` y `settings.html` (de `static/tabler/accordion.html`), `map-pin.html`, `scale.html`, `building-bank.html` y `external-link.html` (de `static/tabler/icons.html`), `users.html` (de `static/tabler/avatars.html`) y `logout.html` (de `static/tabler/dropdowns.html`). Cada uno:
   - empieza con `{# Tabler Icons (MIT) – <nombre> – copiado de Tabler 1.7.1, static/tabler/<archivo>.html #}`;
   - es el `<svg>` original con `class="icon"`, `aria-hidden="true"` y `focusable="false"`;
   - no lleva `style=`.
 
   Antes de copiar `scale`, confirmar que es el ícono `scale` y no una variante (`scale-outline`) (research R6)
-- [ ] T030 [P] [US1] Extraer el SVG del logo de `templates/components/navigation/aside/_logo.html` a `static/project/img/logo-csjpasco.svg` (archivo SVG válido con `xmlns`) y reescribir `_logo.html` como `<div class="navbar-brand navbar-brand-autodark"><a href="{% url 'main:index' %}"><img src="{% static 'project/img/logo-csjpasco.svg' %}" width="110" height="32" alt="Corte Superior de Justicia de Pasco" class="navbar-brand-image"></a></div>`, sin `bg-primary` (research R7; spec FR-011)
-- [ ] T031 [US1] Reescribir `templates/components/navigation/aside/base.html` según contracts/sidebar-template.md §3:
+- [X] T030 [P] [US1] Extraer el SVG del logo de `templates/components/navigation/aside/_logo.html` a `static/project/img/logo-csjpasco.svg` (archivo SVG válido con `xmlns`) y reescribir `_logo.html` como `<div class="navbar-brand navbar-brand-autodark"><a href="{% url 'main:index' %}"><img src="{% static 'project/img/logo-csjpasco.svg' %}" width="110" height="32" alt="Corte Superior de Justicia de Pasco" class="navbar-brand-image"></a></div>`, sin `bg-primary` (research R7; spec FR-011)
+- [X] T031 [US1] Reescribir `templates/components/navigation/aside/base.html` según contracts/sidebar-template.md §3:
   - `{% load static navigation_tags %}{% get_sidebar as sidebar %}{% if sidebar %}`;
   - `<aside class="navbar navbar-vertical navbar-expand-lg sidebar-institucional" data-bs-theme="dark">`, sin `bg-primary` ni `sidebar-custom`;
   - el botón toggler con `aria-label="Mostrar u ocultar el menú de navegación"`;
@@ -162,27 +162,27 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   - quitar el include de `_user_options.html`.
 
   Los layouts siguen incluyendo este archivo sin cambios (spec FR-001, FR-010, FR-034)
-- [ ] T032 [P] [US1] Reescribir `templates/components/navigation/aside/_menu.html`:
+- [X] T032 [P] [US1] Reescribir `templates/components/navigation/aside/_menu.html`:
   - `<nav class="collapse navbar-collapse" id="sidebar-menu" aria-label="Menú principal"><ul class="navbar-nav pt-lg-3">`;
   - por cada sección, `<li class="nav-section-title">` solo si `section.label`, seguido de `{% include '…/_menu_item.html' %}` por ítem;
   - un comentario de plantilla que indique que `navbar-side` está reservado y no se renderiza.
 
   (contracts/sidebar-template.md §3; spec FR-012, FR-022)
-- [ ] T033 [P] [US1] Crear `templates/components/navigation/aside/_menu_item.html` (nivel 1) según la tabla del contrato:
+- [X] T033 [P] [US1] Crear `templates/components/navigation/aside/_menu_item.html` (nivel 1) según la tabla del contrato:
   - hoja: `nav-item` + `nav-link` + `nav-link-icon` + `nav-link-title` + insignia `badge badge-sm sidebar-badge-{{ variant }} ms-auto`;
   - contenedor: `nav-item dropdown` + `dropdown-toggle` con `data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"` + `dropdown-menu` con `dropdown-menu-columns`/`dropdown-menu-column` por columna, incluyendo `_dropdown_item.html`;
   - externo: `target="_blank" rel="noopener"` + ícono `external-link` + `<span class="visually-hidden">(se abre en una pestaña nueva)</span>`.
 
   (spec FR-013, FR-014, FR-015, FR-017, FR-018, FR-019)
-- [ ] T034 [P] [US1] Crear `templates/components/navigation/aside/_dropdown_item.html` (niveles 2–3):
+- [X] T034 [P] [US1] Crear `templates/components/navigation/aside/_dropdown_item.html` (niveles 2–3):
   - hoja: `dropdown-item` con ícono opcional `dropdown-item-icon` e insignia;
   - contenedor (solo nivel 2): `dropend` + `dropdown-item dropdown-toggle` con `data-bs-auto-close="false"` + `dropdown-menu` con los hijos de nivel 3;
   - el mismo tratamiento de enlaces externos que T033.
 
   (spec FR-016, FR-018, FR-019; contrato)
-- [ ] T035 [P] [US1] Crear `templates/403.html`, que extiende `layouts/base_page.html`, con un título y un mensaje en español formal: "No tiene permiso para acceder a esta página. Si considera que necesita acceso, solicítelo al administrador del sistema." Incluye el enlace "Volver a Inicio" (`{% url 'main:index' %}`), sin nombre del permiso ni detalles técnicos. Sobrescribir `{% block page_header %}` con un encabezado propio (`<h2 class="page-title">Acceso denegado</h2>`), porque el manejador 403 no pasa `title` y `base_page.html` mostraría "Título de la página", "Pre título" y acciones de demostración (spec FR-008b; research R14)
-- [ ] T036 [P] [US1] Crear `templates/404.html`, que extiende `layouts/base_page.html`, con el mensaje en español formal "La página solicitada no existe o ha sido movida." y un enlace a Inicio. Sobrescribir `{% block page_header %}` con `<h2 class="page-title">Página no encontrada</h2>`, por el mismo motivo que T035 (spec Edge Cases "Páginas de error"; research R14)
-- [ ] T037 [US1] Ejecutar `python manage.py check` y `python manage.py test apps.common apps.main apps.organizacion apps.personas`: T015–T019 y el test de permisos existentes de T007 en verde
+- [X] T035 [P] [US1] Crear `templates/403.html`, que extiende `layouts/base_page.html`, con un título y un mensaje en español formal: "No tiene permiso para acceder a esta página. Si considera que necesita acceso, solicítelo al administrador del sistema." Incluye el enlace "Volver a Inicio" (`{% url 'main:index' %}`), sin nombre del permiso ni detalles técnicos. Sobrescribir `{% block page_header %}` con un encabezado propio (`<h2 class="page-title">Acceso denegado</h2>`), porque el manejador 403 no pasa `title` y `base_page.html` mostraría "Título de la página", "Pre título" y acciones de demostración (spec FR-008b; research R14)
+- [X] T036 [P] [US1] Crear `templates/404.html`, que extiende `layouts/base_page.html`, con el mensaje en español formal "La página solicitada no existe o ha sido movida." y un enlace a Inicio. Sobrescribir `{% block page_header %}` con `<h2 class="page-title">Página no encontrada</h2>`, por el mismo motivo que T035 (spec Edge Cases "Páginas de error"; research R14)
+- [X] T037 [US1] Ejecutar `python manage.py check` y `python manage.py test apps.common apps.main apps.organizacion apps.personas`: T015–T019 y el test de permisos existentes de T007 en verde
 
 **Checkpoint**: US1 funcional. Valida los escenarios de aceptación US1-1 a US1-6 y los escenarios 1–4 y 12 de quickstart.md.
 
@@ -357,7 +357,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 - [ ] T061 Quitar `{% include 'components/navigation/navbar/base.html' %}` (y el comentario "Navbar" asociado) de `templates/layouts/base_page.html`, `templates/layouts/base_list.html`, `templates/layouts/htmx_base_page.html`, `templates/layouts/htmx/base_page.html`, `templates/layouts/htmx/page_wrapper.html` y `templates/layouts/dashboards/base_list.html`, sin tocar el include del aside. `templates/components/navigation/navbar/` se conserva (spec FR-026; research R11)
 - [ ] T062 Buscar referencias con `grep -rn "base_form copy\|base_page copy" apps templates config`. Si no hay ninguna, eliminar `templates/layouts/base_form copy.html` y `templates/layouts/base_page copy.html`; si las hay, informarlo y no eliminar (spec FR-034)
-- [ ] T063 Buscar referencias a `_user_options.html` y eliminar `templates/components/navigation/aside/_user_options.html` (spec FR-033)
+- [X] T063 Buscar referencias a `_user_options.html` y eliminar `templates/components/navigation/aside/_user_options.html` (spec FR-033)
 - [ ] T064 Eliminar de `static/project/css/custom_color.css` el bloque `.sidebar-custom` (fondo `#f9fafb !important` y las reglas de barra de desplazamiento ya trasladadas en T052). Buscar con `grep -rn "sidebar-custom" templates static/project apps` que no quedan usos (research R8; spec FR-030)
 - [ ] T065 [P] Crear `templates/500.html`, autocontenido: HTML completo sin `{% extends %}`, sin template tags del proyecto ni variables de contexto, sin `style=` (puede usar `{% load static %}` para enlazar `tabler/dist/css/tabler.min.css`, que no requiere contexto), con el mensaje en español formal "Ocurrió un error interno. Inténtelo nuevamente en unos minutos." y un enlace `<a href="/">Volver a Inicio</a>` (spec Edge Cases; research R14)
 - [ ] T066 [P] Crear `templates/403_csrf.html`, autocontenido: mensaje en español formal "La solicitud no pudo verificarse. Vuelva a la página anterior o regrese a Inicio e inténtelo nuevamente.", con enlaces a `{% url 'main:index' %}` y a `{% url 'usuarios:iniciar_sesion' %}` (la etiqueta `url` funciona aunque la plantilla se renderice sin `RequestContext`), sin detalles técnicos ni `style=` (spec Edge Cases; research R14)

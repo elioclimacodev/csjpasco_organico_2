@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -51,6 +52,11 @@ def sort_materia_jurisdiccional(queryset, order_by, direction):
     return queryset.order_by(f'{prefix}{order_by}')
 
 
+@login_required
+@permission_required(
+    'organizacion.view_materiajurisdiccional',
+    raise_exception=True,
+)
 def materias_jurisdiccionales_list(request):
     '''
     Muestra las Materias Judiciales permitiendo su ordenamiento, paginación,
