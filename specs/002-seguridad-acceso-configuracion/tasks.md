@@ -31,13 +31,13 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 ## Phase 1: Setup (Infraestructura compartida)
 
-- [ ] T001 Convertir `apps/usuarios/tests.py` en el paquete `apps/usuarios/tests/`:
+- [x] T001 Convertir `apps/usuarios/tests.py` en el paquete `apps/usuarios/tests/`:
   - crear `apps/usuarios/tests/__init__.py`;
   - mover el contenido actual, sin cambios, a `apps/usuarios/tests/test_cerrar_sesion.py`;
   - eliminar `apps/usuarios/tests.py`;
   - comprobar con `python manage.py test apps.usuarios --noinput` que siguen pasando los mismos tests (plan §Project Structure).
-- [ ] T002 [P] Dejar `apps/ubicaciones/tests.py` preparado para los tests de US2: hoy es un stub. Reemplazar el comentario por un docstring de módulo en español y mantener el import de `TestCase` (plan §Project Structure).
-- [ ] T003 **BLOQUEANTE – tarea manual del Responsable Técnico, antes de T040**: generar una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"` y añadirla al `.env` local, junto con `DEBUG=true` para desarrollo. No reutilizar la clave del historial de git (FR-017). Desde T040, `settings.py` la exige y la aplicación no arranca sin ella (contracts/variables-entorno.md).
+- [x] T002 [P] Dejar `apps/ubicaciones/tests.py` preparado para los tests de US2: hoy es un stub. Reemplazar el comentario por un docstring de módulo en español y mantener el import de `TestCase` (plan §Project Structure).
+- [x] T003 **BLOQUEANTE – tarea manual del Responsable Técnico, antes de T040**: generar una `SECRET_KEY` nueva con `python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"` y añadirla al `.env` local, junto con `DEBUG=true` para desarrollo. No reutilizar la clave del historial de git (FR-017). Desde T040, `settings.py` la exige y la aplicación no arranca sin ella (contracts/variables-entorno.md).
 
 ---
 
@@ -45,15 +45,15 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 **⚠️ CRITICAL**: ninguna historia empieza sin esta fase.
 
-- [ ] T004 Añadir a `apps/common/tests/helpers.py` la matriz del contrato como **única fuente** de los tests de acceso (contracts/vistas-y-permisos.md §1–§2):
+- [x] T004 Añadir a `apps/common/tests/helpers.py` la matriz del contrato como **única fuente** de los tests de acceso (contracts/vistas-y-permisos.md §1–§2):
   - `KWARGS_PRUEBA = {'pk': 999999, 'pais_id': 999999, 'dpto_id': 999999, 'prov_id': 999999, 'dj_id': 999999, 'uidb64': 'x', 'token': 'y'}`.
   - `RUTAS_PUBLICAS` con las 9 rutas del contrato §1.
   - `RUTAS_SOLO_SESION = ['main:index', 'usuarios:cambiar_contrasena', 'usuarios:cambiar_contrasena_completado']`.
   - `MATRIZ_PERMISOS`: lista de tuplas `(url_name, permiso, operacion)` con las 51 rutas del contrato §2, donde `operacion` ∈ {`list`, `details`, `export`, `create`, `update`, `toggle`}.
   - `rutas_enrutadas()`: recorre `django.urls.get_resolver()` y devuelve `(url_name, kwargs)` para cada ruta con nombre, excluyendo el espacio de nombres `admin` y la ruta de `static()`.
   - `url_de_prueba(url_name, **overrides)`: construye la URL con `KWARGS_PRUEBA` filtrando los parámetros que la ruta realmente acepta.
-- [ ] T005 [P] Crear `apps/common/tests/fabricas.py` con funciones que crean el mínimo registro válido de cada entidad: `crear_pais`, `crear_departamento(pais)`, `crear_provincia(departamento)`, `crear_distrito(provincia)`, `crear_distrito_judicial`, `crear_sede_judicial(distrito_judicial)`, `crear_materia_jurisdiccional`, `crear_organo_jurisdiccional`, `crear_persona`. Antes de escribirlas, leer los campos obligatorios en `apps/ubicaciones/models/*.py`, `apps/organizacion/models/*.py` y `apps/personas/models.py`. Sin migraciones (data-model, "sin modelos nuevos").
-- [ ] T006 Test de consistencia del helper en `apps/common/tests/test_matriz_acceso.py`:
+- [x] T005 [P] Crear `apps/common/tests/fabricas.py` con funciones que crean el mínimo registro válido de cada entidad: `crear_pais`, `crear_departamento(pais)`, `crear_provincia(departamento)`, `crear_distrito(provincia)`, `crear_distrito_judicial`, `crear_sede_judicial(distrito_judicial)`, `crear_materia_jurisdiccional`, `crear_organo_jurisdiccional`, `crear_persona`. Antes de escribirlas, leer los campos obligatorios en `apps/ubicaciones/models/*.py`, `apps/organizacion/models/*.py` y `apps/personas/models.py`. Sin migraciones (data-model, "sin modelos nuevos").
+- [x] T006 Test de consistencia del helper en `apps/common/tests/test_matriz_acceso.py`:
   - el conjunto `RUTAS_PUBLICAS ∪ RUTAS_SOLO_SESION ∪ {rutas de MATRIZ_PERMISOS}` es igual al conjunto de `rutas_enrutadas()`, de modo que ninguna ruta queda sin clasificar (data-model §1 I1);
   - `MATRIZ_PERMISOS` tiene 51 filas;
   - cada permiso existe en `Permission`.
