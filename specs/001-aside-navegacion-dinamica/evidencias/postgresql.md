@@ -1,6 +1,6 @@
 # Evidencia: suite contra PostgreSQL (constitución §Requisitos de testing) — T070
 
-**Estado**: pendiente. Requiere un servidor PostgreSQL accesible.
+**Estado**: completada (2026-10-29).
 
 ## Preparación (una vez)
 
@@ -29,13 +29,14 @@ python manage.py test --noinput
 
 Para volver a SQLite en desarrollo, poner `DB_ENGINE=sqlite` (o quitar la variable).
 
-## Resultado (completar)
+## Resultado
 
 | Campo | Valor |
 |---|---|
-| Versión de PostgreSQL | |
-| Fecha | |
-| Responsable | |
-| `manage.py check` | |
-| Tests (encontrados / OK / fallos / errores) | |
-| Observaciones | |
+| Versión de PostgreSQL | PostgreSQL 18.6 on x86_64-windows, compiled by msvc-19.44.35229, 64-bit |
+| Driver | psycopg 3.3.6 (implementación `binary`, libpq 18.0.4) |
+| Fecha | 2026-10-29 |
+| Responsable | Ejecutado por el asistente de implementación (Claude) a pedido de ELIO CLIMACO, con la configuración de su `.env` |
+| `manage.py check` | `System check identified no issues (0 silenced).` |
+| Tests (encontrados / OK / fallos / errores) | 102 / 102 / 0 / 0 (`Ran 102 tests in 86.515s` · `OK`) |
+| Observaciones | Base de pruebas `test_csjpasco`, creada y destruida por el runner; el rol tiene `CREATEDB`. La base principal tiene 29 migraciones sin aplicar; no se modificó, porque la suite usa su propia base. |

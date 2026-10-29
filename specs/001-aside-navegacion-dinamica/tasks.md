@@ -372,7 +372,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   (spec FR-027, FR-031, FR-032, SC-007; constitución)
 - [X] T068 Medición de carga según el escenario 14 de quickstart.md (20 + 20 solicitudes a `/organizacion/distritos-judiciales/`) y registro en `specs/001-aside-navegacion-dinamica/evidencias/rendimiento.md` (diferencia ≤ 20 ms) (spec SC-009)
 - [X] T069 Ejecutar `python manage.py check` y la suite completa `python manage.py test` (SQLite, desarrollo): todo en verde
-- [ ] T070 Ejecutar la suite completa contra PostgreSQL (configurando la base de datos de prueba por variables de entorno, sin credenciales en archivos versionados) y registrar el resultado en `specs/001-aside-navegacion-dinamica/evidencias/postgresql.md`. Es obligatorio antes de desplegar (constitución §Requisitos de testing)
+- [X] T070 Ejecutar la suite completa contra PostgreSQL (configurando la base de datos de prueba por variables de entorno, sin credenciales en archivos versionados) y registrar el resultado en `specs/001-aside-navegacion-dinamica/evidencias/postgresql.md`. Es obligatorio antes de desplegar (constitución §Requisitos de testing)
 - [ ] T071 Recorrer todos los escenarios de quickstart.md (1–14) con los perfiles de §2 y completar las evidencias de §"Evidencia que se conserva" (quickstart.md)
 
 ---

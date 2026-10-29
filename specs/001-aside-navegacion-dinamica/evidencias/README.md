@@ -9,4 +9,4 @@ Evidencias de los escenarios de `quickstart.md` que no cubren las pruebas autom�
 | T055 (contraste) | `contraste.md` | Completada (2026-10-29): 3 fallos corregidos y nueva medición confirmada |
 | T057 (extensibilidad) | `extensibilidad.md` | Completada (2026-10-29) |
 | T068 (rendimiento) | `rendimiento.md` | Completada (2026-10-29) |
-| T070 (PostgreSQL) | `postgresql.md` | Configuración lista (DB_ENGINE=postgresql); pendiente de ejecutar con un servidor PostgreSQL |
+| T070 (PostgreSQL) | `postgresql.md` | Completada (2026-10-29): 102/102 en PostgreSQL 18.6 |
