@@ -404,3 +404,19 @@ class SidebarRenderMovilTests(TestCase):
 
         self.assertIn('.navbar-vertical.sidebar-institucional .navbar-footer .dropdown-menu {', media)
         self.assertIn('position: absolute;', media)
+
+    def test_menu_de_usuario_alineado_a_la_izquierda_con_el_menu_desplegado(self):
+        """
+        Con el menú lateral desplegado, el área de usuario queda a la izquierda
+        y el menú alineado a la derecha se salía de la pantalla (hallazgo de
+        T071; ver specs/001-aside-navegacion-dinamica/hallazgos/).
+        """
+        css = SIDEBAR_CSS.read_text(encoding='utf-8')
+        media = css[css.index('@media (max-width: 991.98px)'):]
+
+        selector = '.navbar-vertical.sidebar-institucional .navbar-collapse.show ~ .navbar-footer .dropup .dropdown-menu'
+        self.assertIn(selector, media)
+        regla = media[media.index(selector):]
+        regla = regla[:regla.index('}')]
+        self.assertIn('inset-inline-start: 0;', regla)
+        self.assertIn('inset-inline-end: auto;', regla)

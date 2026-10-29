@@ -189,6 +189,17 @@
         position: absolute;
         z-index: var(--tblr-dropdown-zindex, 1000);
     }
+
+    /*
+     * Con el menú colapsado, el avatar está a la derecha de la barra y el
+     * menú se alinea a la derecha (regla de Tabler). Con el menú desplegado,
+     * el área de usuario queda al final de la lista, a la izquierda: el menú
+     * se alinea a la izquierda para no salirse de la pantalla.
+     */
+    .navbar-vertical.sidebar-institucional .navbar-collapse.show ~ .navbar-footer .dropup .dropdown-menu {
+        inset-inline-start: 0;
+        inset-inline-end: auto;
+    }
 }
 
 

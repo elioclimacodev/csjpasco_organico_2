@@ -183,6 +183,7 @@ Fondo: color institucional principal `#A42622`, con luminancia relativa L ≈ 0.
   - **Alternativas descartadas**: convertir el menú en `offcanvas`, que atiende Esc de forma nativa pero cambia todo el marcado del patrón de referencia; o un archivo en `static/project/js/`, que el Principio I reserva como último recurso cuando Alpine.js basta.
 - **El menú de usuario se veía recortado.** Bootstrap define `.navbar-nav .dropdown-menu { position: static }` para navbars colapsados, y por debajo de 992 px el menú se dibujaba dentro de la barra de altura fija. La regla de Tabler `.navbar-footer .dropup .dropdown-menu { top: 100%; … }` no surtía efecto.
   - **Decisión**: en `sidebar.css`, por debajo de 992 px, el menú del pie pasa a `position: absolute` con el `z-index` de los desplegables.
+  - **Segundo hallazgo (captura en `hallazgos/`)**: con el menú lateral desplegado, el área de usuario queda al final de la lista y a la izquierda. El menú, alineado a la derecha por Tabler (`inset-inline-end: 0`), se salía por el borde izquierdo y solo se veía "…ón". **Decisión**: cuando `#sidebar-menu` tiene `show`, el menú del pie se alinea a la izquierda (`.navbar-collapse.show ~ .navbar-footer .dropup .dropdown-menu`). Con el menú colapsado se conserva la alineación a la derecha, porque allí el avatar está en el extremo derecho de la barra.
 
 ## Hallazgos fuera de alcance (registrados para features futuras)
 
