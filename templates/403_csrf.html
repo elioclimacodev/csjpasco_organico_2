@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+{# Fallo de verificación CSRF (spec Edge Cases; research R14). Django lo renderiza sin RequestContext; la etiqueta url funciona igualmente. #}
+<html lang="es-PE" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solicitud no verificada | ERP de la Corte Superior de Justicia de Pasco</title>
+    <link href="{% static 'tabler/dist/css/tabler.min.css' %}" rel="stylesheet" />
+</head>
+<body>
+    <main class="page page-center">
+        <div class="container-tight py-4">
+            <div class="empty">
+                <h1 class="empty-title">La solicitud no pudo verificarse.</h1>
+                <p class="empty-subtitle text-secondary">
+                    Vuelva a la página anterior o regrese a Inicio e inténtelo nuevamente.
+                </p>
+                <div class="empty-action">
+                    <a href="{% url 'main:index' %}" class="btn btn-primary">Volver a Inicio</a>
+                    <a href="{% url 'usuarios:iniciar_sesion' %}" class="btn">Iniciar sesión</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

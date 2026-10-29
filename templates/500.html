@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+{# Error interno (spec Edge Cases; research R14). Autocontenido: no extiende layouts ni depende del aside, que podría ser la causa del error. #}
+<html lang="es-PE" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Error interno | ERP de la Corte Superior de Justicia de Pasco</title>
+    <link href="{% static 'tabler/dist/css/tabler.min.css' %}" rel="stylesheet" />
+</head>
+<body>
+    <main class="page page-center">
+        <div class="container-tight py-4">
+            <div class="empty">
+                <h1 class="empty-title">Ocurrió un error interno.</h1>
+                <p class="empty-subtitle text-secondary">Inténtelo nuevamente en unos minutos.</p>
+                <div class="empty-action">
+                    <a href="/" class="btn btn-primary">Volver a Inicio</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

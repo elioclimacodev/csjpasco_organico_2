@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from django.conf import settings
@@ -222,7 +223,17 @@ class SidebarRenderUS3Tests(TestCase):
 
 
 SIDEBAR_CSS = Path(settings.BASE_DIR) / 'static' / 'project' / 'css' / 'sidebar.css'
-PALETA = ['#a42622', '#eae4d2', '#7a7562']
+CONSTITUCION = Path(settings.BASE_DIR) / '.specify' / 'memory' / 'constitution.md'
+
+
+def paleta_institucional():
+    """
+    Valores de la paleta leídos de la constitución (§Identidad visual), para
+    no repetirlos en el código (la constitución prohíbe repetirlos fuera del
+    archivo de tokens).
+    """
+    texto = CONSTITUCION.read_text(encoding='utf-8')
+    return [color.lower() for color in re.findall(r'`(#[0-9A-Fa-f]{6})`: Color institucional', texto)]
 
 
 class SidebarRenderUS4Tests(TestCase):
@@ -230,8 +241,10 @@ class SidebarRenderUS4Tests(TestCase):
 
     def test_sidebar_css_no_repite_valores_de_la_paleta(self):
         css = SIDEBAR_CSS.read_text(encoding='utf-8').lower()
+        paleta = paleta_institucional()
+        self.assertEqual(len(paleta), 3)
 
-        for color in PALETA:
+        for color in paleta:
             with self.subTest(color=color):
                 self.assertNotIn(color, css)
 
@@ -317,3 +330,50 @@ class SidebarRenderUS5Tests(TestCase):
         self.assertIn('class="dropdown-menu"', aside[inicio_dropend:])
         self.assertIn('Opción n3a', aside[inicio_dropend:])
         self.assertIn('Opción n3b', aside[inicio_dropend:])
+
+
+LAYOUTS_CON_ASIDE = [
+    'layouts/base_page.html',
+    'layouts/base_list.html',
+    'layouts/htmx_base_page.html',
+    'layouts/htmx/base_page.html',
+    'layouts/htmx/page_wrapper.html',
+    'layouts/dashboards/base_list.html',
+]
+
+
+class SidebarRenderPulidoTests(TestCase):
+    """Barra superior retirada y costo del menú (spec FR-026, SC-007, SC-009)."""
+
+    def setUp(self):
+        self.usuario = crear_usuario(grupos=['Administradores'])
+
+    def request(self):
+        request = RequestFactory().get(reverse('main:index'))
+        request.user = self.usuario
+        request.resolver_match = resolve(reverse('main:index'))
+        return request
+
+    def test_layouts_con_aside_sin_barra_superior(self):
+        for layout in LAYOUTS_CON_ASIDE:
+            with self.subTest(layout=layout):
+                html = render_to_string(layout, request=self.request())
+
+                self.assertIn('<aside', html)
+                self.assertNotIn('<header class="navbar', html)
+                self.assertNotIn('id="navbar-menu"', html)
+
+    def test_consultas_acotadas_e_independientes_del_numero_de_items(self):
+        for cantidad in (2, 20):
+            with self.subTest(items=cantidad), registry.isolated():
+                for i in range(cantidad):
+                    registry.register_item(MenuItem(
+                        id=f'item{i}', label=f'Ítem {i}', url_name='main:index',
+                        permissions=('personas.view_persona',),
+                    ))
+                usuario = crear_usuario(grupos=['Administradores'])
+                request = self.request()
+                request.user = usuario
+
+                with self.assertNumQueries(3):
+                    render_to_string('components/navigation/aside/base.html', request=request)

@@ -45,3 +45,16 @@ class PaginasDeErrorUS1Tests(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertNotContains(response, '<aside', status_code=404)
+
+
+class PaginaDeError500Tests(TestCase):
+    """500.html autocontenido y sin aside (spec Edge Cases; research R14)."""
+
+    def test_500_se_renderiza_sin_contexto_ni_aside(self):
+        from django.template import loader
+
+        html = loader.get_template('500.html').render()
+
+        self.assertNotIn('<aside', html)
+        self.assertIn('Ocurrió un error interno', html)
+        self.assertIn('href="/"', html)
