@@ -1,10 +1,13 @@
 from pathlib import Path
 
 from django.conf import settings
-from django.test import TestCase
-from django.urls import reverse
+from django.template.loader import render_to_string
+from django.test import RequestFactory, TestCase
+from django.urls import resolve, reverse
 
+from apps.common.components.menu import MenuItem, registry
 from apps.common.tests.helpers import crear_usuario
+from apps.organizacion.models import DistritoJudicial
 
 
 ASIDE_DIR = Path(settings.BASE_DIR) / 'templates' / 'components' / 'navigation' / 'aside'
@@ -95,3 +98,72 @@ class SidebarRenderUS1Tests(TestCase):
         for archivo in archivos:
             with self.subTest(archivo=archivo.name):
                 self.assertNotIn('style=', archivo.read_text(encoding='utf-8'))
+
+
+def render_aside(usuario, path):
+    """
+    Renderiza el componente aside para una ruta, con su `resolver_match`
+    real, sin pasar por la vista.
+
+    Se usa para páginas secundarias (detalle, edición) que en este proyecto
+    son fragmentos de modal y no renderizan el aside por sí mismas.
+    """
+    request = RequestFactory().get(path)
+    request.user = usuario
+    request.resolver_match = resolve(path)
+    return render_to_string('components/navigation/aside/base.html', request=request)
+
+
+class SidebarRenderUS2Tests(TestCase):
+    """Estado activo en el marcado (spec US2-1 a US2-4, FR-020, SC-003)."""
+
+    def setUp(self):
+        self.usuario = crear_usuario(permisos=[
+            'organizacion.view_distritojudicial',
+            'organizacion.view_materiajurisdiccional',
+        ])
+
+    def test_lista_de_distritos_una_sola_opcion_actual(self):
+        self.client.force_login(self.usuario)
+
+        aside = aside_html(self.client.get(reverse('organizacion:distritos_judiciales_list')))
+
+        self.assertEqual(aside.count('aria-current="page"'), 1)
+        self.assertRegex(
+            aside,
+            r'href="' + reverse('organizacion:distritos_judiciales_list') + r'"\s*aria-current="page"',
+        )
+
+    def test_pagina_secundaria_marca_la_opcion_del_mantenimiento(self):
+        distrito = DistritoJudicial.objects.create(nombre='Pasco', corte='Corte Superior de Justicia de Pasco')
+        detalle = reverse('organizacion:distrito_judicial_details', kwargs={'pk': distrito.pk})
+
+        aside = render_aside(self.usuario, detalle)
+
+        self.assertEqual(aside.count('aria-current="page"'), 1)
+        self.assertRegex(
+            aside,
+            r'href="' + reverse('organizacion:distritos_judiciales_list') + r'"\s*aria-current="page"',
+        )
+
+    def test_pagina_sin_opcion_asociada_sin_opcion_actual(self):
+        aside = render_aside(self.usuario, reverse('usuarios:list'))
+
+        self.assertIn('<aside', aside)
+        self.assertEqual(aside.count('aria-current="page"'), 0)
+
+    def test_contenedor_de_la_opcion_actual_abierto(self):
+        with registry.isolated():
+            registry.register_item(MenuItem(
+                id='grupo', label='Grupo',
+                children=(
+                    MenuItem(id='inicio', label='Inicio', url_name='main:index', visible_to_authenticated=True),
+                ),
+            ))
+
+            aside = render_aside(self.usuario, reverse('main:index'))
+
+        self.assertIn('class="nav-item dropdown active"', aside)
+        self.assertRegex(aside, r'class="nav-link dropdown-toggle show"[^>]*aria-expanded="true"')
+        self.assertIn('class="dropdown-menu show"', aside)
+        self.assertRegex(aside, r'class="dropdown-item active"\s*href="/"\s*aria-current="page"')

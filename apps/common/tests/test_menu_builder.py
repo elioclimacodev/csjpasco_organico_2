@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
 
@@ -215,3 +217,116 @@ class BuildSidebarFiltradoTests(TestCase):
                 [hijo.id for columna in contenedor.columns for hijo in columna],
                 [f'h{i}' for i in range(hijos)],
             )
+
+
+class BuildSidebarActivoTests(TestCase):
+    """
+    Estado activo calculado en el servidor (spec FR-020, SC-003;
+    data-model §3 regla 6; research R4).
+    """
+
+    def setUp(self):
+        self.usuario = crear_usuario()
+
+    def construir(self, view_name):
+        request = RequestFactory().get('/')
+        if view_name is not None:
+            request.resolver_match = SimpleNamespace(view_name=view_name)
+        return build_sidebar(self.usuario, request)
+
+    def registrar(self, *items):
+        for item in items:
+            registry.register_item(item)
+
+    def hoja(self, item_id, order=100, **campos):
+        campos.setdefault('url_name', 'main:index')
+        return MenuItem(id=item_id, label=item_id, order=order, visible_to_authenticated=True, **campos)
+
+    def activos(self, sidebar):
+        """Ids de las hojas activas y de los contenedores marcados como padre activo."""
+        hojas_activas, padres = [], []
+
+        def recorrer(items):
+            for item in items:
+                if item.is_active:
+                    hojas_activas.append(item.id)
+                if item.is_active_parent:
+                    padres.append(item.id)
+                recorrer(item.children)
+
+        for seccion in sidebar.sections:
+            recorrer(seccion.items)
+        return hojas_activas, padres
+
+    def test_patron_vacio_equivale_a_su_url_name(self):
+        with registry.isolated():
+            self.registrar(self.hoja('inicio'))
+
+            self.assertEqual(self.activos(self.construir('main:index')), (['inicio'], []))
+
+    def test_coincidencia_exacta_gana_a_un_comodin(self):
+        with registry.isolated():
+            self.registrar(
+                self.hoja('comodin', order=1, active_patterns=('organizacion:distrito_judicial_*',)),
+                self.hoja('exacta', order=2, active_patterns=('organizacion:distrito_judicial_details',)),
+            )
+
+            hojas_activas, _ = self.activos(self.construir('organizacion:distrito_judicial_details'))
+
+            self.assertEqual(hojas_activas, ['exacta'])
+
+    def test_entre_comodines_gana_el_patron_mas_largo(self):
+        with registry.isolated():
+            self.registrar(
+                self.hoja('amplio', order=1, active_patterns=('organizacion:*',)),
+                self.hoja('especifico', order=2, active_patterns=('organizacion:distrito_*',)),
+            )
+
+            hojas_activas, _ = self.activos(self.construir('organizacion:distrito_judicial_update'))
+
+            self.assertEqual(hojas_activas, ['especifico'])
+
+    def test_empate_gana_el_primero_en_el_orden_del_menu(self):
+        with registry.isolated():
+            self.registrar(
+                self.hoja('segundo', order=2, active_patterns=('personas:*',)),
+                self.hoja('primero', order=1, active_patterns=('personas:*',)),
+            )
+
+            hojas_activas, _ = self.activos(self.construir('personas:list'))
+
+            self.assertEqual(hojas_activas, ['primero'])
+
+    def test_los_ancestros_quedan_como_padre_activo(self):
+        with registry.isolated():
+            self.registrar(MenuItem(
+                id='nivel1', label='Nivel 1',
+                children=(
+                    MenuItem(id='nivel2', label='Nivel 2', children=(self.hoja('hoja'),)),
+                    self.hoja('hermana', url_name='personas:list'),
+                ),
+            ))
+
+            self.assertEqual(self.activos(self.construir('main:index')), (['hoja'], ['nivel1', 'nivel2']))
+
+    def test_sin_coincidencia_nada_activo(self):
+        with registry.isolated():
+            self.registrar(self.hoja('inicio'))
+
+            self.assertEqual(self.activos(self.construir('usuarios:list')), ([], []))
+
+    def test_sin_resolver_match_nada_activo(self):
+        with registry.isolated():
+            self.registrar(self.hoja('inicio'))
+
+            self.assertEqual(self.activos(self.construir(None)), ([], []))
+
+    def test_las_hojas_ocultas_no_se_marcan(self):
+        with registry.isolated():
+            self.registrar(
+                MenuItem(id='oculta', label='oculta', order=1, url_name='main:index',
+                         permissions=('personas.view_persona',)),
+                self.hoja('visible', order=2),
+            )
+
+            self.assertEqual(self.activos(self.construir('main:index')), (['visible'], []))

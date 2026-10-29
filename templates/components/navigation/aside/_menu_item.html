@@ -1,13 +1,13 @@
 {# Opción de primer nivel: hoja (nav-link) o contenedor (dropdown). #}
 {% if item.children %}
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown{% if item.is_active_parent %} active{% endif %}">
         <a
-            class="nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle{% if item.is_active_parent %} show{% endif %}"
             href="#"
             data-bs-toggle="dropdown"
             data-bs-auto-close="false"
             role="button"
-            aria-expanded="false">
+            aria-expanded="{{ item.is_active_parent|yesno:'true,false' }}">
             {% if item.icon %}
                 <span class="nav-link-icon">{% include 'components/icons/'|add:item.icon|add:'.html' %}</span>
             {% endif %}
@@ -15,7 +15,7 @@
             {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
         </a>
 
-        <div class="dropdown-menu">
+        <div class="dropdown-menu{% if item.is_active_parent %} show{% endif %}">
             <div class="dropdown-menu-columns">
                 {% for column in item.columns %}
                     <div class="dropdown-menu-column">
@@ -28,10 +28,11 @@
         </div>
     </li>
 {% else %}
-    <li class="nav-item">
+    <li class="nav-item{% if item.is_active %} active{% endif %}">
         <a
             class="nav-link"
             href="{{ item.href }}"
+            {% if item.is_active %}aria-current="page"{% endif %}
             {% if item.is_external %}target="_blank" rel="noopener"{% endif %}>
             {% if item.icon %}
                 <span class="nav-link-icon">{% include 'components/icons/'|add:item.icon|add:'.html' %}</span>

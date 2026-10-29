@@ -2,12 +2,12 @@
 {% if item.children %}
     <div class="dropend">
         <a
-            class="dropdown-item dropdown-toggle"
+            class="dropdown-item dropdown-toggle{% if item.is_active_parent %} active show{% endif %}"
             href="#"
             data-bs-toggle="dropdown"
             data-bs-auto-close="false"
             role="button"
-            aria-expanded="false">
+            aria-expanded="{{ item.is_active_parent|yesno:'true,false' }}">
             {% if item.icon %}
                 {% include 'components/icons/'|add:item.icon|add:'.html' with clase_extra='dropdown-item-icon' %}
             {% endif %}
@@ -15,7 +15,7 @@
             {% include 'components/navigation/aside/_badge.html' with badge=item.badge %}
         </a>
 
-        <div class="dropdown-menu">
+        <div class="dropdown-menu{% if item.is_active_parent %} show{% endif %}">
             {% for child in item.children %}
                 {% include 'components/navigation/aside/_dropdown_item.html' with item=child %}
             {% endfor %}
@@ -23,8 +23,9 @@
     </div>
 {% else %}
     <a
-        class="dropdown-item"
+        class="dropdown-item{% if item.is_active %} active{% endif %}"
         href="{{ item.href }}"
+        {% if item.is_active %}aria-current="page"{% endif %}
         {% if item.is_external %}target="_blank" rel="noopener"{% endif %}>
         {% if item.icon %}
             {% include 'components/icons/'|add:item.icon|add:'.html' with clase_extra='dropdown-item-icon' %}

@@ -196,7 +196,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Tests for User Story 2 (escribir primero; deben fallar) ⚠️
 
-- [ ] T038 [P] [US2] Tests de estado activo en `apps/common/tests/test_menu_builder.py` (bloque US2), con registro aislado y un `request` de `RequestFactory` con `resolver_match` simulado:
+- [X] T038 [P] [US2] Tests de estado activo en `apps/common/tests/test_menu_builder.py` (bloque US2), con registro aislado y un `request` de `RequestFactory` con `resolver_match` simulado:
   - una coincidencia exacta gana a un comodín;
   - entre comodines gana el patrón más largo;
   - si persiste el empate, gana el primero en el orden del menú;
@@ -206,7 +206,7 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
   - `active_patterns` vacío equivale a `(url_name,)`.
 
   (spec FR-020, SC-003; data-model §3 regla 6; research R4)
-- [ ] T039 [P] [US2] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US2):
+- [X] T039 [P] [US2] Tests de render en `apps/common/tests/test_sidebar_render.py` (bloque US2):
   - en `organizacion:distritos_judiciales_list` y en `organizacion:distrito_judicial_details` (con un registro creado en `setUp`), el HTML del aside contiene exactamente un `aria-current="page"`, en el enlace "Distritos judiciales";
   - en una página sin opción asociada, cero ocurrencias;
   - con un registro aislado que tenga un contenedor, el padre de la hoja activa tiene `active`, `show` y `aria-expanded="true"`.
@@ -215,16 +215,16 @@ Monolito Django: apps en `apps/`, plantillas globales en `templates/`, estático
 
 ### Implementation for User Story 2
 
-- [ ] T040 [US2] Implementar la regla 6 de data-model §3 en `build_sidebar` (`apps/common/components/menu.py`):
+- [X] T040 [US2] Implementar la regla 6 de data-model §3 en `build_sidebar` (`apps/common/components/menu.py`):
   - comparar `request.resolver_match.view_name` con `fnmatch` contra los `active_patterns` (o `(url_name,)`) de las hojas visibles;
   - aplicar la precedencia de spec FR-020;
   - marcar `is_active` en la hoja ganadora e `is_active_parent` en sus ancestros.
-- [ ] T041 [US2] Añadir el marcado de estado en `templates/components/navigation/aside/_menu_item.html` y `_dropdown_item.html`:
+- [X] T041 [US2] Añadir el marcado de estado en `templates/components/navigation/aside/_menu_item.html` y `_dropdown_item.html`:
   - hoja activa: clase `active` y `aria-current="page"`;
   - contenedor con `is_active_parent`: `active` en el `li`, `show` en el toggle y en `dropdown-menu`, y `aria-expanded="{{ item.is_active_parent|yesno:'true,false' }}"`.
 
   (contracts/sidebar-template.md §3, tablas nivel 1 y niveles 2–3; spec FR-020)
-- [ ] T042 [US2] Ejecutar `python manage.py test apps.common`: T038–T039 en verde
+- [X] T042 [US2] Ejecutar `python manage.py test apps.common`: T038–T039 en verde
 
 **Checkpoint**: US1 y US2 funcionan. Valida los escenarios US2-1 a US2-4 y el escenario 5 de quickstart.md.
 

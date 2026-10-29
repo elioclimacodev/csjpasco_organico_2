@@ -1,6 +1,7 @@
 # apps/common/components/menu.py
 import logging
 import math
+from fnmatch import fnmatchcase
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Literal, Optional
@@ -181,6 +182,9 @@ class ResolvedItem:
     columns: list[list['ResolvedItem']] = field(default_factory=list)
     is_active: bool = False
     is_active_parent: bool = False
+    # Patrones que marcan la hoja como actual; vacío en contenedores y
+    # enlaces externos.
+    active_patterns: tuple[str, ...] = ()
 
 
 @dataclass
@@ -262,7 +266,55 @@ def _resolver(item, user, level):
     return ResolvedItem(
         id=item.id, label=item.label, icon=item.icon, badge=item.badge,
         href=href, is_external=is_external, level=level,
+        active_patterns=item.active_patterns or ((item.url_name,) if item.url_name else ()),
     )
+
+
+def _puntaje(view_name, patrones):
+    """
+    Puntaje de la mejor coincidencia de `view_name` con los patrones, o None.
+
+    Precedencia (spec FR-020): la coincidencia exacta gana a un comodín y,
+    entre comodines, gana el patrón más largo (el más específico).
+    """
+    puntajes = [
+        (patron == view_name, len(patron))
+        for patron in patrones
+        if fnmatchcase(view_name, patron)
+    ]
+    return max(puntajes) if puntajes else None
+
+
+def _marcar_activo(sections, request):
+    """
+    Marca como actual una sola hoja según la página de la request y señala
+    a sus ancestros (data-model §3 regla 6). Si persiste el empate, gana la
+    primera hoja en el orden del menú.
+    """
+    resolver_match = getattr(request, 'resolver_match', None)
+    if resolver_match is None:
+        return
+
+    mejor, mejor_puntaje, mejor_ruta = None, None, ()
+
+    def recorrer(items, ancestros):
+        nonlocal mejor, mejor_puntaje, mejor_ruta
+        for item in items:
+            if item.children:
+                recorrer(item.children, ancestros + (item,))
+                continue
+            puntaje = _puntaje(resolver_match.view_name, item.active_patterns)
+            # Comparación estricta: ante un empate se conserva la primera.
+            if puntaje is not None and (mejor_puntaje is None or puntaje > mejor_puntaje):
+                mejor, mejor_puntaje, mejor_ruta = item, puntaje, ancestros
+
+    for seccion in sections:
+        recorrer(seccion.items, ())
+
+    if mejor is not None:
+        mejor.is_active = True
+        for ancestro in mejor_ruta:
+            ancestro.is_active_parent = True
 
 
 def build_sidebar(user, request):
@@ -297,5 +349,7 @@ def build_sidebar(user, request):
         # Una sección sin opciones visibles no se muestra (spec FR-007).
         if seccion.id in grupos:
             sections.append(ResolvedSection(id=seccion.id, label=seccion.label, items=grupos[seccion.id]))
+
+    _marcar_activo(sections, request)
 
     return Sidebar(sections=sections)
