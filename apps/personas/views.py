@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -42,6 +43,11 @@ NORMALIZED_FIELDS = [
 ]
 
 
+@login_required
+@permission_required(
+    'personas.view_persona',
+    raise_exception=True,
+)
 def personas_list(request):
     persons = Persona.objects.all()
     unfiltered_persons = persons.count()

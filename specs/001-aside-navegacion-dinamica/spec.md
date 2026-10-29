@@ -103,13 +103,17 @@ Como desarrollador de un módulo del ERP, puedo declarar las secciones y opcione
 - Usuario autenticado sin ningún permiso: el menú muestra solo las opciones declaradas como visibles para todo usuario autenticado (por ejemplo, "Inicio") y el área de usuario.
 - Superusuario: ve todas las opciones declaradas, porque posee todos los permisos.
 - Usuario inactivo o sesión expirada: no llega a ver el menú; es redirigido al inicio de sesión.
-- Usuario sin nombre completo registrado: el área de usuario muestra su nombre de usuario como nombre principal y las iniciales se derivan de él.
+- Usuario sin nombre completo registrado: el área de usuario muestra su nombre de usuario como nombre principal (único caso en que se ve el número de documento, por ser la única identificación disponible) y las iniciales se derivan de él.
+- Usuario sin grupos: el área de usuario muestra solo el nombre, sin dato secundario.
 - Opción que exige varios permisos: se muestra solo si el usuario tiene todos los permisos declarados.
 - Desplegable cuyos hijos quedan todos ocultos: el desplegable no se muestra; una sección sin opciones visibles tampoco muestra su título.
 - Mantenimiento cuya lista depende de otro registro (por ejemplo, Sedes judiciales, cuya lista pertenece a un distrito judicial): no se ofrece como opción directa del menú mientras no exista una página de acceso independiente.
 - Etiquetas largas: se ajustan sin desbordar el ancho del menú ni ocultar la insignia.
 - Página cargada parcialmente (fragmentos dinámicos): el menú no se duplica ni se vuelve a insertar dentro del contenido.
 - Opciones con el mismo orden: se muestran en un orden estable y predecible (por ejemplo, alfabético por etiqueta).
+- "Cerrar sesión" enviado con la sesión ya expirada: el resultado es el mismo que un cierre normal (el usuario llega a la pantalla de inicio de sesión), sin mostrar errores.
+- "Cerrar sesión" enviado con una verificación anti-falsificación inválida (por ejemplo, un formulario abierto en otra pestaña antes de iniciar una nueva sesión): la sesión NO se cierra y el usuario ve una página en español, con tono formal, que explica que la solicitud no pudo verificarse y ofrece volver a la página anterior o a "Inicio", sin detalles técnicos.
+- Páginas de error para usuarios autenticados: la página de acceso denegado (FR-008b) y la de página no encontrada muestran el menú lateral; la página de error interno del servidor NO muestra el menú lateral (para no depender de componentes que podrían ser la causa del error) y ofrece un enlace a "Inicio". Para visitantes no autenticados, ninguna página de error muestra el menú lateral.
 
 ## Requirements *(mandatory)*
 
@@ -121,11 +125,12 @@ Como desarrollador de un módulo del ERP, puedo declarar las secciones y opcione
 - **FR-002**: El contenido del menú (secciones, opciones, submenús, íconos, insignias, permisos y orden) DEBE provenir de una configuración declarada en el servidor y versionada con el código; NO DEBE escribirse de forma fija en las plantillas ni almacenarse en la base de datos.
 - **FR-003**: Cada módulo DEBE poder declarar sus propias secciones y opciones; un único mecanismo compartido DEBE reunirlas, ordenarlas y entregarlas al componente. NO DEBE existir una segunda vía para definir el menú.
 - **FR-004**: Cada opción DEBE poder declarar: identificador único, etiqueta en español, destino (ruta interna por nombre o dirección externa), ícono opcional, insignia opcional (texto y variante), permiso(s) requerido(s), orden y, opcionalmente, opciones hijas.
-- **FR-005**: El sistema DEBE mostrar una opción solo si el usuario posee todos los permisos que esta declara, usando el sistema nativo de permisos y grupos.
-- **FR-006**: Denegación por defecto: una opción sin permiso declarado o cuyo permiso no pueda verificarse NO DEBE mostrarse, salvo que se declare explícitamente como visible para todo usuario autenticado.
+- **FR-005**: El sistema DEBE mostrar una opción solo si el usuario posee todos los permisos que esta declara, usando el sistema nativo de permisos y grupos. Toda opción con destino interno (inicial o futura) DEBE declarar los mismos permisos que exige su página destino, de modo que el menú no ofrezca páginas que respondan con una denegación de acceso.
+- **FR-006**: Denegación por defecto: una opción con destino (enlace) sin permiso declarado o cuyo permiso no pueda verificarse NO DEBE mostrarse, salvo que se declare explícitamente como visible para todo usuario autenticado. Las opciones que solo agrupan otras (desplegables y submenús) no declaran permisos propios: su visibilidad depende únicamente de que tengan al menos una opción hija visible (FR-007).
 - **FR-007**: Un desplegable o submenú sin opciones hijas visibles, y una sección sin opciones visibles, NO DEBEN mostrarse.
 - **FR-008**: Ocultar una opción DEBE ser solo presentación; cada página DEBE seguir verificando su propia autorización con independencia del menú. Hoy las páginas de destino del menú inicial (Inicio, Distritos judiciales, Materias jurisdiccionales, Órganos jurisdiccionales y Personas) no verifican autenticación ni permisos; solo la lista de Usuarios lo hace.
 - **FR-008a**: Las páginas de destino del menú inicial (Inicio y las páginas de lista de Distritos judiciales, Materias jurisdiccionales, Órganos jurisdiccionales y Personas) DEBEN exigir sesión autenticada y, salvo Inicio, el mismo permiso de consulta que declara su opción de menú. Un usuario no autenticado DEBE ser dirigido al inicio de sesión; un usuario autenticado sin permiso DEBE recibir una denegación de acceso. Las demás vistas de esos módulos (crear, editar, detalle, cambio de estado, exportar) quedan fuera de alcance y se protegerán en una feature de seguridad posterior.
+- **FR-008b**: Cuando una página deniega el acceso por falta de permiso, el usuario DEBE ver una página en español, con tono formal, que indique que su cuenta no tiene permiso para acceder a esa página, sugiera solicitar el acceso al administrador del sistema y ofrezca un enlace para volver a "Inicio". Esa página DEBE mostrar el menú lateral al usuario autenticado y NO DEBE exponer detalles técnicos ni el nombre del permiso faltante.
 - **FR-009**: Una opción cuyo destino interno no pueda resolverse NO DEBE romper la página; DEBE omitirse y el error DEBE detectarse en las verificaciones automáticas del proyecto.
 
 **Capacidades del componente (patrón navbar vertical Tabler 1.7.1)**
@@ -135,13 +140,13 @@ Como desarrollador de un módulo del ERP, puedo declarar las secciones y opcione
 - **FR-012**: Títulos de sección para agrupar opciones.
 - **FR-013**: Opción simple de primer nivel con ícono y etiqueta.
 - **FR-014**: Opción desplegable de primer nivel con submenú.
-- **FR-015**: Submenú presentado en una o varias columnas, según se declare.
+- **FR-015**: Submenú presentado en una o varias columnas, según se declare. Las opciones se reparten en orden, llenando cada columna de arriba hacia abajo antes de pasar a la siguiente; cada columna, salvo la última, contiene ⌈n / c⌉ opciones (n = opciones visibles, c = columnas declaradas), y nunca se muestran columnas vacías.
 - **FR-016**: Submenú anidado de segundo nivel dentro de un desplegable.
-- **FR-017**: Insignia opcional por opción, con texto en español; el color NO DEBE ser el único medio para comunicar su significado.
+- **FR-017**: Insignia opcional por opción, con texto en español; el color NO DEBE ser el único medio para comunicar su significado. Las variantes visuales de insignia DEBEN pertenecer a un conjunto cerrado y predefinido (una variante neutra, una de advertencia y una informativa), y cada variante DEBE cumplir contraste WCAG AA (≥ 4.5:1) entre su texto y su fondo, y ≥ 3:1 entre su fondo y el fondo del menú.
 - **FR-018**: Ícono opcional también en opciones de submenú.
 - **FR-019**: Opciones con destino externo que abren en una pestaña nueva, sin dar acceso a la ventana de origen, e indican de forma accesible que abren en pestaña nueva.
-- **FR-020**: Estado actual calculado en el servidor a partir de la página actual (incluidas sus páginas secundarias): la opción actual se marca y se anuncia como página actual, y su desplegable padre se marca como activo y se muestra abierto.
-- **FR-021**: Área de usuario en la parte inferior del menú, con avatar, nombre completo y un dato secundario del usuario autenticado, y un menú desplegable hacia arriba. Sin fotografía, el avatar DEBE mostrar las iniciales.
+- **FR-020**: Estado actual calculado en el servidor a partir de la página actual (incluidas sus páginas secundarias): la opción actual se marca y se anuncia como página actual, y su desplegable padre se marca como activo y se muestra abierto. Cada opción declara qué páginas la activan (su propia página y, opcionalmente, un grupo de páginas secundarias). Si la página actual corresponde a más de una opción, se marca **una sola**, según esta precedencia: (1) la opción que declara exactamente esa página prevalece sobre las que la incluyen en un grupo; (2) entre grupos, prevalece el más específico (el que abarca menos páginas, es decir, el patrón más largo); (3) si persiste el empate, prevalece la primera opción en el orden del menú.
+- **FR-021**: Área de usuario en la parte inferior del menú, con avatar, nombre completo y un dato secundario del usuario autenticado, y un menú desplegable hacia arriba. Sin fotografía, el avatar DEBE mostrar las iniciales. El dato secundario DEBE ser el nombre del grupo principal del usuario (el primero de sus grupos en orden alfabético); si el usuario no pertenece a ningún grupo, no se muestra dato secundario. El número de documento NO DEBE mostrarse como dato secundario.
 - **FR-022**: Zona lateral adicional (reservada para "Personalizar") prevista en la estructura del componente, sin contenido ni presencia visible en esta feature.
 
 **Menú de usuario y cierre de sesión**
@@ -155,8 +160,11 @@ Como desarrollador de un módulo del ERP, puedo declarar las secciones y opcione
 **Presentación, accesibilidad y limpieza**
 
 - **FR-027**: Todos los textos visibles y etiquetas accesibles del menú DEBEN estar en español, con tono formal.
-- **FR-028**: El menú DEBE ser una región de navegación con nombre accesible en español; los íconos decorativos NO DEBEN anunciarse; todo el menú DEBE poder usarse solo con teclado, con orden de foco lógico y foco visible (WCAG 2.1 AA).
-- **FR-029**: El menú DEBE ser responsive con enfoque mobile first (escritorio, tablet, móvil).
+- **FR-028**: El menú DEBE ser una región de navegación con nombre accesible en español; los íconos decorativos NO DEBEN anunciarse; todo el menú DEBE poder usarse solo con teclado (WCAG 2.1 AA), con estas condiciones:
+  - **Orden de foco**: DEBE coincidir con el orden visual en todos los tamaños de pantalla: botón de mostrar/ocultar menú (solo cuando está visible) → logo → opciones del menú en orden de aparición → área de usuario (que se presenta al final).
+  - **Interacción**: Tab y Shift+Tab recorren los elementos enfocables; Enter o Espacio abren o cierran un desplegable o el menú de usuario y activan una opción; Esc cierra el desplegable o menú de usuario abierto y devuelve el foco al elemento que lo abrió; si no hay ninguno abierto y el menú está desplegado en pantallas pequeñas, Esc lo colapsa y devuelve el foco al botón de mostrar/ocultar menú.
+  - **Foco visible**: todo elemento enfocable DEBE mostrar un indicador de foco de al menos 2 px de grosor y contraste ≥ 3:1 respecto del fondo adyacente.
+- **FR-029**: El menú DEBE ser responsive con enfoque mobile first (escritorio, tablet, móvil). Por debajo de 992 px de ancho, el menú se muestra colapsado al cargar la página y se despliega con el botón de FR-010; desde 992 px se muestra siempre expandido como barra lateral. Al desplegar el menú en pantallas pequeñas, el desplegable que contiene la opción actual DEBE aparecer abierto, igual que en escritorio (FR-020), y el menú de usuario DEBE mostrarse completo, superpuesto al contenido y sin recortes.
 - **FR-030**: El menú DEBE tener como único fondo el color institucional principal, referenciado mediante los tokens institucionales existentes (sin repetir su valor), eliminando el conflicto actual entre dos fondos. Textos e íconos DEBEN ser claros y cumplir el contraste WCAG AA sobre ese fondo (incluidos los submenús, el logo y el área de usuario). El estado actual DEBE distinguirse con un cambio de fondo más un indicador no cromático (por ejemplo, peso de fuente o marca lateral), no solo por color.
 - **FR-031**: Las plantillas del componente NO DEBEN contener estilos inline, y el servidor NO DEBE construir HTML ni estilos en código para el menú.
 - **FR-032**: El componente NO DEBE requerir JavaScript propio del proyecto; solo el comportamiento incorporado del design system (colapso y desplegables).
@@ -172,13 +180,29 @@ Como desarrollador de un módulo del ERP, puedo declarar las secciones y opcione
   - Sección "Administración": "Usuarios", con su permiso de consulta.
   - Los mantenimientos sin página de lista independiente (por ejemplo, Cortes de justicia y Sedes judiciales) se incorporarán cuando la tengan.
 
+### Seguridad, auditoría y protección de datos
+
+Resumen consolidado de los requisitos que la constitución exige identificar (Gobernanza §Revisión de cumplimiento). Los requisitos normativos son los FR citados.
+
+- **Autenticación**: el menú lateral y las páginas de destino del menú inicial exigen sesión autenticada (FR-001, FR-008a). Sin sesión, el usuario es dirigido al inicio de sesión.
+- **Autorización**: visibilidad por permisos nativos con denegación por defecto (FR-005, FR-006, FR-007). El menú no autoriza: cada página verifica su propio permiso (FR-008). Las 4 páginas de lista del menú inicial exigen su permiso de consulta (FR-008a).
+- **Cierre de sesión**: solo por envío protegido contra falsificación; una navegación simple no cierra la sesión (FR-024), mediante el mecanismo nativo (FR-024a). Sesión expirada y verificación inválida: ver Edge Cases.
+- **Mensajes de denegación**: en español formal, sin detalles técnicos ni nombres de permisos (FR-008b).
+- **Eventos auditables que genera esta feature** (constitución §III Auditoría):
+  - *Cierre de sesión* (evento de autenticación).
+  - *Denegación de autorización* al acceder sin permiso a una página de destino del menú inicial (FR-008a).
+  - Esta feature **no** crea registros de auditoría: ambos eventos se producen mediante los mecanismos nativos (el evento estándar de cierre de sesión y la denegación estándar de acceso), que son los puntos de enganche del futuro módulo de auditoría. La brecha temporal se registra en el plan (Complexity Tracking).
+- **Información sensible y protección de datos**: el área de usuario muestra el nombre completo del usuario autenticado (dato personal visible solo para su titular) y, como dato secundario, el nombre de su grupo principal. El **número de documento de identidad** (que es el nombre de usuario) es un dato personal y **NO DEBE mostrarse** en el menú lateral, salvo como último recurso para el nombre principal cuando el usuario no tiene nombre completo registrado (ver Edge Cases).
+- **Brechas registradas**: la auditoría pendiente (cierre de sesión y denegaciones) y la protección parcial de vistas se registran como brechas preexistentes, no introducidas por esta feature, en `docs/decisiones/2026-10-28-brechas-feature-001.md` (constitución v1.1.0 §Gobernanza › Brechas preexistentes).
+- **Información no persistida**: la feature no almacena datos nuevos (ver Key Entities).
+
 ### Key Entities *(include if feature involves data)*
 
 - **Sección de menú**: agrupación con título visible, orden y opciones. Se muestra solo si tiene al menos una opción visible.
 - **Opción de menú**: entrada navegable con identificador, etiqueta, destino (interno o externo), ícono, insignia, permisos requeridos, indicador "visible para todo usuario autenticado", orden y opciones hijas (hasta dos niveles bajo el primer nivel, con presentación en columnas opcional).
 - **Insignia**: texto breve en español con una variante visual.
 - **Opción de menú de usuario**: acción disponible en el área de usuario; puede ser navegación o una acción que requiere envío protegido (como "Cerrar sesión").
-- **Usuario autenticado** (existente): aporta nombre completo, nombre de usuario e iniciales para el área de usuario, y los permisos que determinan la visibilidad.
+- **Usuario autenticado** (existente): aporta nombre completo (o nombre de usuario como último recurso), iniciales y grupo principal para el área de usuario, y los permisos que determinan la visibilidad.
 
 Ninguna de estas entidades se almacena en la base de datos; no hay información institucional nueva ni migraciones.
 
@@ -193,8 +217,8 @@ Ninguna de estas entidades se almacena en la base de datos; no hay información 
 - **SC-005**: Un usuario puede llegar a cualquier opción del menú usando solo el teclado, en cualquier ancho de pantalla desde móvil hasta escritorio.
 - **SC-006**: La verificación de contraste da conformidad WCAG AA para todas las combinaciones de colores del menú en el tema claro.
 - **SC-007**: Las plantillas del componente contienen 0 estilos inline, 0 textos visibles en inglés y 0 enlaces de demostración, y las páginas internas muestran 0 menús de navegación o de usuario fuera del aside.
-- **SC-008**: Incorporar una nueva opción de un módulo requiere 0 cambios en las plantillas del componente.
-- **SC-009**: Mostrar el menú no añade una demora perceptible a la carga de las páginas internas (el tiempo de respuesta no aumenta de forma apreciable respecto a la versión actual).
+- **SC-008**: Incorporar una nueva opción de un módulo requiere 0 cambios en las plantillas del componente, 0 cambios en el mecanismo compartido del menú y 0 cambios en archivos de otros módulos (solo cambian archivos del módulo que declara la opción).
+- **SC-009**: Mostrar el menú añade como máximo **3 consultas a la base de datos** por página (permisos del usuario, permisos de sus grupos y grupo principal), independientemente del número de opciones declaradas (verificable con conteo de consultas en las pruebas automáticas), y como máximo **20 ms** al tiempo medio de respuesta del servidor de una página interna, medido como la diferencia de la media de 20 solicitudes consecutivas a la misma página con y sin el menú, en el mismo entorno.
 
 ## Clarifications
 
@@ -205,14 +229,16 @@ Ninguna de estas entidades se almacena en la base de datos; no hay información 
 - Q: ¿Qué color de fondo debe tener el aside? → A: Color institucional principal, con texto e íconos claros y estado actual marcado por fondo + indicador no cromático.
 - Q: ¿El aside debe verse y probarse también en tema oscuro en esta feature, o basta con el tema claro? → A: Solo tema claro; el soporte de tema oscuro llegará con la feature de "Personalizar".
 - Q: ¿El cierre de sesión debe dejar registro de auditoría ya en esta feature, o se pospone hasta que exista el módulo de auditoría? → A: Posponer; esta feature solo garantiza que el cierre de sesión emita el evento estándar al que se enganchará el módulo de auditoría.
+- Q (revisión CHK004): ¿Qué dato secundario debe mostrarse bajo el nombre, dado que el nombre de usuario es el número de documento? → A: El nombre del grupo principal del usuario; el número de documento no se muestra como dato secundario.
+- Q (revisión CHK008): ¿Cómo se tramitan las brechas de auditoría (cierre de sesión, 403) y la protección parcial de vistas frente a los Principios II y III? → A: Como brechas preexistentes no introducidas por la feature, registradas por el Responsable Técnico en `docs/decisiones/2026-10-28-brechas-feature-001.md` con fecha de revisión y cierre comprometido.
 
 ## Assumptions
 
 - Se reutiliza la autenticación existente del módulo de usuarios: inicio de sesión, cierre de sesión (que ya solo acepta envíos protegidos) y redirecciones ya configurados.
-- El modelo de usuario no tiene fotografía ni cargo: el avatar mostrará iniciales y el dato secundario será el nombre de usuario (número de documento). Cuando se incorpore cargo o fotografía, se mostrarán sin cambiar el componente.
+- El modelo de usuario no tiene fotografía ni cargo: el avatar mostrará iniciales y el dato secundario será el grupo principal (FR-021). Cuando se incorporen cargo o fotografía, podrán mostrarse sin cambiar la estructura del componente.
 - Las etiquetas, nombres de sección y orden inicial del menú son propuestas razonables; el contenido exacto se valida con el Responsable en la clarificación o el plan.
 - El menú de usuario y la navegación pasan a vivir solo en el aside (patrón Tabler 1.7.1). La barra superior deja de mostrarse en los layouts con aside (FR-026); sus utilidades (cambio de tema, notificaciones, menú de aplicaciones) son hoy de demostración y, si se necesitan, se reincorporarán al aside en features futuras (por ejemplo, junto con "Personalizar"). El componente de barra superior puede permanecer en el repositorio para otros layouts, pero no se usa en los layouts con aside.
 - Existe un defecto conocido en el nombre de ruta de la lista de Órganos jurisdiccionales (comparte nombre con la ruta de cambio de estado); debe corregirse para que la opción pueda resolverse correctamente.
 - La opción "Personalizar" (zona lateral adicional), el soporte del tema oscuro y las opciones adicionales del menú de usuario se implementarán en features futuras.
-- No se almacenan datos nuevos, por lo que no aplican inactivación ni auditoría de datos. La auditoría del cierre de sesión es una dependencia pendiente del futuro módulo de auditoría (ver FR-024a); hasta entonces existe una brecha conocida respecto del Principio III, que debe registrarse en el plan.
+- No se almacenan datos nuevos, por lo que no aplican inactivación ni auditoría de datos. La auditoría del cierre de sesión (FR-024a) y la de las denegaciones de autorización de las páginas protegidas por FR-008a son dependencias pendientes del futuro módulo de auditoría. Hasta entonces existe una brecha conocida respecto del Principio III (constitución §III Auditoría: eventos de autenticación y denegaciones de autorización), que se registra en el plan.
 - Las pruebas cubrirán filtrado por permisos, denegación por defecto, ocultamiento de grupos vacíos, estado actual, cierre de sesión protegido, ausencia de menú para no autenticados, ausencia de estilos inline y la protección de las páginas de destino del menú inicial (redirección al inicio de sesión si no hay sesión; denegación si falta el permiso).

@@ -2,7 +2,7 @@ django==6
 python-dotenv
 pillow
 xlsxwriter
-psycopg==3
+psycopg[binary]==3.3.6
 # django-filter
 # django-tables2
 # openpyxl

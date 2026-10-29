@@ -1,0 +1,23 @@
+{% extends 'layouts/base_page.html' %}
+
+{# Acceso denegado (spec FR-008b). Sin detalles técnicos ni nombres de permisos. #}
+
+{% block page_header %}
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <h2 class="page-title">Acceso denegado</h2>
+        </div>
+    </div>
+{% endblock page_header %}
+
+{% block page_body %}
+    <div class="empty">
+        <p class="empty-title">No tiene permiso para acceder a esta página.</p>
+        <p class="empty-subtitle text-secondary">
+            Si considera que necesita acceso, solicítelo al administrador del sistema.
+        </p>
+        <div class="empty-action">
+            <a href="{% url 'main:index' %}" class="btn btn-primary">Volver a Inicio</a>
+        </div>
+    </div>
+{% endblock page_body %}

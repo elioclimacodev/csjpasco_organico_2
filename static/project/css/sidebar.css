@@ -1,0 +1,264 @@
+/* ============================================================
+   ASIDE (navegación lateral)
+   ============================================================ */
+
+/*
+ * Estilos del componente aside (templates/components/navigation/aside/).
+ *
+ * Este archivo consume los tokens definidos en custom_color.css; no define
+ * valores de la paleta institucional.
+ *
+ * Especificidad: Tabler fija los colores del navbar con selectores como
+ * `.navbar[data-bs-theme=dark]` (0,2,0) y
+ * `.navbar-vertical[class*=navbar-expand] .navbar-nav …` (0,4,0). Los
+ * selectores de este archivo anteponen `.navbar-vertical` para igualarlos o
+ * superarlos; como el archivo se carga después de tabler.min.css, a igual
+ * especificidad prevalece.
+ *
+ * Contraste (research R9, fondo = color institucional principal):
+ * - Texto e íconos en blanco 100 %: 7.30:1. La opacidad por defecto de
+ *   Tabler para navbars oscuros (blanco 70 %) da 4.30:1 y NO cumple AA,
+ *   por eso se sobrescribe.
+ * - Ítem actual: fondo oscurecido + marca lateral + negrita (indicadores no
+ *   cromáticos, spec FR-030).
+ */
+
+
+/* ============================================================
+   ASIDE - FONDO Y COLORES BASE
+   ============================================================ */
+
+.navbar-vertical.sidebar-institucional[data-bs-theme="dark"] {
+    --tblr-navbar-bg: var(--institutional-primary);
+    --tblr-navbar-color: #fff;
+    --tblr-navbar-hover-color: #fff;
+    --tblr-navbar-active-color: #fff;
+    --tblr-navbar-brand-color: #fff;
+    --tblr-navbar-active-bg: rgba(0, 0, 0, 0.2);
+    --tblr-navbar-border-color: rgba(255, 255, 255, 0.2);
+    --tblr-navbar-toggler-icon-color: #fff;
+    --tblr-nav-link-icon-color: currentColor;
+
+    background: var(--tblr-navbar-bg);
+    color: var(--tblr-navbar-color);
+}
+
+
+/*
+ * El logo está diseñado para fondo oscuro. Tabler aplica a
+ * .navbar-brand-autodark un filtro que lo convierte en silueta blanca
+ * cuando el esquema es oscuro; aquí se conservan sus colores originales.
+ */
+.sidebar-institucional .navbar-brand-autodark .navbar-brand-image {
+    filter: none;
+}
+
+
+/*
+ * Títulos de sección: Tabler los atenúa al 70 % del color del navbar
+ * (≈ 4.3:1 sobre el fondo); se usan en blanco para cumplir AA.
+ */
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-section-title {
+    color: #fff;
+}
+
+
+/*
+ * Etiquetas largas: se ajustan en varias líneas en lugar de cortarse con
+ * puntos suspensivos (spec, Edge Cases).
+ */
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link-title,
+.navbar-vertical.sidebar-institucional .dropdown-menu .dropdown-item {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}
+
+
+/* ============================================================
+   ASIDE - HOVER
+   ============================================================ */
+
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link:hover,
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* ============================================================
+   ASIDE - ELEMENTO ACTUAL
+   ============================================================ */
+
+/*
+ * El ítem actual se distingue por tres medios: fondo oscurecido, marca
+ * lateral blanca y negrita (spec FR-030). El texto sigue en blanco
+ * (≈ 10:1 sobre el fondo oscurecido).
+ */
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-link[aria-current="page"],
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropdown-menu .dropdown-item[aria-current="page"] {
+    color: #fff;
+    background-color: var(--tblr-navbar-active-bg);
+    box-shadow: inset 3px 0 0 #fff;
+    font-weight: 600;
+}
+
+
+/*
+ * El contenedor del ítem actual (desplegable abierto) se marca en negrita,
+ * sin fondo, para no competir con el ítem actual.
+ */
+.navbar-vertical.sidebar-institucional .navbar-nav .nav-item.active > .nav-link.dropdown-toggle,
+.navbar-vertical.sidebar-institucional .navbar-collapse .dropend > .dropdown-item.dropdown-toggle.active {
+    color: #fff;
+    background: transparent;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   ASIDE - FOCO VISIBLE
+   ============================================================ */
+
+/*
+ * Contorno blanco de 2 px (≥ 3:1 frente al fondo; spec FR-028). Se dibuja
+ * hacia adentro para que no lo recorte el contenedor desplazable.
+ */
+.sidebar-institucional a:focus-visible,
+.sidebar-institucional button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    box-shadow: none;
+}
+
+
+/* ============================================================
+   ASIDE - INSIGNIAS
+   ============================================================ */
+
+/*
+ * Conjunto cerrado de variantes (spec FR-017). El texto siempre comunica
+ * el significado; el color es complementario.
+ */
+.sidebar-institucional .sidebar-badge-light {
+    background-color: #fff;
+    color: var(--institutional-primary);
+}
+
+.sidebar-institucional .sidebar-badge-warning {
+    background-color: var(--tblr-yellow);
+    color: var(--tblr-dark);
+}
+
+.sidebar-institucional .sidebar-badge-info {
+    background-color: #fff;
+    color: var(--tblr-dark);
+    border: 1px solid var(--tblr-dark);
+}
+
+
+/* ============================================================
+   ASIDE - ÁREA DE USUARIO
+   ============================================================ */
+
+/*
+ * Avatar con iniciales: fondo blanco y texto en el color institucional
+ * (7.30:1).
+ */
+.sidebar-institucional .navbar-footer .avatar {
+    background-color: #fff;
+    color: var(--institutional-primary);
+    font-weight: 600;
+}
+
+
+.navbar-vertical.sidebar-institucional .navbar-footer .nav-link .small {
+    color: #fff;
+}
+
+
+/*
+ * Pantallas pequeñas: Bootstrap deja los menús de .navbar-nav en
+ * `position: static` por debajo de 992 px, y el menú de usuario quedaba
+ * recortado dentro de la barra. Aquí flota bajo el avatar (Tabler ya fija
+ * top: 100% y la alineación a la derecha).
+ */
+@media (max-width: 991.98px) {
+
+    .navbar-vertical.sidebar-institucional .navbar-footer .dropdown-menu {
+        position: absolute;
+        z-index: var(--tblr-dropdown-zindex, 1000);
+    }
+
+    /*
+     * Con el menú colapsado, el avatar está a la derecha de la barra y el
+     * menú se alinea a la derecha (regla de Tabler). Con el menú desplegado,
+     * el área de usuario queda al final de la lista, a la izquierda: el menú
+     * se alinea a la izquierda para no salirse de la pantalla.
+     */
+    .navbar-vertical.sidebar-institucional .navbar-collapse.show ~ .navbar-footer .dropup .dropdown-menu {
+        inset-inline-start: 0;
+        inset-inline-end: auto;
+    }
+}
+
+
+/* ============================================================
+   ASIDE - DESPLAZAMIENTO
+   ============================================================ */
+
+/*
+ * La barra de desplazamiento se oculta visualmente, pero el menú sigue
+ * siendo desplazable con rueda, touchpad, teclado y pantalla táctil.
+ */
+
+/* Firefox */
+.sidebar-institucional,
+.sidebar-institucional .navbar-collapse,
+.sidebar-institucional .navbar-nav {
+    scrollbar-width: none;
+}
+
+
+/* Chrome, Edge Chromium y Safari */
+.sidebar-institucional::-webkit-scrollbar,
+.sidebar-institucional .navbar-collapse::-webkit-scrollbar,
+.sidebar-institucional .navbar-nav::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+
+/*
+ * Tabler usa .navbar-collapse como contenedor desplazable en el navbar
+ * vertical.
+ */
+.sidebar-institucional .navbar-collapse {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+
+/* ============================================================
+   ASIDE - TRANSICIONES
+   ============================================================ */
+
+.sidebar-institucional .nav-link,
+.sidebar-institucional .dropdown-item {
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+
+/*
+ * Reduce animaciones cuando el sistema operativo así lo pide.
+ */
+@media (prefers-reduced-motion: reduce) {
+
+    .sidebar-institucional .nav-link,
+    .sidebar-institucional .dropdown-item {
+        transition: none;
+    }
+}

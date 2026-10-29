@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from django.contrib.messages import constants as messages
+from django.core.exceptions import ImproperlyConfigured
 from django.template import base
 
 from .templates import DIRS
@@ -121,12 +122,50 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+def env_requerida(nombre):
+    '''
+    Devuelve una variable de entorno obligatoria o falla explícitamente si no
+    está definida (constitución, §Configuración de entorno y dependencias).
+    '''
+    valor = os.getenv(nombre)
+    if not valor:
+        raise ImproperlyConfigured(
+            f'La variable de entorno {nombre} es obligatoria y no está definida. '
+            'Revise el archivo .env (ver .env.example).'
+        )
+    return valor
+
+
+# Motor de base de datos: 'sqlite' (solo desarrollo local, valor por defecto)
+# o 'postgresql' (producción y validaciones previas al despliegue).
+DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite')
+
+if DB_ENGINE == 'postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env_requerida('DB_NAME'),
+            'USER': env_requerida('DB_USER'),
+            'PASSWORD': env_requerida('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+            'TEST': {
+                # Base que crea y destruye `manage.py test`.
+                'NAME': os.getenv('DB_TEST_NAME') or None,
+            },
+        }
     }
-}
+elif DB_ENGINE == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    raise ImproperlyConfigured(
+        f'DB_ENGINE="{DB_ENGINE}" no es válido. Use "sqlite" o "postgresql".'
+    )
 
 
 # Password validation
