@@ -269,6 +269,10 @@ LOGIN_URL = 'usuarios:iniciar_sesion'
 LOGIN_REDIRECT_URL = 'main:index'
 LOGOUT_REDIRECT_URL = 'usuarios:iniciar_sesion'
 
+# Fallo de verificación anti-falsificación: en HTMX recarga la página
+# (feature 002, contracts/respuestas-acceso.md §2b).
+CSRF_FAILURE_VIEW = 'apps.usuarios.views.denegacion.fallo_csrf'
+
 
 
 # ── Template en varias líneas ────────────────────────

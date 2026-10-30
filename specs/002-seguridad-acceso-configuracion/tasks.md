@@ -219,36 +219,36 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 
 ### Tests for User Story 3 (escribir primero; deben fallar) ⚠️
 
-- [ ] T043 [P] [US3] En `apps/usuarios/tests/test_respuestas_htmx.py`, bloque "sin permiso" (contracts/respuestas-acceso.md §2, FR-011, SC-005):
+- [x] T043 [P] [US3] En `apps/usuarios/tests/test_respuestas_htmx.py`, bloque "sin permiso" (contracts/respuestas-acceso.md §2, FR-011, SC-005):
   - **modal**: `GET` con `HX-Request: true` y `HX-Target: modal_content` a `organizacion:distrito_judicial_details` sin permiso → `403` con la plantilla `components/modals/modal_denegado.html`. Contiene "Acceso denegado", el texto de spec 001 FR-008b, `role="alert"` y un único botón "Cerrar" con `autofocus` y `data-bs-dismiss="modal"`. No contiene `<aside`, el nombre del permiso ni "Eliminar".
   - **tabla**: `GET` con `HX-Target: datatable` a `organizacion:distritos_judiciales_list` sin permiso → `403`, cuerpo vacío, `HX-Reswap: none` y `HX-Trigger` JSON con `show_toast.type == 'error'` y el mensaje "No tiene permiso para realizar esta operación.".
   - **normal**: `GET` sin `HX-Request` → `403` con `403.html`, que es la regresión de la feature 001.
-- [ ] T044 [P] [US3] En `apps/usuarios/tests/test_respuestas_htmx.py`, CSRF (contracts/respuestas-acceso.md §2b, CHK025): `Client(enforce_csrf_checks=True)` autenticado:
+- [x] T044 [P] [US3] En `apps/usuarios/tests/test_respuestas_htmx.py`, CSRF (contracts/respuestas-acceso.md §2b, CHK025): `Client(enforce_csrf_checks=True)` autenticado:
   - `POST` con `HX-Request: true` y sin token a `organizacion:distrito_judicial_toggle` → `403`, cuerpo vacío y `HX-Refresh: true`;
   - sin `HX-Request` → `403` con `403_csrf.html`.
-- [ ] T045 [P] [US3] En `apps/common/tests/test_htmx_config.py` (nuevo):
+- [x] T045 [P] [US3] En `apps/common/tests/test_htmx_config.py` (nuevo):
   - `templates/base.html` contiene `<meta name="htmx-config"` y su `content` es JSON válido con `responseHandling` que incluye `{"code":"403","swap":true,"error":false}` antes de la regla `[45]..`;
   - `templates/components/modals/modal_warning.html` no contiene "Eliminar 84 items" ni textos en inglés y define `{% block modal_footer %}` (contracts/respuestas-acceso.md §3–§4).
 
 ### Implementation for User Story 3
 
-- [ ] T046 [P] [US3] Refactorizar `templates/components/modals/modal_warning.html` (contracts/respuestas-acceso.md §4):
+- [x] T046 [P] [US3] Refactorizar `templates/components/modals/modal_warning.html` (contracts/respuestas-acceso.md §4):
   - añadir `{% block modal_footer %}` con un único botón "Cerrar" por defecto;
   - poner textos por defecto en español en `modal_title` y `modal_content`;
   - eliminar el botón de demostración y el `aria-label="Close"` en inglés (→ "Cerrar").
   - El componente no tiene usos actuales.
-- [ ] T047 [US3] Crear `templates/components/modals/modal_denegado.html`, que extiende `modal_warning.html`:
+- [x] T047 [US3] Crear `templates/components/modals/modal_denegado.html`, que extiende `modal_warning.html`:
   - título "Acceso denegado" y el texto de spec 001 FR-008b, dentro de una región `role="alert"`;
   - `modal_footer` con `<button type="button" class="btn w-100" data-bs-dismiss="modal" autofocus>Cerrar</button>`;
   - sin `style=` (contracts/respuestas-acceso.md §2, §5; FR-011; CHK028).
-- [ ] T048 [US3] Crear `apps/usuarios/views/denegacion.py` (research R3, contracts/respuestas-acceso.md §2 y §2b):
+- [x] T048 [US3] Crear `apps/usuarios/views/denegacion.py` (research R3, contracts/respuestas-acceso.md §2 y §2b):
   - `permiso_denegado(request, exception=None)`: sin `HX-Request` → `django.views.defaults.permission_denied(request, exception)`, que renderiza `403.html`; con `HX-Request` y `HX-Target == 'modal_content'` → `render(request, 'components/modals/modal_denegado.html', status=403)`; con otro objetivo → `HttpResponse(status=403)` con `HX-Reswap: none` y `HX-Trigger` JSON `{"show_toast": {"type": "error", "message": "No tiene permiso para realizar esta operación."}}`.
   - `fallo_csrf(request, reason='')`: sin `HX-Request` → `django.views.csrf.csrf_failure(request, reason)`, que usa `403_csrf.html`; con `HX-Request` → `HttpResponse(status=403)` con `HX-Refresh: true`.
-- [ ] T049 [US3] Configurar los manejadores:
+- [x] T049 [US3] Configurar los manejadores:
   - en `config/urls.py`, `handler403 = 'apps.usuarios.views.denegacion.permiso_denegado'`;
   - en `config/settings.py`, `CSRF_FAILURE_VIEW = 'apps.usuarios.views.denegacion.fallo_csrf'`.
-- [ ] T050 [US3] En `templates/base.html`, dentro de `<head>` y antes de cargar HTMX, añadir `<meta name="htmx-config" content='…'>` con el `responseHandling` de contracts/respuestas-acceso.md §3: solo se añade la regla del `403`.
-- [ ] T051 [US3] Ejecutar `python manage.py check` y la suite completa: T043–T045 y la regresión en verde.
+- [x] T050 [US3] En `templates/base.html`, dentro de `<head>` y antes de cargar HTMX, añadir `<meta name="htmx-config" content='…'>` con el `responseHandling` de contracts/respuestas-acceso.md §3: solo se añade la regla del `403`.
+- [x] T051 [US3] Ejecutar `python manage.py check` y la suite completa: T043–T045 y la regresión en verde.
 
 **Checkpoint**: valida US3-1 a US3-3 y los escenarios 7, 9, 11, 18 y 19 de quickstart.md.
 

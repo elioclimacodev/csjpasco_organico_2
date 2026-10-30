@@ -25,6 +25,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+# Respuesta única ante una denegación de acceso: página, ventana o
+# notificación según la petición (feature 002, contracts/respuestas-acceso.md §2).
+handler403 = 'apps.usuarios.views.denegacion.permiso_denegado'
+
 # URLs de las aplicaciones del proyecto.
 urlpatterns += [
     path('usuarios/', include('apps.usuarios.urls')),
