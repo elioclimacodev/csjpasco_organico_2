@@ -50,4 +50,10 @@ Leyenda:
 
 | # | Fecha | Resultado | Observaciones / captura |
 |---|---|---|---|
-| | | | |
+| 1 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 4 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 7 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 9 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 11 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 18 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico |
+| 19 | 30/10/2026 | Correcto | Verificado por el Responsable Técnico con NVDA |

@@ -64,4 +64,4 @@ Texto propuesto para comunicar antes del despliegue:
 
 | Responsable Técnico | Fecha | Firma / conformidad |
 |---|---|---|
-| | | |
+| ELIO CLIMACO| 30/10/2026 | CONFORME |
