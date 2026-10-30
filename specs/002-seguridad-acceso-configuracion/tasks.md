@@ -171,41 +171,41 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 
 ### Tests for User Story 4 (escribir primero; deben fallar) ⚠️
 
-- [ ] T035 [P] [US4] `apps/common/tests/test_entorno.py`, pruebas unitarias de `config/entorno.py` con `mock.patch.dict(os.environ, …)` (data-model §3):
+- [x] T035 [P] [US4] `apps/common/tests/test_entorno.py`, pruebas unitarias de `config/entorno.py` con `mock.patch.dict(os.environ, …)` (data-model §3):
   - **E1**: `''` equivale a no definida;
   - **E2**: `env_bool` acepta `true`, `false`, `1`, `0`, `sí`, `si` y `no` sin distinguir mayúsculas, y `'quizas'` → `ImproperlyConfigured` con los valores aceptados;
   - **E3**: `env_lista(' a, ,b ')` → `['a', 'b']`;
   - **E4**: `env_requerida` sin valor → `ImproperlyConfigured` cuyo mensaje contiene el nombre de la variable y "Revise el archivo .env (ver .env.example)";
   - `env_entero('-1')` y `env_entero('x')` → error.
-- [ ] T036 [P] [US4] `apps/common/tests/test_entorno.py`, arranque en subproceso (`subprocess.run([sys.executable, '-c', 'import django, os; os.environ.setdefault("DJANGO_SETTINGS_MODULE","config.settings"); django.setup(); from django.conf import settings; print(settings.DEBUG)'], env=…)`) con el entorno copiado y modificado (research R8-d; `load_dotenv` no sobrescribe variables presentes, research R8, CHK039):
+- [x] T036 [P] [US4] `apps/common/tests/test_entorno.py`, arranque en subproceso (`subprocess.run([sys.executable, '-c', 'import django, os; os.environ.setdefault("DJANGO_SETTINGS_MODULE","config.settings"); django.setup(); from django.conf import settings; print(settings.DEBUG)'], env=…)`) con el entorno copiado y modificado (research R8-d; `load_dotenv` no sobrescribe variables presentes, research R8, CHK039):
   - `SECRET_KEY=''` → código ≠ 0 y salida con "SECRET_KEY";
   - `DEBUG=''` y `ALLOWED_HOSTS='testserver'` → imprime `False`;
   - `DEBUG='quizas'` → error con los valores aceptados;
   - `DEBUG='false'` y `ALLOWED_HOSTS=''` → error que nombra `ALLOWED_HOSTS`;
   - `SECURE_PROXY_SSL_HEADER='solo_uno'` → error.
-- [ ] T037 [P] [US4] `apps/common/tests/test_entorno.py`, transporte seguro simulado (SC-006a, research R8-h), con `override_settings(SECURE_SSL_REDIRECT=True, SECURE_HSTS_SECONDS=31536000)` y un usuario autenticado:
+- [x] T037 [P] [US4] `apps/common/tests/test_entorno.py`, transporte seguro simulado (SC-006a, research R8-h), con `override_settings(SECURE_SSL_REDIRECT=True, SECURE_HSTS_SECONDS=31536000)` y un usuario autenticado:
   - `client.get(url)` → `301` a `https://`;
   - `client.get(url, secure=True)` → cabecera `Strict-Transport-Security` con `max-age=31536000`;
   - sin `override_settings` → sin redirección (desarrollo).
-- [ ] T038 [P] [US4] Test de código versionado (SC-006, FR-015, FR-017): `config/settings.py` no contiene `django-insecure`, `socket.gethostbyname` ni literales de IP o puerto en `ALLOWED_HOSTS` y `CSRF_TRUSTED_ORIGINS`. Puede ir en `apps/common/tests/test_entorno.py` leyendo el archivo.
+- [x] T038 [P] [US4] Test de código versionado (SC-006, FR-015, FR-017): `config/settings.py` no contiene `django-insecure`, `socket.gethostbyname` ni literales de IP o puerto en `ALLOWED_HOSTS` y `CSRF_TRUSTED_ORIGINS`. Puede ir en `apps/common/tests/test_entorno.py` leyendo el archivo.
 
 ### Implementation for User Story 4
 
-- [ ] T039 [US4] Crear `config/entorno.py`:
+- [x] T039 [US4] Crear `config/entorno.py`:
   - trasladar `env_requerida` desde `config/settings.py`, conservando su mensaje;
   - añadir `env_bool(nombre, por_defecto)`, `env_lista(nombre, por_defecto=())` y `env_entero(nombre, por_defecto, minimo=0)`, con las reglas E1–E4 de data-model §3: booleanos `true/false/1/0/sí/si/no`; listas separadas por comas, con espacios recortados y vacíos ignorados; mensajes en español con el nombre de la variable y "Revise el archivo .env (ver .env.example)".
-- [ ] T040 [US4] Modificar `config/settings.py` según contracts/variables-entorno.md:
+- [x] T040 [US4] Modificar `config/settings.py` según contracts/variables-entorno.md:
   - `SECRET_KEY = env_requerida('SECRET_KEY')` y `DEBUG = env_bool('DEBUG', False)`;
   - `ALLOWED_HOSTS = env_lista('ALLOWED_HOSTS')`, o `['localhost', '127.0.0.1']` si `DEBUG` y está vacía; error si está vacía sin `DEBUG`;
   - `CSRF_TRUSTED_ORIGINS = env_lista(...)`, con error si un elemento no empieza por `http://` o `https://`;
   - `SESSION_COOKIE_SECURE` y `CSRF_COOKIE_SECURE` (`True` por defecto); `SECURE_SSL_REDIRECT` (`False`); `SECURE_HSTS_SECONDS` (`0`); `SECURE_HSTS_INCLUDE_SUBDOMAINS` y `SECURE_HSTS_PRELOAD` (`False`);
   - `SECURE_PROXY_SSL_HEADER = tuple(lista)` si tiene 2 elementos, `None` si está vacía y error en otro caso;
   - retirar `import socket`, `hostname` y `local_ip`, e importar los helpers desde `config.entorno`.
-- [ ] T041 [US4] Actualizar `.env.example` con todas las variables nuevas, con valores vacíos o ficticios y comentarios en español:
+- [x] T041 [US4] Actualizar `.env.example` con todas las variables nuevas, con valores vacíos o ficticios y comentarios en español:
   - las reglas de coherencia de contracts/variables-entorno.md: orígenes HTTPS detrás de un proxy y `SECURE_SSL_REDIRECT` que exige `SECURE_PROXY_SSL_HEADER` (FR-016, FR-016a, FR-015);
   - la nota de cookies seguras para acceder por IP local en HTTP (research R6);
   - el comando para generar `SECRET_KEY`.
-- [ ] T042 [US4] Ejecutar `python manage.py check` y la suite completa: T035–T038 y la regresión en verde.
+- [x] T042 [US4] Ejecutar `python manage.py check` y la suite completa: T035–T038 y la regresión en verde.
 
 **Checkpoint**: valida US4-1 a US4-4 y los escenarios 12–16 de quickstart.md.
 
