@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 import re
-import socket
 
 from pathlib import Path
 from dotenv import load_dotenv
@@ -23,39 +22,63 @@ from django.contrib.messages import constants as messages
 from django.core.exceptions import ImproperlyConfigured
 from django.template import base
 
+from .entorno import REVISE, env_bool, env_entero, env_lista, env_requerida
 from .templates import DIRS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# ── Configuración sensible desde el entorno ──────────
+# Variables, valores por defecto y errores: contracts/variables-entorno.md
+# (feature 002). Ningún valor propio de un entorno se escribe aquí.
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=!d86r$2d7(u$+ip$s2s7c-m^b2&%^=*upr*gl^zg%ovji7$jg'
+SECRET_KEY = env_requerida('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool('DEBUG', False)
 
-# Obtiene la IP local automáticamente.
-hostname = socket.gethostname()
-local_ip = socket.gethostbyname(hostname)
+# Con la depuración activa y sin hosts definidos, solo se admite el equipo
+# local; sin depuración, la lista es obligatoria.
+ALLOWED_HOSTS = env_lista('ALLOWED_HOSTS')
+if not ALLOWED_HOSTS:
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            'La variable de entorno ALLOWED_HOSTS es obligatoria cuando DEBUG no está activo. '
+            + REVISE
+        )
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-ALLOWED_HOSTS = [
-    'localhost',
-    'localhost:8080',
-    '127.0.0.1',
-    '127.0.0.1:8001',
-    local_ip,
-]
+# Orígenes con esquema. Detrás de un proxy HTTPS deben incluir
+# https://<host> por cada host que reciba formularios.
+CSRF_TRUSTED_ORIGINS = env_lista('CSRF_TRUSTED_ORIGINS')
+for origen in CSRF_TRUSTED_ORIGINS:
+    if not origen.startswith(('http://', 'https://')):
+        raise ImproperlyConfigured(
+            f'El origen "{origen}" de CSRF_TRUSTED_ORIGINS debe empezar por http:// o https://. '
+            + REVISE
+        )
 
-CSRF_TRUSTED_ORIGINS = [
-    f'http://{local_ip}',
-    f'http://{local_ip}:8000',
-    'https://localhost:8000',
-    'https://*.github.dev'
-]
+# Cookies seguras (activas por defecto) y transporte seguro de producción
+# (desactivado por defecto). Si SECURE_SSL_REDIRECT se activa detrás de un
+# proxy que termina TLS, hay que definir SECURE_PROXY_SSL_HEADER; si no,
+# cada solicitud se redirige indefinidamente.
+SESSION_COOKIE_SECURE = env_bool('SESSION_COOKIE_SECURE', True)
+CSRF_COOKIE_SECURE = env_bool('CSRF_COOKIE_SECURE', True)
+SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', False)
+SECURE_HSTS_SECONDS = env_entero('SECURE_HSTS_SECONDS', 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
+SECURE_HSTS_PRELOAD = env_bool('SECURE_HSTS_PRELOAD', False)
+
+_cabecera_proxy = env_lista('SECURE_PROXY_SSL_HEADER')
+if not _cabecera_proxy:
+    SECURE_PROXY_SSL_HEADER = None
+elif len(_cabecera_proxy) == 2:
+    SECURE_PROXY_SSL_HEADER = tuple(_cabecera_proxy)
+else:
+    raise ImproperlyConfigured(
+        'SECURE_PROXY_SSL_HEADER debe tener el formato CABECERA,valor '
+        '(p. ej., HTTP_X_FORWARDED_PROTO,https). ' + REVISE
+    )
 
 # Application definition
 INSTALLED_APPS = [
@@ -87,6 +110,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Denegación por defecto: toda vista exige sesión salvo las declaradas
+    # con `login_not_required` (feature 002, research R1).
+    'apps.usuarios.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -121,20 +147,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-def env_requerida(nombre):
-    '''
-    Devuelve una variable de entorno obligatoria o falla explícitamente si no
-    está definida (constitución, §Configuración de entorno y dependencias).
-    '''
-    valor = os.getenv(nombre)
-    if not valor:
-        raise ImproperlyConfigured(
-            f'La variable de entorno {nombre} es obligatoria y no está definida. '
-            'Revise el archivo .env (ver .env.example).'
-        )
-    return valor
-
 
 # Motor de base de datos: 'sqlite' (solo desarrollo local, valor por defecto)
 # o 'postgresql' (producción y validaciones previas al despliegue).
@@ -256,8 +268,10 @@ EMAIL_TIMEOUT = 30
 LOGIN_URL = 'usuarios:iniciar_sesion'
 LOGIN_REDIRECT_URL = 'main:index'
 LOGOUT_REDIRECT_URL = 'usuarios:iniciar_sesion'
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+
+# Fallo de verificación anti-falsificación: en HTMX recarga la página
+# (feature 002, contracts/respuestas-acceso.md §2b).
+CSRF_FAILURE_VIEW = 'apps.usuarios.views.denegacion.fallo_csrf'
 
 
 

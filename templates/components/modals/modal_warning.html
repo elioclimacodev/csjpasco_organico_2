@@ -1,39 +1,36 @@
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+{% comment %}
+Advertencia transversal dentro del modal `#modal_htmx` (contracts/respuestas-acceso.md §4).
+
+Bloques: modal_body (icono, título y contenido), modal_icon, modal_title,
+modal_content y modal_footer (por defecto, un botón "Cerrar").
+Ejemplo de uso: components/modals/modal_denegado.html.
+{% endcomment %}
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
 <div class="modal-status bg-warning"></div>
 <div class="modal-body text-center py-4">
-    <!-- Download SVG icon from http://tabler.io/icons/icon/alert-triangle -->
-    
-    {% block modal_icon %}
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
-            class="icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle mb-2 icon-lg text-warning">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-                d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
-        </svg>
-    {% endblock modal_icon %}
-        
-    <h3>
-        {% block modal_title %}
-            ¿Está seguro que desea eliminar?
-        {% endblock modal_title %}
-    </h3>
-    <div class="text-secondary">
-        {% block modal_content %}
-            Do you really want to remove 84 files? What you've done cannot be undone.
-        {% endblock modal_content %}
-    </div>
+    {% block modal_body %}
+        {% block modal_icon %}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                aria-hidden="true"
+                class="icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle mb-2 icon-lg text-warning">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                    d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
+            </svg>
+        {% endblock modal_icon %}
+
+        <h3>
+            {% block modal_title %}Advertencia{% endblock modal_title %}
+        </h3>
+        <div class="text-secondary">
+            {% block modal_content %}Revise la información antes de continuar.{% endblock modal_content %}
+        </div>
+    {% endblock modal_body %}
 </div>
 <div class="modal-footer">
-    <div class="w-100">
-        <div class="row">
-            <div class="col">
-                <a href="#" class="btn btn-3 w-100" data-bs-dismiss="modal"> Cerrar </a>
-            </div>
-            <div class="col">
-                <a href="#" class="btn btn-warning btn-4 w-100" data-bs-dismiss="modal"> Eliminar 84 items </a>
-            </div>
-        </div>
-    </div>
+    {% block modal_footer %}
+        <button type="button" class="btn w-100" data-bs-dismiss="modal">Cerrar</button>
+    {% endblock modal_footer %}
 </div>

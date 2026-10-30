@@ -2,6 +2,7 @@ import io
 import json
 import xlsxwriter
 
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -34,6 +35,10 @@ SEARCH_FIELDS = ['siglas']
 NORMALIZED_FIELDS = ['nombre_normalizado']
 
 
+@permission_required(
+    'organizacion.view_sedejudicial',
+    raise_exception=True,
+)
 def sedes_list(request, dj_id):
     '''
     Muestra las sedes y subsedes permitiendo su ordenamiento, paginación,
@@ -134,6 +139,10 @@ def sedes_list(request, dj_id):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.add_sedejudicial',
+    raise_exception=True,
+)
 def sede_create(request, dj_id):
     '''
     Crea el registro de una Sede o subsede judicial.
@@ -199,6 +208,10 @@ def sede_create(request, dj_id):
         return render(request, template, context)
     
 
+@permission_required(
+    'organizacion.view_sedejudicial',
+    raise_exception=True,
+)
 def sede_details(request, pk):
     '''
     Muestra los detalles de una Sede Judicial sin posibilidad de modificación.
@@ -230,6 +243,10 @@ def sede_details(request, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.change_sedejudicial',
+    raise_exception=True,
+)
 def sede_update(request, pk):
     '''
     Modifica o actualiza el registro de una Sede Judicial.
@@ -279,6 +296,10 @@ def sede_update(request, pk):
         return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.change_sedejudicial',
+    raise_exception=True,
+)
 def sede_toggle(request, pk):
     '''
     Cambia el estado del registro de activo a inactivo y viceversa.
@@ -319,12 +340,17 @@ def sede_toggle(request, pk):
     return response
 
 
+@permission_required(
+    'organizacion.view_sedejudicial',
+    raise_exception=True,
+)
 def sedes_export(request, dj_id):
     '''
     Exporta los datos filtrados y ordenados a un archivo xlsx.
     '''
+    dj = get_object_or_404(DistritoJudicial, pk=dj_id)
     queryset = SedeJudicial.objects.filter(
-        Q(distrito_judicial=dj_id)
+        Q(distrito_judicial=dj)
     )
 
     # ── Filtros y búsqueda ───────────────────────────────

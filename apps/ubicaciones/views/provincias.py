@@ -1,6 +1,7 @@
 
 import json
 
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -58,6 +59,10 @@ def sort_provincias(queryset, order_by, direction):
     return queryset.order_by(f'{prefix}{order_by}')
 
 
+@permission_required(
+    'ubicaciones.view_provincia',
+    raise_exception=True,
+)
 def provincias_list(request, dpto_id):
     '''
     Muestra las provincias de una región, permitiendo el 
@@ -139,6 +144,10 @@ def provincias_list(request, dpto_id):
     return render(request, template, context)
 
 
+@permission_required(
+    'ubicaciones.add_provincia',
+    raise_exception=True,
+)
 def provincia_create(request, dpto_id):
     '''
     Crea el registro de una provincia que pertenece a una región o departamento.
@@ -220,6 +229,10 @@ def provincia_create(request, dpto_id):
         return render(request, template, context)
     
 
+@permission_required(
+    'ubicaciones.view_provincia',
+    raise_exception=True,
+)
 def provincia_details(request, dpto_id, pk):
     '''
     Muestra los datos de una provincia sin posibilidad de modificación.
@@ -256,6 +269,10 @@ def provincia_details(request, dpto_id, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'ubicaciones.change_provincia',
+    raise_exception=True,
+)
 def provincia_update(request, dpto_id, pk):
     '''
     Modifica o actualiza el registro de una provincia.
@@ -309,6 +326,10 @@ def provincia_update(request, dpto_id, pk):
         return render(request, template, context)
     
 
+@permission_required(
+    'ubicaciones.change_provincia',
+    raise_exception=True,
+)
 def provincia_toggle(request, dpto_id, pk):
     '''
     Cambia el estado del registro de la provincia de activo a inactivo y viceversa.
@@ -352,6 +373,10 @@ def provincia_toggle(request, dpto_id, pk):
     return response
 
 
+@permission_required(
+    'ubicaciones.view_provincia',
+    raise_exception=True,
+)
 def provincias_export(request, dpto_id):
     '''
     Exporta los datos filtrados y ordenados a un archivo xlsx.

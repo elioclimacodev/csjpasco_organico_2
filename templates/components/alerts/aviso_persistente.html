@@ -1,0 +1,16 @@
+{% comment %}
+Aviso persistente transversal: se muestra mientras se cumpla una condición,
+sin botón de cerrar (research R7). Para mensajes de un solo uso de
+`django.contrib.messages`, use `components/alerts/alert.html`.
+
+Parámetros:
+- mensaje: texto del aviso (español formal).
+- tipo: variante de Tabler (warning, info, danger, success). Por defecto, info.
+- rol: rol ARIA (status o alert). Por defecto, status.
+
+Uso:
+{% include "components/alerts/aviso_persistente.html" with tipo="warning" mensaje="…" %}
+{% endcomment %}
+<div class="alert alert-{{ tipo|default:'info' }}" role="{{ rol|default:'status' }}">
+    {{ mensaje }}
+</div>

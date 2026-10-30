@@ -1,0 +1,24 @@
+{% extends 'components/modals/modal_warning.html' %}
+
+{% comment %}
+Acceso denegado dentro de una ventana (spec FR-011; contracts/respuestas-acceso.md §2 y §5).
+Sin detalles técnicos ni nombres de permisos. El aviso se anuncia como alerta
+y el foco queda en "Cerrar" (HTMX enfoca el elemento con `autofocus`).
+{% endcomment %}
+
+{% block modal_body %}
+    <div role="alert">
+        {{ block.super }}
+    </div>
+{% endblock modal_body %}
+
+{% block modal_title %}Acceso denegado{% endblock modal_title %}
+
+{% block modal_content %}
+    No tiene permiso para acceder a esta página.
+    Si considera que necesita acceso, solicítelo al administrador del sistema.
+{% endblock modal_content %}
+
+{% block modal_footer %}
+    <button type="button" class="btn w-100" data-bs-dismiss="modal" autofocus>Cerrar</button>
+{% endblock modal_footer %}

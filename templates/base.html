@@ -14,6 +14,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {# Respuestas de HTMX 2.0.6 más la regla del 403, que dibuja el aviso de
+       acceso denegado en las ventanas (contracts/respuestas-acceso.md §3). #}
+    <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"403","swap":true,"error":false},{"code":"[45]..","swap":false,"error":true},{"code":"...","swap":true}]}' />
 
     <title>
         {{ title }} | ERP de la Corte Superior de Justicia de Pasco
