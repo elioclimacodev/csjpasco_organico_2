@@ -256,20 +256,20 @@ Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<model
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T052 Actualizar `docs/decisiones/2026-10-28-brechas-feature-001.md` (FR-018, constitución §Gobernanza › Brechas preexistentes):
+- [x] T052 Actualizar `docs/decisiones/2026-10-28-brechas-feature-001.md` (FR-018, constitución §Gobernanza › Brechas preexistentes):
   - marcar **II.4 como cerrada** por la feature 002, con fecha y commit;
   - **ampliar III.2b** a las denegaciones de las 51 rutas y de las páginas en modal y tabla, con la tabla de cumplimiento de las 5 condiciones: origen (no hay módulo de auditoría), no ampliación (ninguna operación queda sin protección), punto de enganche (`PermissionDenied` y `process_exception`), registro (este documento y plan §Complexity Tracking) y vigencia (revisión 2027-01-31).
-- [ ] T053 [P] Crear `specs/002-seguridad-acceso-configuracion/despliegue-permisos-por-grupo.md` (spec §Assumptions "Preparación del despliegue", FR-017):
+- [x] T053 [P] Crear `specs/002-seguridad-acceso-configuracion/despliegue-permisos-por-grupo.md` (spec §Assumptions "Preparación del despliegue", FR-017):
   - plantilla con la lista de grupos existentes, que se obtiene con `Group.objects.values_list('name', flat=True)`, y una columna por entidad con los permisos `view`, `add` y `change` propuestos;
   - un espacio para la aprobación del Responsable Técnico, con nombre y fecha;
   - el texto del aviso a usuarios por la rotación de la clave: cierre de sesiones e invalidación de los enlaces de activación y recuperación.
-- [ ] T054 [P] Auditoría con búsquedas, registrando el resultado:
+- [x] T054 [P] Auditoría con búsquedas, registrando el resultado:
   - `grep -rn "style=" templates/components/modals/modal_denegado.html templates/components/modals/modal_warning.html` → vacío;
   - `git diff --stat master -- static/project/js` → sin cambios;
   - `git grep -n "django-insecure\|socket" config/` → vacío;
   - `apps/usuarios/middleware.py` y `apps/usuarios/views/denegacion.py` no construyen HTML en Python.
-- [ ] T055 Recorrer los escenarios 1–19 de `quickstart.md` con los perfiles de su §2 y registrar la evidencia en `specs/002-seguridad-acceso-configuracion/evidencias/`: `quickstart.md` con resultado por escenario, y capturas del modal de denegación, el toast y el aviso de FR-003a. Los escenarios que requieran servidor HTTPS o NVDA los ejecuta el Responsable Técnico.
-- [ ] T056 Ejecutar `python manage.py check` y la suite completa en SQLite (`DB_ENGINE=sqlite`) y en PostgreSQL (con el `.env`), y registrar los totales en `specs/002-seguridad-acceso-configuracion/evidencias/suite.md` (constitución §Requisitos de testing).
+- [x] T055 Recorrer los escenarios 1–19 de `quickstart.md` con los perfiles de su §2 y registrar la evidencia en `specs/002-seguridad-acceso-configuracion/evidencias/`: `quickstart.md` con resultado por escenario, y capturas del modal de denegación, el toast y el aviso de FR-003a. Los escenarios que requieran servidor HTTPS o NVDA los ejecuta el Responsable Técnico.
+- [x] T056 Ejecutar `python manage.py check` y la suite completa en SQLite (`DB_ENGINE=sqlite`) y en PostgreSQL (con el `.env`), y registrar los totales en `specs/002-seguridad-acceso-configuracion/evidencias/suite.md` (constitución §Requisitos de testing).
 
 ---
 

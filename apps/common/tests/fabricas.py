@@ -40,7 +40,11 @@ def crear_distrito(provincia=None, **campos):
 
 
 def crear_distrito_judicial(**campos):
-    campos.setdefault('nombre', f'Distrito judicial de prueba {next(_secuencia)}')
+    n = next(_secuencia)
+    campos.setdefault('nombre', f'Distrito judicial de prueba {n}')
+    # Sin siglas, el modelo las genera como "CSJ <NOMBRE>", que supera los
+    # 20 caracteres del campo (PostgreSQL lo rechaza; SQLite no).
+    campos.setdefault('siglas', f'DJP {n}')
     return _modelo('organizacion', 'DistritoJudicial').objects.create(**campos)
 
 
