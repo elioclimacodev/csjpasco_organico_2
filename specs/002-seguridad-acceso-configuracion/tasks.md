@@ -326,3 +326,11 @@ Task: "T032 permisos en apps/ubicaciones/views/distritos.py"
 - La matriz de `apps/common/tests/helpers.py` (T004) es la única fuente de los tests de acceso: si una ruta cambia, se actualiza ahí y en contracts/vistas-y-permisos.md.
 - Antes de desplegar: aplicar la asignación de permisos aprobada (T053) y comunicar la rotación de la clave (FR-017).
 - Hacer commit por fase. Detenerse en cada checkpoint.
+
+---
+
+## Phase 8: Convergence
+
+- [x] T057 Eliminar el error 500 al abrir `usuarios:registro` con sesión iniciada: `apps/usuarios/views/registro.py:46` redirige a `home:home`, una ruta inexistente (`NoReverseMatch`). spec §Edge Cases dice que el autorregistro "se muestra normalmente" con sesión; si el Responsable Técnico prefiere redirigir a Inicio (`main:index`, como `registro_completo` en la línea 188), actualizar antes esa viñeta de la spec. Añadir el test correspondiente en `apps/usuarios/tests/test_acceso_global.py` per spec §Edge Cases, FR-003 (contradicts)
+- [x] T058 Alinear spec §Edge Cases ("Panel de administración") y research R1 con el comportamiento real: un anónimo que abre `/admin/` va al inicio de sesión propio del panel (`/admin/login/?next=/admin/`), porque las vistas del admin declaran `login_url` (`django/contrib/admin/sites.py:270`) y `LoginRequiredMiddleware` lo respeta; el panel conserva su control de acceso. Añadir un test que lo fije en `apps/usuarios/tests/test_acceso_global.py` per spec §Edge Cases, research R1 (contradicts)
+- [x] T059 Añadir tests de regresión de los casos límite sin cobertura en `apps/usuarios/tests/test_acceso_global.py`: usuario desactivado con sesión previa → redirige al inicio de sesión; superusuario → ninguna de las 51 rutas de `MATRIZ_PERMISOS` responde 403; `usuarios:iniciar_sesion` con sesión → Inicio; `usuarios:restablecer_contrasena` con sesión → 200 per spec §Edge Cases (partial)

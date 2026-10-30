@@ -86,10 +86,10 @@ Como Responsable Técnico, necesito que la clave secreta, el modo de depuración
 - Usuario inactivo: no puede iniciar sesión ni operar.
 - Página de error (403, 404, 500) y página de verificación fallida: se muestran sin exigir sesión, con el comportamiento de la feature 001.
 - Recursos estáticos (estilos, imágenes, scripts de terceros): no se ven afectados.
-- Panel de administración: conserva su propio control de acceso (solo personal autorizado). Un visitante sin sesión que lo abre pasa primero por el inicio de sesión del ERP y, tras autenticarse, vuelve al panel, que aplica su control.
+- Panel de administración: conserva su propio control de acceso (solo personal autorizado). Un visitante sin sesión que lo abre va al inicio de sesión propio del panel y, tras autenticarse, vuelve a él.
 - Exportación denegada: no se genera ni descarga ningún archivo parcial.
 - Inactivación denegada: el registro conserva su estado y no se registra ningún cambio.
-- Solicitud a una página pública estando ya autenticado: el inicio de sesión redirige a Inicio (como hoy); el autorregistro, la activación por correo y la recuperación de contraseña se muestran normalmente, sin cambios respecto del comportamiento actual.
+- Solicitud a una página pública estando ya autenticado: el inicio de sesión, el autorregistro y el registro completo redirigen a Inicio; la activación por correo y la recuperación de contraseña se muestran normalmente (decisión del Responsable Técnico en la convergencia, T057).
 - Valor inválido del modo de depuración en el entorno (distinto de verdadero/falso): el sistema no arranca e indica el valor esperado.
 - Rutas anidadas (por ejemplo, las provincias de un departamento o las sedes de un distrito judicial): se exige solo el permiso de la entidad de la ruta (no el de la entidad padre). El permiso se comprueba primero; si el registro padre no existe, la respuesta es "página no encontrada". Así no se revela la existencia de registros a quien no tiene permiso.
 - Envío de un formulario dentro de una ventana con la sesión expirada: la página completa va al inicio de sesión y, tras autenticarse, vuelve a la página en la que estaba. Los datos ingresados y no guardados se pierden (comportamiento aceptado; no se reintenta el envío).

@@ -134,3 +134,49 @@ class PermisosPorOperacionTests(TestCase):
         self.client.get(url_de_prueba('organizacion:distrito_judicial_details'))
 
         self.assertTrue(any(isinstance(e, PermissionDenied) for e in _excepciones_recibidas))
+
+
+class CasosLimiteTests(TestCase):
+    """Casos límite de spec §Edge Cases (Phase 8: Convergence, T057–T059)."""
+
+    def test_registro_con_sesion_redirige_a_inicio(self):
+        """T057: con sesión, el autorregistro lleva a Inicio (decisión del Responsable Técnico)."""
+        self.client.force_login(crear_usuario())
+
+        response = self.client.get(reverse('usuarios:registro'))
+
+        self.assertRedirects(response, reverse('main:index'), fetch_redirect_response=False)
+
+    def test_panel_de_administracion_usa_su_propio_inicio_de_sesion(self):
+        """T058: el panel declara su `login_url`; conserva su control de acceso."""
+        response = self.client.get('/admin/')
+
+        self.assertRedirects(response, '/admin/login/?next=/admin/', fetch_redirect_response=False)
+
+    def test_usuario_desactivado_con_sesion_previa_vuelve_al_login(self):
+        usuario = crear_usuario(permisos=['ubicaciones.view_pais'])
+        self.client.force_login(usuario)
+        usuario.is_active = False
+        usuario.save()
+
+        response = self.client.get(reverse('ubicaciones:countries_list'))
+
+        self.assertTrue(redirige_al_login(response))
+
+    def test_superusuario_accede_a_todas_las_operaciones(self):
+        self.client.force_login(crear_usuario(is_superuser=True))
+        # Solo se comprueba la autorización (ver PermisosPorOperacionTests).
+        self.client.raise_request_exception = False
+
+        for url_name, _, _ in MATRIZ_PERMISOS:
+            with self.subTest(url_name=url_name):
+                self.assertNotEqual(self.client.get(url_de_prueba(url_name)).status_code, 403)
+
+    def test_paginas_publicas_con_sesion(self):
+        self.client.force_login(crear_usuario())
+
+        response = self.client.get(reverse('usuarios:iniciar_sesion'))
+        self.assertRedirects(response, reverse('main:index'), fetch_redirect_response=False)
+
+        response = self.client.get(reverse('usuarios:restablecer_contrasena'))
+        self.assertEqual(response.status_code, 200)

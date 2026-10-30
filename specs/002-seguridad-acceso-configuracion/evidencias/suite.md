@@ -25,3 +25,13 @@ Observación fuera de alcance: el modelo `DistritoJudicial` genera las siglas au
 | US2 | 144 |
 | US4 | 160 |
 | US3 | 167 |
+| Fase 8: Convergencia (T057–T059) | 172 |
+
+## Fase 8: Convergencia (2026-10-30)
+
+| Motor | Tests | Resultado | Duración |
+|---|---|---|---|
+| PostgreSQL 18.6 | 172 | OK | 204 s |
+| SQLite | 172 | OK | 175 s |
+
+`check` sin avisos; `makemigrations --check` sin cambios. Tests nuevos: `apps/usuarios/tests/test_acceso_global.py:CasosLimiteTests` (registro con sesión, panel de administración, usuario desactivado, superusuario y páginas públicas con sesión).

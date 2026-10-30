@@ -9,7 +9,7 @@ Hechos verificados en el código instalado: Django 6.0 (`venv/Lib/site-packages/
 ## R1. Denegación por defecto (FR-001, FR-002)
 
 - **Decisión**: añadir a `MIDDLEWARE` un `LoginRequiredMiddleware` propio, subclase del nativo de Django (ver R2), justo después de `AuthenticationMiddleware`. Las vistas públicas se marcan explícitamente con `django.contrib.auth.decorators.login_not_required` (o con `method_decorator(login_not_required, name='dispatch')` en las clases).
-- **Panel de administración** (CHK010): no se exentan sus vistas. Un anónimo pasa por el login del ERP y, ya autenticado, el admin aplica `is_staff`. Así lo recoge spec §Edge Cases.
+- **Panel de administración** (CHK010; corregido en la convergencia, T058): no se exentan sus vistas, pero cada una declara `login_url = admin:login` (`django/contrib/admin/sites.py:270`) y `LoginRequiredMiddleware` lo respeta. Un anónimo va al inicio de sesión propio del panel, que aplica `is_staff`. Así lo recoge spec §Edge Cases.
 - **Vistas ya exentas de forma nativa** (verificado):
   - `LoginView` y las cuatro `PasswordReset*View` (`contrib/auth/views.py:66, 210, 241, 248, 335`). Sus subclases del proyecto (`UsuarioLoginView`, `UsuarioPasswordReset*`) heredan la exención, porque `as_view()` copia los atributos de `dispatch`.
   - `AdminSite.login` (`contrib/admin/sites.py:414`).

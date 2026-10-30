@@ -43,7 +43,8 @@ Usuario = get_user_model()
 @login_not_required
 def registro(request):
     if request.user.is_authenticated:
-        return redirect('home:home') # TODO: CORREGIR LA URL DE HOME.
+        # Quien ya tiene sesión no necesita registrarse (spec 002 §Edge Cases).
+        return redirect('main:index')
 
     if request.method == 'POST':
         form = UsuarioRegistrationForm(request.POST)
