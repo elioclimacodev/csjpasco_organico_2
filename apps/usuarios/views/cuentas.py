@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404, redirect
@@ -52,7 +52,6 @@ NORMALIZED_FIELDS = [
 ]
 
 
-@login_required
 @permission_required(
     'usuarios.view_usuario',
     raise_exception=True,

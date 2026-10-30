@@ -70,37 +70,37 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 ### Tests for User Story 1 (escribir primero; deben fallar) ⚠️
 
-- [ ] T007 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`:
+- [x] T007 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`:
   - **(a)** para cada ruta de `rutas_enrutadas()` que no esté en `RUTAS_PUBLICAS`, un `GET` anónimo responde `302` con `Location` que empieza por `resolve_url(settings.LOGIN_URL)` y contiene `next=` (R8-a, contracts/vistas-y-permisos.md §3 C1, FR-001, FR-005, SC-001);
   - **(b)** SC-007b: con un usuario autenticado que tiene el permiso, la misma petición a una vista protegida hace las mismas consultas con el middleware y sin él, quitándolo con `modify_settings(MIDDLEWARE={'remove': ['apps.usuarios.middleware.LoginRequiredMiddleware']})`.
-- [ ] T008 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`, las rutas de `RUTAS_PUBLICAS` responden sin sesión y sin redirigir al login (FR-003, SC-002):
+- [x] T008 [P] [US1] En `apps/usuarios/tests/test_acceso_global.py`, las rutas de `RUTAS_PUBLICAS` responden sin sesión y sin redirigir al login (FR-003, SC-002):
   - `GET` a login, recuperación y registro → código distinto de `302` hacia `LOGIN_URL`;
   - `activar_cuenta` y `restablecer_contrasena_confirmar` con `uidb64` y `token` de prueba → no redirigen al login;
   - `POST` anónimo a `cerrar_sesion` → redirige a `LOGOUT_REDIRECT_URL` **sin** `next`, que es la regresión de la feature 001;
   - un `POST` válido a `usuarios:iniciar_sesion` con `?next=/ubicaciones/paises/` redirige a `/ubicaciones/paises/` (FR-005, US1-4).
-- [ ] T009 [P] [US1] En `apps/usuarios/tests/test_respuestas_htmx.py`, bloque "sin sesión" (contracts/respuestas-acceso.md §1, FR-012):
+- [x] T009 [P] [US1] En `apps/usuarios/tests/test_respuestas_htmx.py`, bloque "sin sesión" (contracts/respuestas-acceso.md §1, FR-012):
   - `GET` anónimo con `HX-Request: true` y `HX-Current-URL: http://testserver/organizacion/distritos-judiciales/?page=2` a `organizacion:distrito_judicial_details` → `401`, cuerpo vacío, cabecera `HX-Redirect` igual a la URL de login con `next=/organizacion/distritos-judiciales/?page=2` codificado;
   - sin `HX-Current-URL`, o con un host externo (`https://evil.example/`) → `next` igual a la ruta de `LOGIN_REDIRECT_URL`.
-- [ ] T010 [P] [US1] En `apps/main/tests.py`: `GET /signup/` → `404`; `reverse('main:signup')` lanza `NoReverseMatch` (FR-004).
+- [x] T010 [P] [US1] En `apps/main/tests.py`: `GET /signup/` → `404`; `reverse('main:signup')` lanza `NoReverseMatch` (FR-004).
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Crear `apps/usuarios/middleware.py` con `class LoginRequiredMiddleware(django.contrib.auth.middleware.LoginRequiredMiddleware)`. Sobrescribe `handle_no_permission(request, view_func)`:
+- [x] T011 [US1] Crear `apps/usuarios/middleware.py` con `class LoginRequiredMiddleware(django.contrib.auth.middleware.LoginRequiredMiddleware)`. Sobrescribe `handle_no_permission(request, view_func)`:
   - sin `HX-Request`: comportamiento del padre;
   - con `HX-Request: true`: `HttpResponse(status=401)` con `HX-Redirect = f"{resolve_url(settings.LOGIN_URL)}?{urlencode({'next': ruta})}"`. `ruta` es el path y la query de `HX-Current-URL` si `url_has_allowed_host_and_scheme(..., allowed_hosts={request.get_host()}, require_https=request.is_secure())`; si no, `resolve_url(settings.LOGIN_REDIRECT_URL)`.
   - Docstrings en español (research R2, contracts/respuestas-acceso.md §1).
-- [ ] T012 [US1] Registrar `'apps.usuarios.middleware.LoginRequiredMiddleware'` en `MIDDLEWARE` de `config/settings.py`, inmediatamente después de `django.contrib.auth.middleware.AuthenticationMiddleware` (research R1).
-- [ ] T013 [P] [US1] En `apps/usuarios/views/acceso.py`, decorar `UsuarioLogoutView` con `@method_decorator(login_not_required, name='dispatch')`. `LogoutView` no está exenta de forma nativa (research R1, contracts/vistas-y-permisos.md §1).
-- [ ] T014 [P] [US1] En `apps/usuarios/views/registro.py`, decorar `registro`, `activar_cuenta` y `registro_completo` con `@login_not_required` de `django.contrib.auth.decorators` (FR-003, contrato §1).
-- [ ] T015 [P] [US1] Retirar `main:signup` (FR-004):
+- [x] T012 [US1] Registrar `'apps.usuarios.middleware.LoginRequiredMiddleware'` en `MIDDLEWARE` de `config/settings.py`, inmediatamente después de `django.contrib.auth.middleware.AuthenticationMiddleware` (research R1).
+- [x] T013 [P] [US1] En `apps/usuarios/views/acceso.py`, decorar `UsuarioLogoutView` con `@method_decorator(login_not_required, name='dispatch')`. `LogoutView` no está exenta de forma nativa (research R1, contracts/vistas-y-permisos.md §1).
+- [x] T014 [P] [US1] En `apps/usuarios/views/registro.py`, decorar `registro`, `activar_cuenta` y `registro_completo` con `@login_not_required` de `django.contrib.auth.decorators` (FR-003, contrato §1).
+- [x] T015 [P] [US1] Retirar `main:signup` (FR-004):
   - eliminar la función `signup` de `apps/main/views.py`;
   - eliminar la ruta de `apps/main/urls.py` y su import;
   - eliminar `apps/main/templates/main/signup.html`;
   - buscar referencias con `grep -rn "signup" apps templates config` (excluyendo las apps heredadas fuera de alcance).
-- [ ] T016 [US1] Retirar los `@login_required` que pasan a ser redundantes, porque el middleware ya exige sesión (research R4):
+- [x] T016 [US1] Retirar los `@login_required` que pasan a ser redundantes, porque el middleware ya exige sesión (research R4):
   - `apps/main/views.py:index`, `apps/organizacion/views/distrito_judicial.py:distritos_judiciales_list`, `materia_jurisdiccional.py:materias_jurisdiccionales_list`, `organo_jurisdiccional.py:organos_jurisdiccionales_list`, `apps/personas/views.py:personas_list` y `apps/usuarios/views/cuentas.py:usuarios_list`;
   - conservar `permission_required` y limpiar el import de `login_required` donde ya no se use.
-- [ ] T017 [US1] Ejecutar `python manage.py check` y la suite completa: T007–T010 y los tests de la feature 001 en verde.
+- [x] T017 [US1] Ejecutar `python manage.py check` y la suite completa: T007–T010 y los tests de la feature 001 en verde.
 
 **Checkpoint**: valida US1-1 a US1-4 y los escenarios 1–3 y 11 de quickstart.md.
 

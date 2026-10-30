@@ -2,7 +2,7 @@ import io
 import json
 import xlsxwriter
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -60,7 +60,6 @@ def filter_distrito_judicial(queryset, filters):
     return queryset
 
 
-@login_required
 @permission_required(
     'organizacion.view_distritojudicial',
     raise_exception=True,

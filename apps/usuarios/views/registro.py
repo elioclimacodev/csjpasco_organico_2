@@ -12,6 +12,7 @@ from django.contrib.auth.views import (
 )
 
 from django.contrib.auth.decorators import (
+    login_not_required,
     permission_required,
     login_required,
 )
@@ -39,6 +40,7 @@ from apps.usuarios.forms.registro import (
 Usuario = get_user_model()
 
 
+@login_not_required
 def registro(request):
     if request.user.is_authenticated:
         return redirect('home:home') # TODO: CORREGIR LA URL DE HOME.
@@ -101,6 +103,7 @@ def registro(request):
     )
 
 
+@login_not_required
 def activar_cuenta(request, uidb64, token):
     context = {
         'container_size': 'tight',
@@ -179,6 +182,7 @@ def activar_cuenta(request, uidb64, token):
     )
 
 
+@login_not_required
 def registro_completo(request):
     if request.user.is_authenticated:
         return redirect('main:index') # TODO: CORREGIR LA URL DE HOME.

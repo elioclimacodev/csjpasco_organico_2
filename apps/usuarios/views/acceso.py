@@ -12,9 +12,11 @@ from django.contrib.auth.views import (
 )
 
 from django.contrib.auth.decorators import (
+    login_not_required,
     permission_required,
     login_required,
 )
+from django.utils.decorators import method_decorator
 
 from django.utils.encoding import force_str
 from django.views.generic import ListView
@@ -45,6 +47,9 @@ class UsuarioLoginView(LoginView):
     }
 
 
+# `LogoutView` no está exenta de forma nativa: sin esta declaración, cerrar una
+# sesión ya expirada redirigiría al inicio de sesión con `next` (research R1).
+@method_decorator(login_not_required, name='dispatch')
 class UsuarioLogoutView(LogoutView):
     pass
 

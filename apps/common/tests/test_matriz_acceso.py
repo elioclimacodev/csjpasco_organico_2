@@ -1,6 +1,4 @@
 """Consistencia de la matriz de acceso con el enrutador (data-model §1 I1; contrato §1–§2)."""
-from unittest import expectedFailure
-
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 
@@ -19,8 +17,6 @@ class MatrizAccesoTests(TestCase):
         self.assertEqual(len(MATRIZ_PERMISOS), 51)
         self.assertEqual(len({fila[0] for fila in MATRIZ_PERMISOS}), 51)
 
-    # Falla hasta que T015 retire `main:signup`; T015 quita este marcador.
-    @expectedFailure
     def test_toda_ruta_enrutada_esta_clasificada(self):
         clasificadas = set(RUTAS_PUBLICAS) | set(RUTAS_SOLO_SESION) | {fila[0] for fila in MATRIZ_PERMISOS}
         enrutadas = {nombre for nombre, _ in rutas_enrutadas()}
