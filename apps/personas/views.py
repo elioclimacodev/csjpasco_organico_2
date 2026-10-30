@@ -129,6 +129,10 @@ def personas_list(request):
     return render(request, template, context)
 
 
+@permission_required(
+    'personas.add_persona',
+    raise_exception=True,
+)
 def persona_create(request):
     '''
     Registra a una persona independientemente de su vínculo

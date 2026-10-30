@@ -114,12 +114,12 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 ### Tests for User Story 2 (escribir primero; deben fallar) ⚠️
 
-- [ ] T018 [P] [US2] En `apps/usuarios/tests/test_acceso_global.py`, cobertura de permisos (contracts/vistas-y-permisos.md §3 C2, research R4):
+- [x] T018 [P] [US2] En `apps/usuarios/tests/test_acceso_global.py`, cobertura de permisos (contracts/vistas-y-permisos.md §3 C2, research R4):
   - para cada fila de `MATRIZ_PERMISOS`, la vista resuelta conserva la marca del decorador `permission_required` con el permiso de la fila;
   - método recomendado: comprobar con un usuario autenticado sin permisos que la ruta responde `403` y, con solo ese permiso, que no responde `403`;
   - toda ruta enrutada fuera de `RUTAS_PUBLICAS` y `RUTAS_SOLO_SESION` está en la matriz;
   - FR-008: con un middleware de prueba añadido con `modify_settings` que registra las excepciones recibidas en `process_exception`, una denegación produce `PermissionDenied`, que es el punto de enganche de la futura auditoría (research R3).
-- [ ] T019 [P] [US2] En `apps/organizacion/tests.py`, matriz por entidad para distrito judicial, materia, órgano y sede (C3), usando `MATRIZ_PERMISOS` y `fabricas.py`:
+- [x] T019 [P] [US2] En `apps/organizacion/tests.py`, matriz por entidad para distrito judicial, materia, órgano y sede (C3), usando `MATRIZ_PERMISOS` y `fabricas.py`:
   - sin permiso → `403`; con el permiso → no `403`;
   - **C4/FR-009**:
     - `POST` a `*_toggle` sin `change` → `activo` sin cambios;
@@ -127,13 +127,13 @@ description: "Lista de tareas de implementación: protección de operaciones y c
     - `POST` a `*_update` sin `change` → los campos no cambian;
     - `GET` a `*_export` sin `view` → `403` y la respuesta no es `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`;
   - **C6** para `sedes_list`, `sede_create` y `sedes_export` con `dj_id` inexistente: sin `view_sedejudicial` → `403`; con el permiso → `404`.
-- [ ] T020 [P] [US2] En `apps/personas/tests.py`: `personas:create` sin `add_persona` → `403` y el conteo no cambia con `POST`; con el permiso → no `403` (C3, C4).
-- [ ] T021 [P] [US2] En `apps/ubicaciones/tests.py`, matriz para países, departamentos, provincias y distritos (C3), con C4 igual que T019 y C6:
+- [x] T020 [P] [US2] En `apps/personas/tests.py`: `personas:create` sin `add_persona` → `403` y el conteo no cambia con `POST`; con el permiso → no `403` (C3, C4).
+- [x] T021 [P] [US2] En `apps/ubicaciones/tests.py`, matriz para países, departamentos, provincias y distritos (C3), con C4 igual que T019 y C6:
   - `departamentos_*` con `pais_id` inexistente, `provincias_*` con `dpto_id` inexistente y `distritos_*` con `prov_id` inexistente;
   - sin el permiso de la entidad de la ruta → `403`; con el permiso → `404`;
   - **sin exigir el permiso de la entidad padre** (decisión CHK003).
-- [ ] T022 [P] [US2] En `apps/common/tests/test_menu_checks.py`: para cada ítem del registro real con `url_name`, sus `permissions` coinciden con el permiso de `MATRIZ_PERMISOS` para esa ruta (C5, FR-010, SC-008).
-- [ ] T023 [P] [US2] En `apps/main/tests.py`, aviso de cuenta sin permisos (FR-003a, SC-007a, SC-007b):
+- [x] T022 [P] [US2] En `apps/common/tests/test_menu_checks.py`: para cada ítem del registro real con `url_name`, sus `permissions` coinciden con el permiso de `MATRIZ_PERMISOS` para esa ruta (C5, FR-010, SC-008).
+- [x] T023 [P] [US2] En `apps/main/tests.py`, aviso de cuenta sin permisos (FR-003a, SC-007a, SC-007b):
   - un usuario sin permisos ve "Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." con `role="status"`, y la respuesta usa la plantilla `components/alerts/aviso_persistente.html` (`assertTemplateUsed`);
   - con un permiso directo, con un permiso por grupo o como superusuario, no lo ve;
   - SC-007b: para un usuario sin permisos, tras renderizar Inicio, `assertNumQueries(0)` al llamar a `user.get_all_permissions()`, porque el menú lateral ya cargó la caché. Además, Inicio hace las mismas consultas con y sin la variable `cuenta_sin_permisos`, comparando el mismo usuario con `mock.patch` sobre el cálculo.
@@ -142,20 +142,20 @@ description: "Lista de tareas de implementación: protección de operaciones y c
 
 Patrón común (research R4 y R5): `@permission_required('<app>.<acción>_<modelo>', raise_exception=True)` como **decorador más externo**, con los permisos de contracts/vistas-y-permisos.md §2.
 
-- [ ] T024 [P] [US2] `apps/organizacion/views/distrito_judicial.py`: `distrito_judicial_create` (`add_distritojudicial`), `distrito_judicial_details` y `distritos_judiciales_export` (`view_distritojudicial`), `distrito_judicial_update` y `distrito_judicial_toggle` (`change_distritojudicial`).
-- [ ] T025 [P] [US2] `apps/organizacion/views/materia_jurisdiccional.py`: create (`add_materiajurisdiccional`), details y export (`view_materiajurisdiccional`), update y toggle (`change_materiajurisdiccional`).
-- [ ] T026 [P] [US2] `apps/organizacion/views/organo_jurisdiccional.py`: create (`add_organojurisdiccional`), details y export (`view_organojurisdiccional`), update y toggle (`change_organojurisdiccional`).
-- [ ] T027 [P] [US2] `apps/organizacion/views/sede_judicial.py`: `sedes_list`, `sede_details` y `sedes_export` (`view_sedejudicial`), `sede_create` (`add_sedejudicial`), `sede_update` y `sede_toggle` (`change_sedejudicial`).
-- [ ] T028 [P] [US2] `apps/personas/views.py`: `persona_create` (`personas.add_persona`).
-- [ ] T029 [P] [US2] `apps/ubicaciones/views/paises.py`: `countries_list`, `country_details` y `countries_export` (`ubicaciones.view_pais`), `country_create` (`add_pais`), `country_update` y `country_toggle` (`change_pais`).
-- [ ] T030 [P] [US2] `apps/ubicaciones/views/departamentos.py`: list, details y export (`view_departamento`), create (`add_departamento`), update y toggle (`change_departamento`).
-- [ ] T031 [P] [US2] `apps/ubicaciones/views/provincias.py`: list, details y export (`view_provincia`), create (`add_provincia`), update y toggle (`change_provincia`).
-- [ ] T032 [P] [US2] `apps/ubicaciones/views/distritos.py`: list, details y export (`view_distrito`), create (`add_distrito`), update y toggle (`change_distrito`).
-- [ ] T033 [US2] Aviso FR-003a (research R7, constitución §Mensajes):
+- [x] T024 [P] [US2] `apps/organizacion/views/distrito_judicial.py`: `distrito_judicial_create` (`add_distritojudicial`), `distrito_judicial_details` y `distritos_judiciales_export` (`view_distritojudicial`), `distrito_judicial_update` y `distrito_judicial_toggle` (`change_distritojudicial`).
+- [x] T025 [P] [US2] `apps/organizacion/views/materia_jurisdiccional.py`: create (`add_materiajurisdiccional`), details y export (`view_materiajurisdiccional`), update y toggle (`change_materiajurisdiccional`).
+- [x] T026 [P] [US2] `apps/organizacion/views/organo_jurisdiccional.py`: create (`add_organojurisdiccional`), details y export (`view_organojurisdiccional`), update y toggle (`change_organojurisdiccional`).
+- [x] T027 [P] [US2] `apps/organizacion/views/sede_judicial.py`: `sedes_list`, `sede_details` y `sedes_export` (`view_sedejudicial`), `sede_create` (`add_sedejudicial`), `sede_update` y `sede_toggle` (`change_sedejudicial`).
+- [x] T028 [P] [US2] `apps/personas/views.py`: `persona_create` (`personas.add_persona`).
+- [x] T029 [P] [US2] `apps/ubicaciones/views/paises.py`: `countries_list`, `country_details` y `countries_export` (`ubicaciones.view_pais`), `country_create` (`add_pais`), `country_update` y `country_toggle` (`change_pais`).
+- [x] T030 [P] [US2] `apps/ubicaciones/views/departamentos.py`: list, details y export (`view_departamento`), create (`add_departamento`), update y toggle (`change_departamento`).
+- [x] T031 [P] [US2] `apps/ubicaciones/views/provincias.py`: list, details y export (`view_provincia`), create (`add_provincia`), update y toggle (`change_provincia`).
+- [x] T032 [P] [US2] `apps/ubicaciones/views/distritos.py`: list, details y export (`view_distrito`), create (`add_distrito`), update y toggle (`change_distrito`).
+- [x] T033 [US2] Aviso FR-003a (research R7, constitución §Mensajes):
   - crear el componente transversal `templates/components/alerts/aviso_persistente.html` con los parámetros `tipo`, `rol` y `mensaje`, que renderiza `<div class="alert alert-{{ tipo }}" role="{{ rol|default:'status' }}">{{ mensaje }}</div>`, sin botón de cerrar y sin `style=`;
   - en `apps/main/views.py:index`, añadir al contexto `cuenta_sin_permisos = not request.user.is_superuser and not request.user.get_all_permissions()`;
   - en `apps/main/templates/main/index.html`, `{% if cuenta_sin_permisos %}{% include "components/alerts/aviso_persistente.html" with tipo="warning" mensaje="Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." %}{% endif %}`.
-- [ ] T034 [US2] Ejecutar `python manage.py check` y la suite completa: T018–T023 y la regresión de la feature 001 en verde.
+- [x] T034 [US2] Ejecutar `python manage.py check` y la suite completa: T018–T023 y la regresión de la feature 001 en verde.
 
 **Checkpoint**: valida US2-1 a US2-4 y los escenarios 4–6, 8, 10 y 17 de quickstart.md.
 

@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -56,6 +57,10 @@ def sort_districts(queryset, order_by, direction):
     return queryset.order_by(f'{prefix}{order_by}')
 
 
+@permission_required(
+    'ubicaciones.view_distrito',
+    raise_exception=True,
+)
 def distritos_list(request, prov_id):
     '''
     Muestra las provincias de una región, permitiendo el 
@@ -158,6 +163,10 @@ def distritos_list(request, prov_id):
     return render(request, template, context)
 
 
+@permission_required(
+    'ubicaciones.add_distrito',
+    raise_exception=True,
+)
 def distrito_create(request, prov_id):
     '''
     Crea el registro de una provincia que pertenece a una región o departamento.
@@ -242,6 +251,10 @@ def distrito_create(request, prov_id):
         return render(request, template, context)
     
 
+@permission_required(
+    'ubicaciones.view_distrito',
+    raise_exception=True,
+)
 def distrito_details(request, prov_id, pk):
     '''
     Muestra los datos de una provincia sin posibilidad de modificación.
@@ -276,6 +289,10 @@ def distrito_details(request, prov_id, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'ubicaciones.change_distrito',
+    raise_exception=True,
+)
 def distrito_update(request, prov_id, pk):
     '''
     Modifica o actualiza el registro de una provincia.
@@ -329,6 +346,10 @@ def distrito_update(request, prov_id, pk):
         return render(request, template, context)
     
 
+@permission_required(
+    'ubicaciones.change_distrito',
+    raise_exception=True,
+)
 def distrito_toggle(request, prov_id, pk):
     '''
     Cambia el estado del registro de la provincia de activo a inactivo y viceversa.
@@ -374,11 +395,16 @@ def distrito_toggle(request, prov_id, pk):
     return response
 
 
+@permission_required(
+    'ubicaciones.view_distrito',
+    raise_exception=True,
+)
 def distritos_export(request, prov_id):
     '''
     Exporta los datos filtrados y ordenados a un archivo xlsx.
     '''
-    distritos = Distrito.objects.filter(provincia=prov_id)
+    provincia = get_object_or_404(Provincia, pk=prov_id)
+    distritos = Distrito.objects.filter(provincia=provincia)
 
     # Filtros.
     form = DistritoFiltersForm(request.GET or None)

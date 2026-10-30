@@ -183,3 +183,47 @@ def url_de_prueba(url_name, **overrides):
     parametros = dict(rutas_enrutadas())[url_name]
     kwargs = {p: overrides.get(p, KWARGS_PRUEBA[p]) for p in parametros}
     return reverse(url_name, kwargs=kwargs)
+
+
+XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+
+def comprobar_sin_efectos(test, *, obj, rutas, kwargs_registro, kwargs_padre, permiso_consulta):
+    """
+    Comprueba que las operaciones denegadas no producen efectos (contrato
+    C4, spec FR-009, SC-004).
+
+    :param test: El `TestCase` que ejecuta las aserciones.
+    :param obj: Registro existente de la entidad (con campos `activo` y `nombre`).
+    :param rutas: Diccionario con los `url_name` de 'toggle', 'update',
+        'create' y 'export'.
+    :param kwargs_registro: Parámetros de las rutas del registro (toggle, update).
+    :param kwargs_padre: Parámetros de las rutas de la colección (create, export).
+    :param permiso_consulta: Permiso `view` de la entidad.
+    """
+    from django.urls import reverse
+
+    modelo = type(obj)
+    test.client.force_login(crear_usuario(permisos=[permiso_consulta]))
+
+    estado = obj.activo
+    response = test.client.post(reverse(rutas['toggle'], kwargs=kwargs_registro))
+    test.assertEqual(response.status_code, 403)
+    obj.refresh_from_db()
+    test.assertEqual(obj.activo, estado, 'La inactivación denegada cambió el estado')
+
+    nombre = obj.nombre
+    response = test.client.post(reverse(rutas['update'], kwargs=kwargs_registro), {'nombre': 'Nombre cambiado'})
+    test.assertEqual(response.status_code, 403)
+    obj.refresh_from_db()
+    test.assertEqual(obj.nombre, nombre, 'La modificación denegada cambió el registro')
+
+    total = modelo.objects.count()
+    response = test.client.post(reverse(rutas['create'], kwargs=kwargs_padre), {'nombre': 'Registro nuevo'})
+    test.assertEqual(response.status_code, 403)
+    test.assertEqual(modelo.objects.count(), total, 'El registro denegado creó un registro')
+
+    test.client.force_login(crear_usuario())
+    response = test.client.get(reverse(rutas['export'], kwargs=kwargs_padre))
+    test.assertEqual(response.status_code, 403)
+    test.assertNotEqual(response.get('Content-Type'), XLSX, 'La exportación denegada generó un archivo')

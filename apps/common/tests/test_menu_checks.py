@@ -153,3 +153,28 @@ class PermisosDeclaradosTests(TestCase):
                     Permission.objects.filter(content_type__app_label=app_label, codename=codename).exists(),
                     f'El permiso declarado {permiso} no existe.',
                 )
+
+
+class PermisosDelMenuCoincidenConLaMatrizTests(SimpleTestCase):
+    """
+    El permiso de cada opción del menú es el que exige su vista destino
+    (contrato C5, spec FR-010, SC-008).
+    """
+
+    def test_permisos_del_menu_coinciden_con_la_matriz(self):
+        from apps.common.tests.helpers import MATRIZ_PERMISOS, RUTAS_SOLO_SESION
+
+        permiso_de_ruta = {url_name: permiso for url_name, permiso, _ in MATRIZ_PERMISOS}
+
+        def recorrer(items):
+            for item in items:
+                if item.url_name:
+                    with self.subTest(item=item.id, url_name=item.url_name):
+                        if item.url_name in RUTAS_SOLO_SESION:
+                            self.assertEqual(item.permissions, ())
+                        else:
+                            self.assertIn(item.url_name, permiso_de_ruta, 'Destino fuera de la matriz')
+                            self.assertEqual(item.permissions, (permiso_de_ruta[item.url_name],))
+                recorrer(item.children)
+
+        recorrer(registry.items())

@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -62,6 +63,10 @@ def sort_countries(queryset, order_by, direction):
     return queryset.order_by(f'{prefix}{order_by}')
 
 
+@permission_required(
+    'ubicaciones.view_pais',
+    raise_exception=True,
+)
 def countries_list(request):
     '''
     Muestra los países, permitiendo el ordenamiento, 
@@ -148,6 +153,10 @@ def countries_list(request):
     return render(request, template, context)
     
 
+@permission_required(
+    'ubicaciones.add_pais',
+    raise_exception=True,
+)
 def country_create(request):
     '''
     Crea un nuevo registro de un país.
@@ -225,6 +234,10 @@ def country_create(request):
         return render(request, template, context)
             
 
+@permission_required(
+    'ubicaciones.view_pais',
+    raise_exception=True,
+)
 def country_details(request, pk):
     '''
     Muestra los datos de un país, sin posibilidad de modificación.
@@ -251,6 +264,10 @@ def country_details(request, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'ubicaciones.change_pais',
+    raise_exception=True,
+)
 def country_update(request, pk):
     '''
     Modifica o actualiza el registro de un País.
@@ -301,6 +318,10 @@ def country_update(request, pk):
         return render(request, template, context)
             
     
+@permission_required(
+    'ubicaciones.change_pais',
+    raise_exception=True,
+)
 def country_toggle(request, pk):
     '''
     Cambia el estado del registro de activo a inactivo y viceversa.
@@ -342,6 +363,10 @@ def country_toggle(request, pk):
     return response
 
 
+@permission_required(
+    'ubicaciones.view_pais',
+    raise_exception=True,
+)
 def countries_export(request):
     '''
     Exporta los datos filtrados y ordenados a formato xlsx.

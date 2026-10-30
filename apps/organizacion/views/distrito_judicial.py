@@ -133,6 +133,10 @@ def distritos_judiciales_list(request):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.add_distritojudicial',
+    raise_exception=True,
+)
 def distrito_judicial_create(request):
     '''
     Crea el registro de un Distrito Judicial.
@@ -194,6 +198,10 @@ def distrito_judicial_create(request):
         return render(request, template, context)
     
 
+@permission_required(
+    'organizacion.view_distritojudicial',
+    raise_exception=True,
+)
 def distrito_judicial_details(request, pk):
     '''
     Muestra los detalles de un Distrito Judicial sin posibilidad de modificación.
@@ -223,6 +231,10 @@ def distrito_judicial_details(request, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.change_distritojudicial',
+    raise_exception=True,
+)
 def distrito_judicial_update(request, pk):
     '''
     Modifica o actualiza el registro de un Distrito Judicial.
@@ -270,6 +282,10 @@ def distrito_judicial_update(request, pk):
         return render(request, template, context)
             
 
+@permission_required(
+    'organizacion.change_distritojudicial',
+    raise_exception=True,
+)
 def distrito_judicial_toggle(request, pk):
     '''
     Cambia el estado del registro de activo a inactivo y viceversa.
@@ -311,6 +327,10 @@ def distrito_judicial_toggle(request, pk):
     return response
 
 
+@permission_required(
+    'organizacion.view_distritojudicial',
+    raise_exception=True,
+)
 def distritos_judiciales_export(request):
     '''
     Exporta los datos filtrados y ordenados a un archivo xlsx.

@@ -1,5 +1,8 @@
 {% extends 'layouts/dashboards/base_list.html' %}
 
-
-
-    
+{% block page_body %}
+    {% if cuenta_sin_permisos %}
+        {% include "components/alerts/aviso_persistente.html" with tipo="warning" mensaje="Su cuenta aún no tiene permisos asignados. Solicítelos al administrador del sistema." %}
+    {% endif %}
+    {{ block.super }}
+{% endblock page_body %}

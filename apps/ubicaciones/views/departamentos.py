@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
@@ -59,6 +60,10 @@ def sort_regions(queryset, order_by, direction):
     return queryset.order_by(f'{prefix}{order_by}')
 
 
+@permission_required(
+    'ubicaciones.view_departamento',
+    raise_exception=True,
+)
 def departamentos_list(request, pais_id):
     '''
     Muestra las regiones de un país, permitiendo el 
@@ -157,6 +162,10 @@ def departamentos_list(request, pais_id):
     return render(request, template, context)
     
     
+@permission_required(
+    'ubicaciones.add_departamento',
+    raise_exception=True,
+)
 def departamento_create(request, pais_id):
     '''
     Crea el registro de una región/departamento de un país.
@@ -238,6 +247,10 @@ def departamento_create(request, pais_id):
         return render(request, template, context)
             
 
+@permission_required(
+    'ubicaciones.view_departamento',
+    raise_exception=True,
+)
 def departamento_details(request, pais_id, pk):
     '''
     Muestra los datos de una región sin posiblidad de modificación.
@@ -275,6 +288,10 @@ def departamento_details(request, pais_id, pk):
     return render(request, template, context)
     
     
+@permission_required(
+    'ubicaciones.change_departamento',
+    raise_exception=True,
+)
 def departamento_update(request, pais_id, pk):
     '''
     Modifica o actualiza el registro de una región.
@@ -332,6 +349,10 @@ def departamento_update(request, pais_id, pk):
         return render(request, template, context)
             
 
+@permission_required(
+    'ubicaciones.change_departamento',
+    raise_exception=True,
+)
 def departamento_toggle(request, pais_id, pk):
     '''
     Cambia el estado del registro de activo a inactivo y viceversa.
@@ -379,6 +400,10 @@ def departamento_toggle(request, pais_id, pk):
     return response
     
         
+@permission_required(
+    'ubicaciones.view_departamento',
+    raise_exception=True,
+)
 def departamento_export(request, pais_id):
     '''
     Exporta los datos filtrados y ordenados a formato xlsx.

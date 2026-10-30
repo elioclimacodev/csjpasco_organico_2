@@ -121,6 +121,10 @@ def organos_jurisdiccionales_list(request):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.add_organojurisdiccional',
+    raise_exception=True,
+)
 def organo_jurisdiccional_create(request):
     '''
     Crea el registro de un Órgano Jurisdiccional.
@@ -181,6 +185,10 @@ def organo_jurisdiccional_create(request):
         return render(request, template, context)
     
 
+@permission_required(
+    'organizacion.view_organojurisdiccional',
+    raise_exception=True,
+)
 def organo_jurisdiccional_details(request, pk):
     '''
     Muestra los detalles de un Órgano Jurisdiccional sin posibilidad de modificación.
@@ -207,6 +215,10 @@ def organo_jurisdiccional_details(request, pk):
     return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.change_organojurisdiccional',
+    raise_exception=True,
+)
 def organo_jurisdiccional_update(request, pk):
     '''
     Modifica o actualiza el registro de un Órgano Jurisdiccional.
@@ -255,6 +267,10 @@ def organo_jurisdiccional_update(request, pk):
         return render(request, template, context)
 
 
+@permission_required(
+    'organizacion.change_organojurisdiccional',
+    raise_exception=True,
+)
 def organo_jurisdiccional_toggle(request, pk):
     '''
     Cambia el estado del registro de activo a inactivo y viceversa.
@@ -294,6 +310,10 @@ def organo_jurisdiccional_toggle(request, pk):
     return response
 
 
+@permission_required(
+    'organizacion.view_organojurisdiccional',
+    raise_exception=True,
+)
 def organos_jurisdiccionales_export(request):
     '''
     Exporta los datos filtrados y ordenados a un archivo xlsx.

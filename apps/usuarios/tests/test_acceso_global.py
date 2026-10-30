@@ -5,6 +5,7 @@ Recorre todas las rutas enrutadas con la matriz única de
 `apps/common/tests/helpers.py` (contracts/vistas-y-permisos.md §1–§3).
 """
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import resolve_url
 from django.test import TestCase, modify_settings
 from django.test.utils import CaptureQueriesContext
@@ -12,6 +13,7 @@ from django.db import connection
 from django.urls import reverse
 
 from apps.common.tests.helpers import (
+    MATRIZ_PERMISOS,
     RUTAS_PUBLICAS,
     crear_usuario,
     rutas_enrutadas,
@@ -86,3 +88,49 @@ class VistasPublicasTests(TestCase):
         )
 
         self.assertRedirects(response, destino, fetch_redirect_response=False)
+
+
+# Excepciones vistas por el middleware de prueba de FR-008.
+_excepciones_recibidas = []
+
+
+class MiddlewareDePrueba:
+    """Simula el futuro módulo de auditoría: registra las excepciones de las vistas."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
+    def process_exception(self, request, exception):
+        _excepciones_recibidas.append(exception)
+
+
+class PermisosPorOperacionTests(TestCase):
+    """R4, C2–C3, FR-006, FR-007, SC-003."""
+
+    def test_cada_ruta_exige_su_permiso(self):
+        # Solo se comprueba el permiso: un error de la vista posterior a la
+        # autorización (p. ej., una plantilla rota) no debe ocultar el resultado.
+        self.client.raise_request_exception = False
+        sin_permisos = crear_usuario()
+        for url_name, permiso, _ in MATRIZ_PERMISOS:
+            with self.subTest(url_name=url_name, permiso=permiso):
+                url = url_de_prueba(url_name)
+
+                self.client.force_login(sin_permisos)
+                self.assertEqual(self.client.get(url).status_code, 403, 'Sin permiso no se denegó')
+
+                self.client.force_login(crear_usuario(permisos=[permiso]))
+                self.assertNotEqual(self.client.get(url).status_code, 403, 'Con su permiso se denegó')
+
+    @modify_settings(MIDDLEWARE={'append': 'apps.usuarios.tests.test_acceso_global.MiddlewareDePrueba'})
+    def test_la_denegacion_llega_al_punto_de_enganche_de_la_auditoria(self):
+        """FR-008: la denegación es un `PermissionDenied` visible en `process_exception` (research R3)."""
+        _excepciones_recibidas.clear()
+        self.client.force_login(crear_usuario())
+
+        self.client.get(url_de_prueba('organizacion:distrito_judicial_details'))
+
+        self.assertTrue(any(isinstance(e, PermissionDenied) for e in _excepciones_recibidas))
